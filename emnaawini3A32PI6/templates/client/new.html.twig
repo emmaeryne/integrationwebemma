@@ -6,10 +6,12 @@
     'new_reservation': 'Reserver'|trans|default('Créer une nouvelle réservation'),
     'save': 'save'|trans|default('Enregistrer'),
     'cancel': 'cancel'|trans|default('Annuler'),
-    'type_abonnement': 'type dbonnement'|trans,
+    'type_abonnement': 'type abonnement'|trans,
     'date_debut': 'date de debut'|trans,
     'date_fin': 'date de fin'|trans,
-    'statut': 'statut'|trans
+    'statut': 'statut'|trans,
+    'status_in_progress': 'En cours'|trans,
+    'status_pending': 'En attente'|trans
 } %}
 
 {% block title %}
@@ -74,11 +76,43 @@
                     </div>
                 {% endmacro %}
 
+                {# Macro pour champ statut conditionnel #}
+                {% macro render_status_field(field, icon, label, translations, is_edit) %}
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-muted fs-5 d-flex align-items-center gap-2">
+                            <i class="fas fa-{{ icon }} text-primary"></i>
+                            {{ translations[label] }}
+                        </label>
+                        
+                        {% if is_edit %}
+                            {# Mode édition - Liste déroulante #}
+                            {{ form_widget(field, {
+                                'attr': {
+                                    'class': 'form-control form-control-lg rounded-3'
+                                }
+                            }) }}
+                        {% else %}
+                            {# Mode création - Champ statique #}
+                            <div class="form-control-static bg-light p-3 rounded-3 d-flex align-items-center" style="height: 50px;">
+                                <i class="fas fa-lock text-muted me-2"></i>
+                                {{ translations.status_in_progress }}
+                            </div>
+                            {# Champ caché pour envoyer la valeur au serveur #}
+                            {{ form_widget(field, {
+                                'attr': {
+                                    'value': 'en cours',
+                                    'class': 'd-none'
+                                }
+                            }) }}
+                        {% endif %}
+                    </div>
+                {% endmacro %}
+
                 {# Champs du formulaire #}
                 {{ _self.render_field(form.typeAbonnement, 'tag', 'type_abonnement', translations) }}
                 {{ _self.render_field(form.dateDebut, 'calendar-alt', 'date_debut', translations) }}
                 {{ _self.render_field(form.dateFin, 'calendar-alt', 'date_fin', translations) }}
-                {{ _self.render_field(form.statut, 'info-circle', 'statut', translations) }}
+                {{ _self.render_status_field(form.statut, 'info-circle', 'statut', translations, is_edit|default(false)) }}
 
                 {# Boutons d'action #}
                 <div class="col-12 mt-4 d-flex flex-wrap gap-3">
@@ -144,6 +178,21 @@
         .form-control.is-invalid ~ .invalid-feedback {
             display: block;
         }
+        .form-control-static {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+        }
+        select.form-control {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+        }
     </style>
 {% endblock %}
 
@@ -173,6 +222,31 @@
                     form.classList.add('was-validated');
                 });
             });
+
+            // Calcul automatique de la date de fin si date de début changée
+            const dateDebutInput = document.querySelector('#{{ form.dateDebut.vars.id }}');
+            const dateFinInput = document.querySelector('#{{ form.dateFin.vars.id }}');
+            const typeAbonnementSelect = document.querySelector('#{{ form.typeAbonnement.vars.id }}');
+
+            if (dateDebutInput && dateFinInput && typeAbonnementSelect) {
+                dateDebutInput.addEventListener('change', updateDateFin);
+                typeAbonnementSelect.addEventListener('change', updateDateFin);
+
+                function updateDateFin() {
+                    const selectedOption = typeAbonnementSelect.options[typeAbonnementSelect.selectedIndex];
+                    const dureeMois = selectedOption ? parseInt(selectedOption.getAttribute('data-duree')) : 0;
+                    
+                    if (dateDebutInput.value && dureeMois > 0) {
+                        const dateDebut = new Date(dateDebutInput.value);
+                        const dateFin = new Date(dateDebut);
+                        dateFin.setMonth(dateFin.getMonth() + dureeMois);
+                        
+                        // Format YYYY-MM-DD pour le champ date
+                        const formattedDate = dateFin.toISOString().split('T')[0];
+                        dateFinInput.value = formattedDate;
+                    }
+                }
+            }
         });
     </script>
 {% endblock %}

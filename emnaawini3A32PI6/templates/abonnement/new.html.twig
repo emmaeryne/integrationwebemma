@@ -46,11 +46,6 @@
             font-weight: 500;
             color: #2c3e50;
         }
-        .form-errors {
-            color: #dc3545;
-            font-size: 0.9em;
-            margin-top: 5px;
-        }
         .btn-primary {
             background-color: #696cff;
             border-color: #696cff;
@@ -66,6 +61,57 @@
         }
         .btn-secondary:hover {
             transform: translateY(-2px);
+        }
+        /* Styles pour les erreurs */
+        .error-message {
+            color: #ff3e1d;
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+            display: none;
+        }
+        .form-control.is-invalid, .form-select.is-invalid {
+            border-color: #ff3e1d !important;
+        }
+        .form-group.has-error .error-message {
+            display: block;
+        }
+        .form-group.has-error .form-control,
+        .form-group.has-error .form-select {
+            border-color: #ff3e1d !important;
+        }
+        .form-group.has-success .form-control,
+        .form-group.has-success .form-select {
+            border-color: #28a745 !important;
+        }
+        /* Icône de validation */
+        .form-group.has-success::after {
+            content: '\f00c'; /* FontAwesome check icon */
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            color: #28a745;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .form-group.has-error::after {
+            content: '\f06a'; /* FontAwesome exclamation icon */
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            color: #ff3e1d;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .form-group {
+            position: relative;
+        }
+        .form-check {
+            position: relative;
+        }
+        .form-check.has-error .error-message {
+            display: block;
         }
     </style>
 {% endblock %}
@@ -288,89 +334,125 @@
                             {% endfor %}
 
                             <!-- Formulaire -->
-                            {{ form_start(form, {'attr': {'class': 'row g-4'}}) }}
+                            {{ form_start(form, {'attr': {'class': 'row g-4 needs-validation', 'novalidate': true}}) }}
                                 <div class="col-md-6">
-                                    <div class="mb-3">
+                                    <div class="mb-3 form-group">
                                         {{ form_label(form.service, null, {'label_attr': {'class': 'form-label'}}) }}
+                                        <div class="error-message">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ form_errors(form.service) }}
+                                        </div>
                                         {{ form_widget(form.service, {'attr': {'class': 'form-select'}}) }}
-                                        <div class="form-errors text-danger">{{ form_errors(form.service) }}</div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="mb-3">
+                                    <div class="mb-3 form-group">
                                         {{ form_label(form.typeAbonnement, null, {'label_attr': {'class': 'form-label'}}) }}
+                                        <div class="error-message">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ form_errors(form.typeAbonnement) }}
+                                        </div>
                                         {{ form_widget(form.typeAbonnement, {'attr': {'class': 'form-select'}}) }}
-                                        <div class="form-errors text-danger">{{ form_errors(form.typeAbonnement) }}</div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="mb-3">
+                                    <div class="mb-3 form-group">
                                         {{ form_label(form.dateDebut, null, {'label_attr': {'class': 'form-label'}}) }}
+                                        <div class="error-message">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ form_errors(form.dateDebut) }}
+                                        </div>
                                         {{ form_widget(form.dateDebut, {'attr': {'class': 'form-control'}}) }}
-                                        <div class="form-errors text-danger">{{ form_errors(form.dateDebut) }}</div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="mb-3">
+                                    <div class="mb-3 form-group">
                                         {{ form_label(form.dateFin, null, {'label_attr': {'class': 'form-label'}}) }}
+                                        <div class="error-message">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ form_errors(form.dateFin) }}
+                                        </div>
                                         {{ form_widget(form.dateFin, {'attr': {'class': 'form-control'}}) }}
-                                        <div class="form-errors text-danger">{{ form_errors(form.dateFin) }}</div>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <div class="mb-3 form-check">
+                                    <div class="mb-3 form-check form-group">
                                         {{ form_widget(form.estActif, {'attr': {'class': 'form-check-input'}}) }}
                                         {{ form_label(form.estActif, null, {'label_attr': {'class': 'form-check-label'}}) }}
-                                        <div class="form-errors text-danger">{{ form_errors(form.estActif) }}</div>
+                                        <div class="error-message">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ form_errors(form.estActif) }}
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <div class="mb-3 form-check">
+                                    <div class="mb-3 form-check form-group">
                                         {{ form_widget(form.estGratuit, {'attr': {'class': 'form-check-input'}}) }}
                                         {{ form_label(form.estGratuit, null, {'label_attr': {'class': 'form-check-label'}}) }}
-                                        <div class="form-errors text-danger">{{ form_errors(form.estGratuit) }}</div>
+                                        <div class="error-message">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ form_errors(form.estGratuit) }}
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <div class="mb-3">
+                                    <div class="mb-3 form-group">
                                         {{ form_label(form.prixTotal, null, {'label_attr': {'class': 'form-label'}}) }}
+                                        <div class="error-message">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ form_errors(form.prixTotal) }}
+                                        </div>
                                         {{ form_widget(form.prixTotal, {'attr': {'class': 'form-control', 'step': '0.01', 'placeholder': 'Prix en €'}}) }}
-                                        <div class="form-errors text-danger">{{ form_errors(form.prixTotal) }}</div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="mb-3">
+                                    <div class="mb-3 form-group">
                                         {{ form_label(form.statut, null, {'label_attr': {'class': 'form-label'}}) }}
+                                        <div class="error-message">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ form_errors(form.statut) }}
+                                        </div>
                                         {{ form_widget(form.statut, {'attr': {'class': 'form-select'}}) }}
-                                        <div class="form-errors text-danger">{{ form_errors(form.statut) }}</div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="mb-3">
+                                    <div class="mb-3 form-group">
                                         {{ form_label(form.nombreSeancesRestantes, null, {'label_attr': {'class': 'form-label'}}) }}
+                                        <div class="error-message">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ form_errors(form.nombreSeancesRestantes) }}
+                                        </div>
                                         {{ form_widget(form.nombreSeancesRestantes, {'attr': {'class': 'form-control'}}) }}
-                                        <div class="form-errors text-danger">{{ form_errors(form.nombreSeancesRestantes) }}</div>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <div class="mb-3 form-check">
+                                    <div class="mb-3 form-check form-group">
                                         {{ form_widget(form.autoRenouvellement, {'attr': {'class': 'form-check-input'}}) }}
                                         {{ form_label(form.autoRenouvellement, null, {'label_attr': {'class': 'form-check-label'}}) }}
-                                        <div class="form-errors text-danger">{{ form_errors(form.autoRenouvellement) }}</div>
+                                        <div class="error-message">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ form_errors(form.autoRenouvellement) }}
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-4" id="dureeMoisContainer">
-                                    <div class="mb-3">
+                                    <div class="mb-3 form-group">
                                         {{ form_label(form.dureeMois, null, {'label_attr': {'class': 'form-label'}}) }}
+                                        <div class="error-message">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ form_errors(form.dureeMois) }}
+                                        </div>
                                         {{ form_widget(form.dureeMois, {'attr': {'class': 'form-control'}}) }}
-                                        <div class="form-errors text-danger">{{ form_errors(form.dureeMois) }}</div>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <div class="mb-3">
+                                    <div class="mb-3 form-group">
                                         {{ form_label(form.modePaiement, null, {'label_attr': {'class': 'form-label'}}) }}
+                                        <div class="error-message">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ form_errors(form.modePaiement) }}
+                                        </div>
                                         {{ form_widget(form.modePaiement, {'attr': {'class': 'form-select'}}) }}
-                                        <div class="form-errors text-danger">{{ form_errors(form.modePaiement) }}</div>
                                     </div>
                                 </div>
                                 <div class="col-12 d-flex justify-content-between mt-4">
@@ -426,48 +508,349 @@
             flatpickr("#abonnement_dateDebut", {
                 dateFormat: "d/m/Y",
                 allowInput: true,
-                placeholder: "JJ/MM/AAAA"
+                placeholder: "JJ/MM/AAAA",
+                onChange: function(selectedDates, dateStr) {
+                    validateDates();
+                }
             });
             flatpickr("#abonnement_dateFin", {
                 dateFormat: "d/m/Y",
                 allowInput: true,
-                placeholder: "JJ/MM/AAAA"
+                placeholder: "JJ/MM/AAAA",
+                onChange: function(selectedDates, dateStr) {
+                    validateDates();
+                }
             });
 
-            // Gestion de estGratuit
+            // Ajouter dynamiquement les classes has-error et has-success
+            const form = document.querySelector('.needs-validation');
+            const formGroups = form.querySelectorAll('.form-group');
+
+            // Sélection des champs
+            const serviceInput = document.querySelector('#abonnement_service');
+            const typeAbonnementInput = document.querySelector('#abonnement_typeAbonnement');
+            const dateDebutInput = document.querySelector('#abonnement_dateDebut');
+            const dateFinInput = document.querySelector('#abonnement_dateFin');
+            const estActifInput = document.querySelector('#abonnement_estActif');
             const estGratuitCheckbox = document.querySelector('#abonnement_estGratuit');
             const prixTotalInput = document.querySelector('#abonnement_prixTotal');
+            const statutInput = document.querySelector('#abonnement_statut');
+            const nombreSeancesRestantesInput = document.querySelector('#abonnement_nombreSeancesRestantes');
+            const autoRenouvellementCheckbox = document.querySelector('#abonnement_autoRenouvellement');
+            const dureeMoisInput = document.querySelector('#abonnement_dureeMois');
+            const dureeMoisContainer = document.querySelector('#dureeMoisContainer');
+            const modePaiementInput = document.querySelector('#abonnement_modePaiement');
 
+            // Validation des champs obligatoires (select)
+            [serviceInput, typeAbonnementInput, statutInput].forEach(input => {
+                input.addEventListener('change', function() {
+                    const group = input.closest('.form-group');
+                    const errorMessage = group.querySelector('.error-message');
+                    if (input.value === '') {
+                        group.classList.add('has-error');
+                        group.classList.remove('has-success');
+                        input.classList.add('is-invalid');
+                        errorMessage.textContent = input.id === 'abonnement_service' ? 'Le service est obligatoire.' :
+                                                  input.id === 'abonnement_typeAbonnement' ? 'Le type d\'abonnement est obligatoire.' :
+                                                  'Le statut est obligatoire.';
+                    } else {
+                        group.classList.remove('has-error');
+                        group.classList.add('has-success');
+                        input.classList.remove('is-invalid');
+                        input.classList.add('is-valid');
+                        errorMessage.textContent = '';
+                    }
+                });
+            });
+
+            // Validation des dates
+            function validateDates() {
+                const dateDebutGroup = dateDebutInput.closest('.form-group');
+                const dateFinGroup = dateFinInput.closest('.form-group');
+                const dateDebutError = dateDebutGroup.querySelector('.error-message');
+                const dateFinError = dateFinGroup.querySelector('.error-message');
+
+                const dateDebutValue = dateDebutInput.value;
+                const dateFinValue = dateFinInput.value;
+
+                // Vérification si les champs sont vides
+                if (dateDebutValue === '') {
+                    dateDebutGroup.classList.add('has-error');
+                    dateDebutGroup.classList.remove('has-success');
+                    dateDebutInput.classList.add('is-invalid');
+                    dateDebutError.textContent = 'La date de début est obligatoire.';
+                    return;
+                } else {
+                    dateDebutGroup.classList.remove('has-error');
+                    dateDebutGroup.classList.add('has-success');
+                    dateDebutInput.classList.remove('is-invalid');
+                    dateDebutInput.classList.add('is-valid');
+                    dateDebutError.textContent = '';
+                }
+
+                if (dateFinValue === '') {
+                    dateFinGroup.classList.add('has-error');
+                    dateFinGroup.classList.remove('has-success');
+                    dateFinInput.classList.add('is-invalid');
+                    dateFinError.textContent = 'La date de fin est obligatoire.';
+                    return;
+                } else {
+                    dateFinGroup.classList.remove('has-error');
+                    dateFinGroup.classList.add('has-success');
+                    dateFinInput.classList.remove('is-invalid');
+                    dateFinInput.classList.add('is-valid');
+                    dateFinError.textContent = '';
+                }
+
+                // Vérification de la relation entre dateDebut et dateFin
+                const dateDebut = new Date(dateDebutValue.split('/').reverse().join('-'));
+                const dateFin = new Date(dateFinValue.split('/').reverse().join('-'));
+
+                if (dateDebut > dateFin) {
+                    dateDebutGroup.classList.add('has-error');
+                    dateDebutGroup.classList.remove('has-success');
+                    dateDebutInput.classList.add('is-invalid');
+                    dateDebutError.textContent = 'La date de début doit être antérieure ou égale à la date de fin.';
+
+                    dateFinGroup.classList.add('has-error');
+                    dateFinGroup.classList.remove('has-success');
+                    dateFinInput.classList.add('is-invalid');
+                    dateFinError.textContent = 'La date de fin doit être postérieure ou égale à la date de début.';
+                } else {
+                    dateDebutGroup.classList.remove('has-error');
+                    dateDebutGroup.classList.add('has-success');
+                    dateDebutInput.classList.remove('is-invalid');
+                    dateDebutInput.classList.add('is-valid');
+                    dateDebutError.textContent = '';
+
+                    dateFinGroup.classList.remove('has-error');
+                    dateFinGroup.classList.add('has-success');
+                    dateFinInput.classList.remove('is-invalid');
+                    dateFinInput.classList.add('is-valid');
+                    dateFinError.textContent = '';
+                }
+            }
+
+            dateDebutInput.addEventListener('input', validateDates);
+            dateFinInput.addEventListener('input', validateDates);
+
+            // Validation pour estActif, estGratuit et autoRenouvellement
+            [estActifInput, estGratuitCheckbox, autoRenouvellementCheckbox].forEach(input => {
+                input.addEventListener('change', function() {
+                    const group = input.closest('.form-group');
+                    const errorMessage = group.querySelector('.error-message');
+                    group.classList.remove('has-error');
+                    group.classList.add('has-success');
+                    errorMessage.textContent = '';
+                });
+            });
+
+            // Gestion de estGratuit et prixTotal
             function togglePrixTotal() {
+                const group = prixTotalInput.closest('.form-group');
+                const errorMessage = group.querySelector('.error-message');
                 if (estGratuitCheckbox.checked) {
                     prixTotalInput.value = '0.00';
                     prixTotalInput.disabled = true;
+                    group.classList.remove('has-error');
+                    group.classList.add('has-success');
+                    prixTotalInput.classList.remove('is-invalid');
+                    prixTotalInput.classList.add('is-valid');
+                    errorMessage.textContent = '';
                 } else {
                     prixTotalInput.disabled = false;
+                    validatePrixTotal();
                 }
             }
 
             estGratuitCheckbox.addEventListener('change', togglePrixTotal);
+
+            // Validation pour prixTotal
+            function validatePrixTotal() {
+                const group = prixTotalInput.closest('.form-group');
+                const errorMessage = group.querySelector('.error-message');
+                const value = parseFloat(prixTotalInput.value);
+
+                if (estGratuitCheckbox.checked) {
+                    if (prixTotalInput.value !== '0.00') {
+                        group.classList.add('has-error');
+                        group.classList.remove('has-success');
+                        prixTotalInput.classList.add('is-invalid');
+                        errorMessage.textContent = 'Le prix total doit être 0.00 si l\'abonnement est gratuit.';
+                    } else {
+                        group.classList.remove('has-error');
+                        group.classList.add('has-success');
+                        prixTotalInput.classList.remove('is-invalid');
+                        prixTotalInput.classList.add('is-valid');
+                        errorMessage.textContent = '';
+                    }
+                } else {
+                    if (isNaN(value) || prixTotalInput.value === '') {
+                        group.classList.add('has-error');
+                        group.classList.remove('has-success');
+                        prixTotalInput.classList.add('is-invalid');
+                        errorMessage.textContent = 'Le prix total est obligatoire si l\'abonnement n\'est pas gratuit.';
+                    } else if (value < 0) {
+                        group.classList.add('has-error');
+                        group.classList.remove('has-success');
+                        prixTotalInput.classList.add('is-invalid');
+                        errorMessage.textContent = 'Le prix total ne peut pas être négatif.';
+                    } else if (!/^\d+(\.\d{1,2})?$/.test(prixTotalInput.value)) {
+                        group.classList.add('has-error');
+                        group.classList.remove('has-success');
+                        prixTotalInput.classList.add('is-invalid');
+                        errorMessage.textContent = 'Le prix total doit être un nombre valide avec jusqu\'à 2 décimales (ex. 123.45).';
+                    } else {
+                        group.classList.remove('has-error');
+                        group.classList.add('has-success');
+                        prixTotalInput.classList.remove('is-invalid');
+                        prixTotalInput.classList.add('is-valid');
+                        errorMessage.textContent = '';
+                    }
+                }
+            }
+
+            prixTotalInput.addEventListener('input', validatePrixTotal);
             togglePrixTotal();
 
-            // Gestion de autoRenouvellement et dureeMois
-            const autoRenouvellementCheckbox = document.querySelector('#abonnement_autoRenouvellement');
-            const dureeMoisContainer = document.querySelector('#dureeMoisContainer');
-            const dureeMoisInput = document.querySelector('#abonnement_dureeMois');
+            // Validation pour nombreSeancesRestantes
+            nombreSeancesRestantesInput.addEventListener('input', function() {
+                const group = nombreSeancesRestantesInput.closest('.form-group');
+                const errorMessage = group.querySelector('.error-message');
+                const value = parseInt(nombreSeancesRestantesInput.value);
 
+                if (nombreSeancesRestantesInput.value === '') {
+                    group.classList.add('has-error');
+                    group.classList.remove('has-success');
+                    nombreSeancesRestantesInput.classList.add('is-invalid');
+                    errorMessage.textContent = 'Le nombre de séances restantes doit être défini.';
+                } else if (isNaN(value) || value < 0) {
+                    group.classList.add('has-error');
+                    group.classList.remove('has-success');
+                    nombreSeancesRestantesInput.classList.add('is-invalid');
+                    errorMessage.textContent = 'Le nombre de séances restantes ne peut pas être négatif.';
+                } else {
+                    group.classList.remove('has-error');
+                    group.classList.add('has-success');
+                    nombreSeancesRestantesInput.classList.remove('is-invalid');
+                    nombreSeancesRestantesInput.classList.add('is-valid');
+                    errorMessage.textContent = '';
+                }
+            });
+
+            // Gestion de autoRenouvellement et dureeMois
             function toggleDureeMois() {
+                const group = dureeMoisInput.closest('.form-group');
+                const errorMessage = group.querySelector('.error-message');
                 if (autoRenouvellementCheckbox.checked) {
                     dureeMoisContainer.style.display = 'none';
                     dureeMoisInput.value = '';
                     dureeMoisInput.disabled = true;
+                    group.classList.remove('has-error');
+                    group.classList.add('has-success');
+                    dureeMoisInput.classList.remove('is-invalid');
+                    dureeMoisInput.classList.add('is-valid');
+                    errorMessage.textContent = '';
                 } else {
                     dureeMoisContainer.style.display = 'block';
                     dureeMoisInput.disabled = false;
+                    validateDureeMois();
                 }
             }
 
             autoRenouvellementCheckbox.addEventListener('change', toggleDureeMois);
+
+            // Validation pour dureeMois
+            function validateDureeMois() {
+                const group = dureeMoisInput.closest('.form-group');
+                const errorMessage = group.querySelector('.error-message');
+                const value = parseInt(dureeMoisInput.value);
+
+                if (!autoRenouvellementCheckbox.checked) {
+                    if (dureeMoisInput.value === '') {
+                        group.classList.add('has-error');
+                        group.classList.remove('has-success');
+                        dureeMoisInput.classList.add('is-invalid');
+                        errorMessage.textContent = 'La durée en mois est obligatoire si l\'auto-renouvellement est désactivé.';
+                    } else if (isNaN(value) || value <= 0) {
+                        group.classList.add('has-error');
+                        group.classList.remove('has-success');
+                        dureeMoisInput.classList.add('is-invalid');
+                        errorMessage.textContent = 'La durée doit être un nombre positif de mois.';
+                    } else {
+                        group.classList.remove('has-error');
+                        group.classList.add('has-success');
+                        dureeMoisInput.classList.remove('is-invalid');
+                        dureeMoisInput.classList.add('is-valid');
+                        errorMessage.textContent = '';
+                    }
+                }
+            }
+
+            dureeMoisInput.addEventListener('input', validateDureeMois);
             toggleDureeMois();
+
+            // Validation pour modePaiement (optionnel)
+            modePaiementInput.addEventListener('change', function() {
+                const group = modePaiementInput.closest('.form-group');
+                const errorMessage = group.querySelector('.error-message');
+                group.classList.remove('has-error');
+                group.classList.add('has-success');
+                modePaiementInput.classList.remove('is-invalid');
+                modePaiementInput.classList.add('is-valid');
+                errorMessage.textContent = '';
+            });
+
+            // Vérifier les erreurs après la soumission
+            form.addEventListener('submit', function(event) {
+                let hasErrors = false;
+
+                formGroups.forEach(group => {
+                    const input = group.querySelector('.form-control, .form-select, .form-check-input');
+                    const errorMessage = group.querySelector('.error-message');
+
+                    if (errorMessage && errorMessage.textContent.trim() !== '') {
+                        group.classList.add('has-error');
+                        group.classList.remove('has-success');
+                        if (input) {
+                            input.classList.add('is-invalid');
+                        }
+                        hasErrors = true;
+                    } else if (input && (input.value !== '' || input.type === 'checkbox')) {
+                        group.classList.add('has-success');
+                        group.classList.remove('has-error');
+                        if (input) {
+                            input.classList.remove('is-invalid');
+                            input.classList.add('is-valid');
+                        }
+                    }
+                });
+
+                if (hasErrors) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+
+                form.classList.add('was-validated');
+            });
+
+            // Vérifier les erreurs déjà présentes au chargement de la page
+            formGroups.forEach(group => {
+                const errorMessage = group.querySelector('.error-message');
+                const input = group.querySelector('.form-control, .form-select, .form-check-input');
+
+                if (errorMessage && errorMessage.textContent.trim() !== '') {
+                    group.classList.add('has-error');
+                    if (input) {
+                        input.classList.add('is-invalid');
+                    }
+                } else if (input && (input.value !== '' || input.type === 'checkbox')) {
+                    group.classList.add('has-success');
+                    if (input) {
+                        input.classList.add('is-valid');
+                    }
+                }
+            });
         });
     </script>
 {% endblock %}

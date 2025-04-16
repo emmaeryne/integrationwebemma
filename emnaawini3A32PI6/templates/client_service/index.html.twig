@@ -534,186 +534,186 @@
     </div>
     <!-- Carousel End -->
 
-    <!-- Client Services Section -->
-    <div class="container mt-5">
-        <h1 class="mb-5 text-primary display-5 fw-bold d-flex align-items-center gap-3 animate__animated animate__fadeIn">
-            <i class="fas fa-concierge-bell fa-beat"></i>
-            {{ 'Espace client'|trans|default('Services pour clients') }}
-        </h1>
+   <!-- Client Services Section -->
+<div class="container mt-5">
+    <h1 class="mb-5 text-warning display-5 fw-bold d-flex align-items-center gap-3 animate__animated animate__fadeIn">
+        <i class="fas fa-dumbbell fa-beat"></i>
+        {{ 'Espace client'|trans|default('Services pour clients') }}
+    </h1>
 
-        {# Messages flash #}
-        {% for type, messages in app.flashes %}
-            <div class="alert alert-{{ type }} fade show d-flex align-items-center shadow-lg mb-5 rounded-3 animate__animated animate__fadeIn" role="alert">
-                <i class="fas fa-{{ type == 'success' ? 'check-circle' : 'exclamation-circle' }} me-3 text-{{ type }} fs-4 animate__animated animate__pulse"></i>
-                <span class="fs-5">{{ messages|join(' ') }}</span>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        {% endfor %}
+    {# Messages flash #}
+    {% for type, messages in app.flashes %}
+        <div class="alert alert-{{ type }} fade show d-flex align-items-center shadow-lg mb-5 rounded-3 animate__animated animate__fadeIn" role="alert">
+            <i class="fas fa-{{ type == 'success' ? 'check-circle' : 'exclamation-circle' }} me-3 text-{{ type }} fs-4 animate__animated animate__pulse"></i>
+            <span class="fs-5">{{ messages|join(' ') }}</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
 
-        {# Formulaire de sélection et notation #}
-        <div class="card shadow-lg mb-5 border-0 rounded-4 animate__animated animate__fadeInUp">
-            <div class="card-body p-5">
-                <form method="post" class="row g-4">
-                    <div class="col-md-6">
-                        <label for="service_id" class="form-label fw-bold text-muted fs-5 d-flex align-items-center gap-2">
-                            <i class="fas fa-concierge-bell text-primary fa-beat-fade"></i>
-                            {{ 'Choisi un service'|trans|default('Sélectionner un service') }}
-                        </label>
-                        <select name="service_id" id="service_id" class="form-select form-select-lg rounded-3 shadow-sm transition-all">
-                            <option value="">{{ 'services'|trans|default('Choisir un service') }}</option>
-                            {% for service in services %}
-                                <option value="{{ service.id }}" {{ selectedService and selectedService.id == service.id ? 'selected' : '' }}>
-                                    {{ service.nom }}
-                                </option>
-                            {% endfor %}
-                        </select>
+    {# Formulaire de sélection et notation #}
+    <div class="card shadow-lg mb-5 border-0 rounded-4 animate__animated animate__fadeInUp">
+        <div class="card-body p-5">
+            <form method="post" class="row g-4">
+                <div class="col-md-6">
+                    <label for="service_id" class="form-label fw-bold text-muted fs-5 d-flex align-items-center gap-2">
+                        <i class="fas fa-concierge-bell text-primary fa-beat-fade"></i>
+                        {{ 'Choisi un service'|trans|default('Sélectionner un service') }}
+                    </label>
+                    <select name="service_id" id="service_id" class="form-select form-select-lg rounded-3 shadow-sm transition-all">
+                        <option value="">{{ 'services'|trans|default('Choisir un service') }}</option>
+                        {% for service in services %}
+                            <option value="{{ service.id }}" {{ selectedService and selectedService.id == service.id ? 'selected' : '' }}>
+                                {{ service.nom }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="note" class="form-label fw-bold text-muted fs-5 d-flex align-items-center gap-2">
+                        <i class="fas fa-star text-warning fa-spin"></i>
+                        {{ 'attribuer note'|trans|default('Note (0-5)') }}
+                    </label>
+                    <div class="d-flex align-items-center gap-3">
+                        <input type="range" name="note" id="note" min="0" max="5" step="0.1" value="0" class="form-range" oninput="this.nextElementSibling.value = this.value">
+                        <output class="badge bg-warning text-dark px-3 py-2 rounded-pill animate__animated animate__bounce">0</output>
                     </div>
+                </div>
 
-                    <div class="col-md-6">
-                        <label for="note" class="form-label fw-bold text-muted fs-5 d-flex align-items-center gap-2">
-                            <i class="fas fa-star text-warning fa-spin"></i>
-                            {{ 'attribuer note'|trans|default('Note (0-5)') }}
-                        </label>
-                        <div class="d-flex align-items-center gap-3">
-                            <input type="range" name="note" id="note" min="0" max="5" step="0.1" value="0" class="form-range" oninput="this.nextElementSibling.value = this.value">
-                            <output class="badge bg-warning text-dark px-3 py-2 rounded-pill animate__animated animate__bounce">0</output>
+                <div class="col-12 d-flex gap-3">
+                    <button type="submit" class="btn btn-primary btn-lg shadow-lg rounded-pill px-5 py-2 fs-5 d-flex align-items-center gap-2 transition-all hover-scale">
+                        <i class="fas fa-save fa-bounce"></i>
+                        {{ 'reserve'|trans|default('Réserver') }}
+                    </button>
+                </div>
+            </form>
+
+            {# Détails du service sélectionné #}
+            {% if selectedService %}
+                <div class="mt-4 p-4 bg-light rounded-3 shadow-sm animate__animated animate__fadeIn">
+                    <h5 class="text-muted fs-4 d-flex align-items-center gap-2">
+                        <i class="fas fa-info-circle text-primary fa-beat"></i>
+                        {{ selectedService.nom }}
+                    </h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <p class="mb-2"><i class="fas fa-euro-sign text-success me-2 fa-spin"></i>Prix : <span class="badge bg-success text-white">{{ selectedService.prix|default('N/A') }} €</span></p>
+                            <p class="mb-2"><i class="fas fa-signal text-info me-2 fa-beat-fade"></i>Niveau : <span class="badge bg-info text-white">{{ selectedService.niveauDifficulte|default('N/A') }}</span></p>
+                            <p class="mb-2"><i class="fas fa-clock text-warning me-2 fa-spin"></i>Durée : <span class="badge bg-warning text-dark">{{ selectedService.dureeMinutes|default('N/A') }} minutes</span></p>
                         </div>
-                    </div>
-
-                    <div class="col-12 d-flex gap-3">
-                        <button type="submit" class="btn btn-primary btn-lg shadow-lg rounded-pill px-5 py-2 fs-5 d-flex align-items-center gap-2 transition-all hover-scale">
-                            <i class="fas fa-save fa-bounce"></i>
-                            {{ 'reserve'|trans|default('Réserver') }}
-                        </button>
-                    </div>
-                </form>
-
-                {# Détails du service sélectionné #}
-                {% if selectedService %}
-                    <div class="mt-4 p-4 bg-light rounded-3 shadow-sm animate__animated animate__fadeIn">
-                        <h5 class="text-muted fs-4 d-flex align-items-center gap-2">
-                            <i class="fas fa-info-circle text-primary fa-beat"></i>
-                            {{ selectedService.nom }}
-                        </h5>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <p class="mb-2"><i class="fas fa-euro-sign text-success me-2 fa-spin"></i>Prix : <span class="badge bg-success text-white">{{ selectedService.prix|default('N/A') }} €</span></p>
-                                <p class="mb-2"><i class="fas fa-signal text-info me-2 fa-beat-fade"></i>Niveau : <span class="badge bg-info text-white">{{ selectedService.niveauDifficulte|default('N/A') }}</span></p>
-                                <p class="mb-2"><i class="fas fa-clock text-warning me-2 fa-spin"></i>Durée : <span class="badge bg-warning text-dark">{{ selectedService.dureeMinutes|default('N/A') }} minutes</span></p>
+                        {% if gifUrl %}
+                            <div class="col-md-6 text-center">
+                                <img src="{{ gifUrl }}" alt="GIF du service" class="img-fluid rounded-3 shadow-lg animate__animated animate__zoomIn" style="max-height: 200px;">
                             </div>
-                            {% if gifUrl %}
-                                <div class="col-md-6 text-center">
-                                    <img src="{{ gifUrl }}" alt="GIF du service" class="img-fluid rounded-3 shadow-lg animate__animated animate__zoomIn" style="max-height: 200px;">
-                                </div>
-                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Section météo #}
+    <div class="card shadow-lg mb-5 border-0 rounded-4 animate__animated animate__fadeInUp weather-card" id="weather-card">
+        <div class="card-body p-5">
+            <h5 class="text-muted mb-4 fs-4 d-flex align-items-center gap-2">
+                <i class="fas fa-cloud-sun text-primary fa-beat"></i>
+                {{ 'Méteo'|trans|default('Météo') }}
+            </h5>
+            <button id="get-weather-btn" class="btn btn-outline-primary btn-lg rounded-pill px-4 py-2 fs-5 shadow-lg transition-all hover-scale">
+                <i class="fas fa-cloud-download-alt me-2 fa-bounce"></i>
+                {{ 'voir méteo'|trans|default('Obtenir la météo') }}
+            </button>
+            <div id="weather-result" class="mt-4 p-4 rounded-3 shadow-sm weather-result">
+                {% if weatherData %}
+                    <div class="d-flex align-items-center gap-3 animate__animated animate__fadeIn">
+                        <i class="weather-icon fas fa-{{ weatherData.weather[0].main|lower == 'clear' ? 'sun' : (weatherData.weather[0].main|lower == 'clouds' ? 'cloud' : (weatherData.weather[0].main|lower == 'rain' ? 'cloud-rain' : 'cloud-sun')) }} fa-3x text-primary animate__animated animate__rotateIn"></i>
+                        <div class="flex-grow-1">
+                            <p class="mb-1 fs-5"><i class="fas fa-thermometer-half text-danger me-2 fa-beat"></i>Température : <span class="badge bg-danger text-white">{{ weatherData.main.temp }}°C</span></p>
+                            <p class="mb-0 fs-5"><i class="fas fa-cloud text-primary me-2 fa-beat-fade"></i>Conditions : <span class="badge bg-primary text-white">{{ weatherData.weather[0].description|capitalize }}</span></p>
                         </div>
+                        <img src="http://openweathermap.org/img/w/{{ weatherData.weather[0].icon }}.png" alt="Icône météo" class="weather-icon-img animate__animated animate__zoomIn">
                     </div>
                 {% endif %}
             </div>
         </div>
-
-        {# Section météo #}
-        <div class="card shadow-lg mb-5 border-0 rounded-4 animate__animated animate__fadeInUp weather-card" id="weather-card">
-            <div class="card-body p-5">
-                <h5 class="text-muted mb-4 fs-4 d-flex align-items-center gap-2">
-                    <i class="fas fa-cloud-sun text-primary fa-beat"></i>
-                    {{ 'Méteo'|trans|default('Météo') }}
-                </h5>
-                <button id="get-weather-btn" class="btn btn-outline-primary btn-lg rounded-pill px-4 py-2 fs-5 shadow-lg transition-all hover-scale">
-                    <i class="fas fa-cloud-download-alt me-2 fa-bounce"></i>
-                    {{ 'voir méteo'|trans|default('Obtenir la météo') }}
-                </button>
-                <div id="weather-result" class="mt-4 p-4 rounded-3 shadow-sm weather-result">
-                    {% if weatherData %}
-                        <div class="d-flex align-items-center gap-3 animate__animated animate__fadeIn">
-                            <i class="weather-icon fas fa-{{ weatherData.weather[0].main|lower == 'clear' ? 'sun' : (weatherData.weather[0].main|lower == 'clouds' ? 'cloud' : (weatherData.weather[0].main|lower == 'rain' ? 'cloud-rain' : 'cloud-sun')) }} fa-3x text-primary animate__animated animate__rotateIn"></i>
-                            <div class="flex-grow-1">
-                                <p class="mb-1 fs-5"><i class="fas fa-thermometer-half text-danger me-2 fa-beat"></i>Température : <span class="badge bg-danger text-white">{{ weatherData.main.temp }}°C</span></p>
-                                <p class="mb-0 fs-5"><i class="fas fa-cloud text-primary me-2 fa-beat-fade"></i>Conditions : <span class="badge bg-primary text-white">{{ weatherData.weather[0].description|capitalize }}</span></p>
-                            </div>
-                            <img src="http://openweathermap.org/img/w/{{ weatherData.weather[0].icon }}.png" alt="Icône météo" class="weather-icon-img animate__animated animate__zoomIn">
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
     </div>
+</div>
 
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ asset('lib/easing/easing.min.js') }}"></script>
-    <script src="{{ asset('lib/waypoints/waypoints.min.js') }}"></script>
-    <script src="{{ asset('lib/counterup/counterup.min.js') }}"></script>
-    <script src="{{ asset('lib/owlcarousel/owl.carousel.min.js') }}"></script>
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ asset('lib/easing/easing.min.js') }}"></script>
+<script src="{{ asset('lib/waypoints/waypoints.min.js') }}"></script>
+<script src="{{ asset('lib/counterup/counterup.min.js') }}"></script>
+<script src="{{ asset('lib/owlcarousel/owl.carousel.min.js') }}"></script>
 
-    <!-- Template Javascript -->
-    <script src="{{ asset('js/main.js') }}"></script>
+<!-- Template Javascript -->
+<script src="{{ asset('js/main.js') }}"></script>
 
-    <!-- Custom JavaScript -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Smooth scroll for nav links
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    if (this.getAttribute('href').startsWith('#')) {
-                        e.preventDefault();
-                        const target = document.querySelector(this.getAttribute('href'));
-                        target.scrollIntoView({ behavior: 'smooth' });
-                    }
-                });
-            });
-
-            // Enable Bootstrap tooltips
-            $('[data-bs-toggle="tooltip"]').tooltip();
-
-            // Weather AJAX
-            const weatherBtn = document.getElementById('get-weather-btn');
-            const weatherResult = document.getElementById('weather-result');
-            const weatherCard = document.getElementById('weather-card');
-
-            weatherBtn.addEventListener('click', () => {
-                weatherResult.innerHTML = '<p class="text-muted animate__animated animate__fadeIn">Chargement...</p>';
-                fetch('{{ path('client_services_weather') }}')
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.error) {
-                            weatherResult.innerHTML = `<p class="text-danger animate__animated animate__fadeIn">${data.error}</p>`;
-                        } else {
-                            // Déterminer la classe de fond en fonction des conditions météo
-                            const condition = data.conditions.toLowerCase();
-                            weatherCard.classList.remove('clear', 'clouds', 'rain');
-                            if (condition.includes('clear')) {
-                                weatherCard.classList.add('clear');
-                            } else if (condition.includes('cloud')) {
-                                weatherCard.classList.add('clouds');
-                            } else if (condition.includes('rain')) {
-                                weatherCard.classList.add('rain');
-                            }
-
-                            // Afficher les données météo
-                            weatherResult.innerHTML = `
-                                <div class="d-flex align-items-center gap-3 animate__animated animate__fadeIn">
-                                    <i class="weather-icon fas fa-${
-                                        condition.includes('clear') ? 'sun' :
-                                        condition.includes('cloud') ? 'cloud' :
-                                        condition.includes('rain') ? 'cloud-rain' : 'cloud-sun'
-                                    } fa-3x text-primary animate__animated animate__rotateIn"></i>
-                                    <div class="flex-grow-1">
-                                        <p class="mb-1 fs-5"><i class="fas fa-thermometer-half text-danger me-2 fa-beat"></i>Température : <span class="badge bg-danger text-white">${data.temperature}°C</span></p>
-                                        <p class="mb-0 fs-5"><i class="fas fa-cloud text-primary me-2 fa-beat-fade"></i>Conditions : <span class="badge bg-primary text-white">${data.conditions.charAt(0).toUpperCase() + data.conditions.slice(1)}</span></p>
-                                    </div>
-                                    <img src="http://openweathermap.org/img/w/${data.icon}.png" alt="Icône météo" class="weather-icon-img animate__animated animate__zoomIn">
-                                </div>
-                            `;
-                        }
-                    })
-                    .catch(error => {
-                        weatherResult.innerHTML = '<p class="text-danger animate__animated animate__fadeIn">Erreur lors de la récupération de la météo.</p>';
-                        console.error('Erreur:', error);
-                    });
+<!-- Custom JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Smooth scroll for nav links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                if (this.getAttribute('href').startsWith('#')) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
             });
         });
-    </script>
+
+        // Enable Bootstrap tooltips
+        $('[data-bs-toggle="tooltip"]').tooltip();
+
+        // Weather AJAX
+        const weatherBtn = document.getElementById('get-weather-btn');
+        const weatherResult = document.getElementById('weather-result');
+        const weatherCard = document.getElementById('weather-card');
+
+        weatherBtn.addEventListener('click', () => {
+            weatherResult.innerHTML = '<p class="text-muted animate__animated animate__fadeIn">Chargement...</p>';
+            fetch('{{ path('client_services_weather') }}')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        weatherResult.innerHTML = `<p class="text-danger animate__animated animate__fadeIn">${data.error}</p>`;
+                    } else {
+                        // Déterminer la classe de fond en fonction des conditions météo
+                        const condition = data.conditions.toLowerCase();
+                        weatherCard.classList.remove('clear', 'clouds', 'rain');
+                        if (condition.includes('clear')) {
+                            weatherCard.classList.add('clear');
+                        } else if (condition.includes('cloud')) {
+                            weatherCard.classList.add('clouds');
+                        } else if (condition.includes('rain')) {
+                            weatherCard.classList.add('rain');
+                        }
+
+                        // Afficher les données météo
+                        weatherResult.innerHTML = `
+                            <div class="d-flex align-items-center gap-3 animate__animated animate__fadeIn">
+                                <i class="weather-icon fas fa-${
+                                    condition.includes('clear') ? 'sun' :
+                                    condition.includes('cloud') ? 'cloud' :
+                                    condition.includes('rain') ? 'cloud-rain' : 'cloud-sun'
+                                } fa-3x text-primary animate__animated animate__rotateIn"></i>
+                                <div class="flex-grow-1">
+                                    <p class="mb-1 fs-5"><i class="fas fa-thermometer-half text-danger me-2 fa-beat"></i>Température : <span class="badge bg-danger text-white">${data.temperature}°C</span></p>
+                                    <p class="mb-0 fs-5"><i class="fas fa-cloud text-primary me-2 fa-beat-fade"></i>Conditions : <span class="badge bg-primary text-white">${data.conditions.charAt(0).toUpperCase() + data.conditions.slice(1)}</span></p>
+                                </div>
+                                <img src="http://openweathermap.org/img/w/${data.icon}.png" alt="Icône météo" class="weather-icon-img animate__animated animate__zoomIn">
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    weatherResult.innerHTML = '<p class="text-danger animate__animated animate__fadeIn">Erreur lors de la récupération de la météo.</p>';
+                    console.error('Erreur:', error);
+                });
+        });
+    });
+</script>
 </body>
 </html>

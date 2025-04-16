@@ -61,18 +61,62 @@
         .btn-secondary:hover {
             transform: translateY(-2px);
         }
+        /* Styles pour les erreurs */
+        .error-message {
+            color: #ff3e1d;
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+            display: none;
+        }
+        .form-control.is-invalid, .form-select.is-invalid {
+            border-color: #ff3e1d !important;
+        }
+        .form-group.has-error .error-message {
+            display: block;
+        }
+        .form-group.has-error .form-control,
+        .form-group.has-error .form-select {
+            border-color: #ff3e1d !important;
+        }
+        .form-group.has-success .form-control,
+        .form-group.has-success .form-select {
+            border-color: #28a745 !important;
+        }
+        /* Icône de validation */
+        .form-group.has-success::after {
+            content: '\f00c'; /* FontAwesome check icon */
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            color: #28a745;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .form-group.has-error::after {
+            content: '\f06a'; /* FontAwesome exclamation icon */
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            color: #ff3e1d;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .form-group {
+            position: relative;
+        }
     </style>
 {% endblock %}
 
 {% block body %}
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
-             <!-- Menu -->
+            <!-- Menu -->
             <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
                 <div class="app-brand demo">
                     <a href="{{ path('app_dashboard') }}" class="app-brand-link">
                         <span class="app-brand-logo demo">
-                            <!-- Nouveau logo personnalisé -->
                             <img src="{{ asset('images/logo.png') }}" alt="Hive Logo" style="height: 80px; width: auto;" />
                         </span>
                         <span class="app-brand-text demo menu-text fw-bolder ms-2">HIVE</span>
@@ -251,66 +295,93 @@
                             {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': true}}) }}
                                 <div class="row g-4">
                                     <div class="col-md-6">
-                                        <div class="mb-3">
-                                            {{ form_label(form.nom, 'Nom du service', {'label_attr': {'class': 'form-label'}}) }}
-                                            {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Entrez le nom du service'}}) }}
-                                            {{ form_errors(form.nom, {'attr': {'class': 'text-danger'}}) }}
+                                        <div class="mb-3 form-group">
+                                            {{ form_label(form.nom, null, {'label_attr': {'class': 'form-label'}}) }}
+                                            <div class="error-message">
+                                                <i class="bi bi-exclamation-circle me-1"></i>
+                                                {{ form_errors(form.nom) }}
+                                            </div>
+                                            {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="mb-3">
-                                            {{ form_label(form.prix, 'Prix (€)', {'label_attr': {'class': 'form-label'}}) }}
-                                            {{ form_widget(form.prix, {'attr': {'class': 'form-control', 'placeholder': 'Ex: 12,50', 'step': '0.01'}}) }}
-                                            {{ form_errors(form.prix, {'attr': {'class': 'text-danger'}}) }}
+                                        <div class="mb-3 form-group">
+                                            {{ form_label(form.prix, null, {'label_attr': {'class': 'form-label'}}) }}
+                                            <div class="error-message">
+                                                <i class="bi bi-exclamation-circle me-1"></i>
+                                                {{ form_errors(form.prix) }}
+                                            </div>
+                                            {{ form_widget(form.prix, {'attr': {'class': 'form-control', 'step': '0.01'}}) }}
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="mb-3">
-                                            {{ form_label(form.categorie, 'Catégorie', {'label_attr': {'class': 'form-label'}}) }}
-                                            {{ form_widget(form.categorie, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Sport'}}) }}
-                                            {{ form_errors(form.categorie, {'attr': {'class': 'text-danger'}}) }}
+                                        <div class="mb-3 form-group">
+                                            {{ form_label(form.categorie, null, {'label_attr': {'class': 'form-label'}}) }}
+                                            <div class="error-message">
+                                                <i class="bi bi-exclamation-circle me-1"></i>
+                                                {{ form_errors(form.categorie) }}
+                                            </div>
+                                            {{ form_widget(form.categorie, {'attr': {'class': 'form-control'}}) }}
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="mb-3">
-                                            {{ form_label(form.capaciteMax, 'Capacité maximale', {'label_attr': {'class': 'form-label'}}) }}
-                                            {{ form_widget(form.capaciteMax, {'attr': {'class': 'form-control', 'placeholder': 'Ex: 50'}}) }}
-                                            {{ form_errors(form.capaciteMax, {'attr': {'class': 'text-danger'}}) }}
+                                        <div class="mb-3 form-group">
+                                            {{ form_label(form.capaciteMax, null, {'label_attr': {'class': 'form-label'}}) }}
+                                            <div class="error-message">
+                                                <i class="bi bi-exclamation-circle me-1"></i>
+                                                {{ form_errors(form.capaciteMax) }}
+                                            </div>
+                                            {{ form_widget(form.capaciteMax, {'attr': {'class': 'form-control'}}) }}
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="mb-3">
-                                            {{ form_label(form.dureeMinutes, 'Durée (minutes)', {'label_attr': {'class': 'form-label'}}) }}
-                                            {{ form_widget(form.dureeMinutes, {'attr': {'class': 'form-control', 'placeholder': 'Ex: 60'}}) }}
-                                            {{ form_errors(form.dureeMinutes, {'attr': {'class': 'text-danger'}}) }}
+                                        <div class="mb-3 form-group">
+                                            {{ form_label(form.dureeMinutes, null, {'label_attr': {'class': 'form-label'}}) }}
+                                            <div class="error-message">
+                                                <i class="bi bi-exclamation-circle me-1"></i>
+                                                {{ form_errors(form.dureeMinutes) }}
+                                            </div>
+                                            {{ form_widget(form.dureeMinutes, {'attr': {'class': 'form-control'}}) }}
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="mb-3">
-                                            {{ form_label(form.niveau, 'Niveau de difficulté', {'label_attr': {'class': 'form-label'}}) }}
+                                        <div class="mb-3 form-group">
+                                            {{ form_label(form.niveau, null, {'label_attr': {'class': 'form-label'}}) }}
+                                            <div class="error-message">
+                                                <i class="bi bi-exclamation-circle me-1"></i>
+                                                {{ form_errors(form.niveau) }}
+                                            </div>
                                             {{ form_widget(form.niveau, {'attr': {'class': 'form-select'}}) }}
-                                            {{ form_errors(form.niveau, {'attr': {'class': 'text-danger'}}) }}
                                         </div>
                                     </div>
                                     <div class="col-12">
-                                        <div class="mb-3">
-                                            {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
-                                            {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': '4', 'placeholder': 'Description (optionnelle)'}}) }}
-                                            {{ form_errors(form.description, {'attr': {'class': 'text-danger'}}) }}
+                                        <div class="mb-3 form-group">
+                                            {{ form_label(form.description, null, {'label_attr': {'class': 'form-label'}}) }}
+                                            <div class="error-message">
+                                                <i class="bi bi-exclamation-circle me-1"></i>
+                                                {{ form_errors(form.description) }}
+                                            </div>
+                                            {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': '4'}}) }}
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="mb-3">
-                                            {{ form_label(form.estActif, 'Actif ?', {'label_attr': {'class': 'form-label'}}) }}
+                                        <div class="mb-3 form-group">
+                                            {{ form_label(form.estActif, null, {'label_attr': {'class': 'form-label'}}) }}
+                                            <div class="error-message">
+                                                <i class="bi bi-exclamation-circle me-1"></i>
+                                                {{ form_errors(form.estActif) }}
+                                            </div>
                                             {{ form_widget(form.estActif, {'attr': {'class': 'form-select'}}) }}
-                                            {{ form_errors(form.estActif, {'attr': {'class': 'text-danger'}}) }}
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="mb-3">
-                                            {{ form_label(form.image, 'Image (JPG, PNG)', {'label_attr': {'class': 'form-label'}}) }}
+                                        <div class="mb-3 form-group">
+                                            {{ form_label(form.image, null, {'label_attr': {'class': 'form-label'}}) }}
+                                            <div class="error-message">
+                                                <i class="bi bi-exclamation-circle me-1"></i>
+                                                {{ form_errors(form.image) }}
+                                            </div>
                                             {{ form_widget(form.image, {'attr': {'class': 'form-control'}}) }}
-                                            {{ form_errors(form.image, {'attr': {'class': 'text-danger'}}) }}
                                         </div>
                                     </div>
                                 </div>
@@ -363,16 +434,181 @@
                 document.querySelectorAll('.alert').forEach(alert => alert.classList.remove('show'));
             }, 5000);
 
-            // Validation Bootstrap
-            const forms = document.querySelectorAll('.needs-validation');
-            Array.from(forms).forEach(form => {
-                form.addEventListener('submit', event => {
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
+            // Ajouter dynamiquement les classes has-error et has-success
+            const form = document.querySelector('.needs-validation');
+            const formGroups = form.querySelectorAll('.form-group');
+
+            const nomInput = form.querySelector('#service_nom');
+            const prixInput = form.querySelector('#service_prix');
+            const categorieInput = form.querySelector('#service_categorie');
+            const capaciteInput = form.querySelector('#service_capaciteMax');
+            const dureeInput = form.querySelector('#service_dureeMinutes');
+            const niveauInput = form.querySelector('#service_niveau');
+            const estActifInput = form.querySelector('#service_estActif');
+
+            // Validation en temps réel pour le champ "nom"
+            nomInput.addEventListener('input', function() {
+                const regex = /^[a-zA-ZÀ-ÿ0-9\s]+$/;
+                const group = nomInput.closest('.form-group');
+                const errorMessage = group.querySelector('.error-message');
+                if (!regex.test(nomInput.value) && nomInput.value !== '') {
+                    group.classList.add('has-error');
+                    group.classList.remove('has-success');
+                    nomInput.classList.add('is-invalid');
+                    errorMessage.textContent = 'Le nom du service ne doit contenir que des lettres, des chiffres et des espaces.';
+                } else if (nomInput.value.length < 3 && nomInput.value !== '') {
+                    group.classList.add('has-error');
+                    group.classList.remove('has-success');
+                    nomInput.classList.add('is-invalid');
+                    errorMessage.textContent = 'Le nom doit contenir au moins 3 caractères.';
+                } else if (nomInput.value !== '') {
+                    group.classList.remove('has-error');
+                    group.classList.add('has-success');
+                    nomInput.classList.remove('is-invalid');
+                    nomInput.classList.add('is-valid');
+                    errorMessage.textContent = '';
+                }
+            });
+
+            // Validation en temps réel pour le champ "prix"
+            prixInput.addEventListener('input', function() {
+                const group = prixInput.closest('.form-group');
+                const errorMessage = group.querySelector('.error-message');
+                if (prixInput.value <= 0) {
+                    group.classList.add('has-error');
+                    group.classList.remove('has-success');
+                    prixInput.classList.add('is-invalid');
+                    errorMessage.textContent = 'Le prix doit être positif.';
+                } else if (prixInput.value !== '') {
+                    group.classList.remove('has-error');
+                    group.classList.add('has-success');
+                    prixInput.classList.remove('is-invalid');
+                    prixInput.classList.add('is-valid');
+                    errorMessage.textContent = '';
+                }
+            });
+
+            // Validation en temps réel pour le champ "capaciteMax"
+            capaciteInput.addEventListener('input', function() {
+                const group = capaciteInput.closest('.form-group');
+                const errorMessage = group.querySelector('.error-message');
+                if (capaciteInput.value === '') {
+                    group.classList.add('has-error');
+                    group.classList.remove('has-success');
+                    capaciteInput.classList.add('is-invalid');
+                    errorMessage.textContent = 'La capacité maximale est obligatoire.';
+                } else if (capaciteInput.value <= 0) {
+                    group.classList.add('has-error');
+                    group.classList.remove('has-success');
+                    capaciteInput.classList.add('is-invalid');
+                    errorMessage.textContent = 'La capacité doit être positive.';
+                } else if (capaciteInput.value < 8 || capaciteInput.value > 60) {
+                    group.classList.add('has-error');
+                    group.classList.remove('has-success');
+                    capaciteInput.classList.add('is-invalid');
+                    errorMessage.textContent = 'La capacité doit être comprise entre 8 et 60 personnes.';
+                } else {
+                    group.classList.remove('has-error');
+                    group.classList.add('has-success');
+                    capaciteInput.classList.remove('is-invalid');
+                    capaciteInput.classList.add('is-valid');
+                    errorMessage.textContent = '';
+                }
+            });
+
+            // Validation en temps réel pour le champ "dureeMinutes"
+            dureeInput.addEventListener('input', function() {
+                const group = dureeInput.closest('.form-group');
+                const errorMessage = group.querySelector('.error-message');
+                if (dureeInput.value === '') {
+                    group.classList.add('has-error');
+                    group.classList.remove('has-success');
+                    dureeInput.classList.add('is-invalid');
+                    errorMessage.textContent = 'La durée est obligatoire.';
+                } else if (dureeInput.value <= 0) {
+                    group.classList.add('has-error');
+                    group.classList.remove('has-success');
+                    dureeInput.classList.add('is-invalid');
+                    errorMessage.textContent = 'La durée doit être positive.';
+                } else if (dureeInput.value < 15 || dureeInput.value > 240) {
+                    group.classList.add('has-error');
+                    group.classList.remove('has-success');
+                    dureeInput.classList.add('is-invalid');
+                    errorMessage.textContent = 'La durée doit être comprise entre 15 et 240 minutes.';
+                } else {
+                    group.classList.remove('has-error');
+                    group.classList.add('has-success');
+                    dureeInput.classList.remove('is-invalid');
+                    dureeInput.classList.add('is-valid');
+                    errorMessage.textContent = '';
+                }
+            });
+
+            // Validation en temps réel pour les champs obligatoires restants
+            [categorieInput, niveauInput, estActifInput].forEach(input => {
+                input.addEventListener('input', function() {
+                    const group = input.closest('.form-group');
+                    const errorMessage = group.querySelector('.error-message');
+                    if (input.value === '') {
+                        group.classList.add('has-error');
+                        group.classList.remove('has-success');
+                        input.classList.add('is-invalid');
+                        errorMessage.textContent = input.id === 'service_categorie' ? 'La catégorie est obligatoire.' :
+                                                  input.id === 'service_niveau' ? 'Le niveau de difficulté est obligatoire.' :
+                                                  'Veuillez indiquer si le service est actif.';
+                    } else {
+                        group.classList.remove('has-error');
+                        group.classList.add('has-success');
+                        input.classList.remove('is-invalid');
+                        input.classList.add('is-valid');
+                        errorMessage.textContent = '';
                     }
-                    form.classList.add('was-validated');
-                }, false);
+                });
+            });
+
+            // Vérifier les erreurs après la soumission
+            form.addEventListener('submit', function(event) {
+                let hasErrors = false;
+
+                formGroups.forEach(group => {
+                    const input = group.querySelector('.form-control, .form-select');
+                    const errorMessage = group.querySelector('.error-message');
+
+                    // Si le champ a une erreur (Symfony ajoute un message d'erreur)
+                    if (errorMessage && errorMessage.textContent.trim() !== '') {
+                        group.classList.add('has-error');
+                        group.classList.remove('has-success');
+                        input.classList.add('is-invalid');
+                        hasErrors = true;
+                    } else if (input.value !== '') {
+                        // Si le champ est valide et non vide
+                        group.classList.add('has-success');
+                        group.classList.remove('has-error');
+                        input.classList.remove('is-invalid');
+                        input.classList.add('is-valid');
+                    }
+                });
+
+                if (hasErrors) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+
+                form.classList.add('was-validated');
+            });
+
+            // Vérifier les erreurs déjà présentes au chargement de la page (après une soumission invalide)
+            formGroups.forEach(group => {
+                const errorMessage = group.querySelector('.error-message');
+                const input = group.querySelector('.form-control, .form-select');
+
+                if (errorMessage && errorMessage.textContent.trim() !== '') {
+                    group.classList.add('has-error');
+                    input.classList.add('is-invalid');
+                } else if (input.value !== '') {
+                    group.classList.add('has-success');
+                    input.classList.add('is-valid');
+                }
             });
         });
     </script>
