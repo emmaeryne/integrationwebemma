@@ -24,6 +24,10 @@ class Service
         minMessage: 'Le nom doit contenir au moins {{ limit }} caractères.',
         maxMessage: 'Le nom ne peut pas dépasser {{ limit }} caractères.'
     )]
+    #[Assert\Regex(
+        pattern: '/^[a-zA-ZÀ-ÿ0-9\s]+$/',
+        message: 'Le nom du service ne doit contenir que des lettres, des chiffres et des espaces.'
+    )]
     private ?string $nom = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
@@ -45,8 +49,8 @@ class Service
     #[Assert\NotBlank(message: 'La capacité maximale est obligatoire.')]
     #[Assert\Positive(message: 'La capacité doit être positive.')]
     #[Assert\Range(
-        min: 1,
-        max: 100,
+        min: 8,
+        max: 60,
         notInRangeMessage: 'La capacité doit être comprise entre {{ min }} et {{ max }} personnes.'
     )]
     private ?int $capaciteMax = null;
@@ -108,7 +112,7 @@ class Service
         $this->updatedAt = new \DateTime();
     }
 
-    // Getters et setters
+    // Getters et setters (inchangés, sauf pour `nom`)
 
     public function getId(): ?int
     {
