@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Terrain List{% endblock %}
+
+{% block body %}
+<h1>Terrain List</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for terrain in terrains %}
+            <tr>
+                <td>{{ terrain.id_terrain }}</td>
+                <td>
+                    <a href="{{ path('app_terrain_show', {id_terrain: terrain.id_terrain}) }}">Show</a>
+                    <a href="{{ path('app_terrain_edit', {id_terrain: terrain.id_terrain}) }}">Edit</a>
+                    <form method="post" action="{{ path('app_terrain_delete', {id_terrain: terrain.id_terrain}) }}" style="display:inline-block;" onsubmit="return confirm('Are you sure?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ terrain.id_terrain) }}">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{{ path('app_terrain_new') }}">Create new</a>
+{% endblock %}

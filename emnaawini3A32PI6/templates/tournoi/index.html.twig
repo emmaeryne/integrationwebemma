@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tournoi index{% endblock %}
+
+{% block body %}
+    <h1>Tournoi index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id_tournoi</th>
+                <th>Nom_tournoi</th>
+                <th>Type_tournoi</th>
+                <th>Date_tournoi</th>
+                <th>Description_tournoi</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for tournoi in tournois %}
+            <tr>
+                <td>{{ tournoi.idTournoi }}</td>
+                <td>{{ tournoi.nomTournoi }}</td>
+                <td>{{ tournoi.typeTournoi }}</td>
+                <td>{{ tournoi.dateTournoi ? tournoi.dateTournoi|date('Y-m-d') : '' }}</td>
+                <td>{{ tournoi.descriptionTournoi }}</td>
+                <td>
+                    <a href="{{ path('app_tournoi_show', {'id_tournoi': tournoi.idTournoi}) }}">show</a>
+                    <a href="{{ path('app_tournoi_edit', {'id_tournoi': tournoi.idTournoi}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_tournoi_new') }}">Create new</a>
+{% endblock %}
