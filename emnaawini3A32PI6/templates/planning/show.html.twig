@@ -116,7 +116,6 @@
             background: var(--bleu);
             color: #fff;
         }
-        /* Nested Dropdown */
         .dropdown-menu .dropdown-menu {
             top: 0;
             left: 100%;
@@ -127,7 +126,6 @@
         .dropdown-menu .dropdown:hover > .dropdown-menu {
             display: block;
         }
-        /* Buttons */
         .btn-primary {
             background: var(--bleu);
             border: none;
@@ -222,7 +220,6 @@
             transform: translateY(-3px);
             box-shadow: 0 12px 25px rgba(70, 130, 180, 0.3);
         }
-        /* Social Media Icons */
         .btn-square {
             background: var(--bleu-clair);
             color: var(--bleu-fonce);
@@ -239,7 +236,6 @@
             transform: scale(1.1);
             box-shadow: 0 8px 15px rgba(0, 191, 255, 0.4);
         }
-        /* Contact Info */
         .bg-secondary h6 {
             font-family: 'Poppins', sans-serif;
             font-weight: 400;
@@ -255,9 +251,8 @@
         .bg-secondary div:hover i {
             transform: scale(1.2);
         }
-        /* Carousel */
         .carousel-caption {
-            background: rgba(10, 77, 104, 0.75); /* Slightly more opaque */
+            background: rgba(10, 77, 104, 0.75);
             padding: 25px 50px;
             border-radius: 12px;
             box-shadow: var(--shadow-dark);
@@ -295,7 +290,6 @@
             width: 40px;
             height: 40px;
         }
-        /* Planning Show Specific Styles */
         .container {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 1.5rem;
@@ -359,12 +353,10 @@
             padding: 6px 12px;
             border-radius: 5px;
         }
-        /* Animations */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(60px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        /* Responsive Adjustments */
         @media (max-width: 991px) {
             .navbar-brand h1 {
                 font-size: 2rem;
@@ -460,7 +452,7 @@
                             <a class="btn btn-square rounded-circle me-2 animate__animated animate__pulse animate__infinite" href="#">
                                 <i class="fab fa-instagram"></i>
                             </a>
-                            <a class="btn btn-square rounded-circle animate__animated animate__pulse animate__infinite" href="#">
+                            <a class="btn btn-square rounded-circle animate__animated animate__pulse animate__ infinite" href="#">
                                 <i class="fab fa-youtube"></i>
                             </a>
                         </div>
@@ -611,6 +603,17 @@
             </div>
         </div>
 
+        <!-- QR Code Section -->
+        <div class="card mb-4 shadow-sm animate__animated animate__fadeInUp">
+            <div class="card-header bg-dark text-white">
+                <h2 class="h5 mb-0">{{ 'Code QR du Planning'|trans|default('Code QR du Planning') }}</h2>
+            </div>
+            <div class="card-body text-center">
+                <img src="{{ qrCode }}" alt="QR Code for Planning #{{ planning.idPlanning }}" class="img-fluid" style="max-width: 200px; border-radius: 8px; box-shadow: var(--shadow);">
+                <p class="mt-3 text-muted">{{ 'Scannez ce code QR pour accéder aux détails du planning.'|trans|default('Scannez ce code QR pour accéder aux détails du planning.') }}</p>
+            </div>
+        </div>
+
         <div class="d-flex flex-wrap gap-2 animate__animated animate__fadeInUp animate__delay-1s">
             <a href="{{ path('app_planning_index', {'coachId': coachId}) }}" class="btn btn-secondary shadow-sm">
                 <i class="fas fa-list me-2"></i> {{ 'Retour à la liste'|trans|default('Retour à la liste') }}
@@ -618,6 +621,10 @@
             <a href="{{ path('app_planning_edit', {'coachId': coachId, 'id': planning.idPlanning}) }}" class="btn btn-warning shadow-sm">
                 <i class="fas fa-edit me-2"></i> {{ 'Modifier'|trans|default('Modifier') }}
             </a>
+            <!-- SMS Button -->
+            <button class="btn btn-success shadow-sm" data-id="{{ planning.idPlanning }}" data-coach-id="{{ coachId }}" data-csrf-token="{{ csrf_token('send_planning_sms' ~ planning.idPlanning) }}" onclick="sendSMS(this)">
+                <i class="fas fa-sms me-2"></i> {{ 'Envoyer SMS'|trans|default('Envoyer SMS') }}
+            </button>
             {{ include('planning/_delete_form.html.twig') }}
         </div>
     </div>
@@ -650,6 +657,48 @@
             // Enable Bootstrap tooltips
             $('[data-bs-toggle="tooltip"]').tooltip();
         });
+
+        // Function to send SMS
+        function sendSMS(button) {
+            const planningId = button.getAttribute('data-id');
+            const coachId = button.getAttribute('data-coach-id');
+            const csrfToken = button.getAttribute('data-csrf-token');
+            const url = `/coach/${coachId}/planning/send-planning-sms/${planningId}`;
+
+            // Disable button to prevent multiple clicks
+            button.disabled = true;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Envoi en cours...';
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-Token': csrfToken
+                }
+            })
+            .then(response => {
+                // Re-enable button
+                button.disabled = false;
+                button.innerHTML = originalText;
+
+                if (response.ok) {
+                    // Success: Assume SMS was sent (controller redirects, but we don't follow)
+                    alert('SMS envoyé avec succès!');
+                } else {
+                    // Error: Don't attempt to parse as JSON, just show generic error
+                    alert('Échec de l\'envoi du SMS. Veuillez réessayer ou contacter le support.');
+                }
+            })
+            .catch(error => {
+                // Re-enable button
+                button.disabled = false;
+                button.innerHTML = originalText;
+
+                console.error('Error:', error);
+                alert('Une erreur s\'est produite lors de l\'envoi du SMS: ' + error.message);
+            });
+        }
     </script>
 </body>
 </html>

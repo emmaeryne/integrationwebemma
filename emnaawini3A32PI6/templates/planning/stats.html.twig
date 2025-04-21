@@ -1,8 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Statistiques des Plannings{% endblock %}
+
+{% block body %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>{{ 'Mes Cours'|trans|default('Mes Cours') }}</title>
+    <title>Statistiques des Plannings</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="keywords" content="Fitness, Gym, HIVE, Training">
     <meta name="description" content="HIVE - Your ultimate fitness destination by BEEU">
@@ -29,6 +34,9 @@
     <!-- Template Stylesheet -->
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <!-- Custom Styles -->
     <style>
         :root {
@@ -44,13 +52,12 @@
         }
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa, #c3cfe2); /* Smooth gradient */
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
             color: var(--gris);
             line-height: 1.6;
             margin: 0;
             padding: 0;
         }
-        /* Header */
         .bg-dark {
             background: var(--bleu-fonce) !important;
             box-shadow: var(--shadow-dark);
@@ -59,7 +66,7 @@
         .bg-secondary {
             background: var(--bleu-clair) !important;
             color: var(--bleu-fonce);
-            border-bottom: 1px solid rgba(70, 130, 180, 0.2); /* Subtle mid-blue border */
+            border-bottom: 1px solid rgba(70, 130, 180, 0.2);
         }
         .navbar-brand {
             display: flex;
@@ -99,7 +106,7 @@
         }
         .nav-link:hover, .nav-link.active {
             color: var(--bleu-vif) !important;
-            background: rgba(0, 191, 255, 0.1); /* Subtle hover background */
+            background: rgba(0, 191, 255, 0.1);
             border-radius: 5px;
         }
         .dropdown-menu {
@@ -116,18 +123,6 @@
             background: var(--bleu);
             color: #fff;
         }
-        /* Nested Dropdown */
-        .dropdown-menu .dropdown-menu {
-            top: 0;
-            left: 100%;
-            margin-left: 0.1rem;
-            background: var(--bleu-fonce);
-            box-shadow: var(--shadow-dark);
-        }
-        .dropdown-menu .dropdown:hover > .dropdown-menu {
-            display: block;
-        }
-        /* Buttons */
         .btn-primary {
             background: var(--bleu);
             border: none;
@@ -147,174 +142,6 @@
             transform: translateY(-3px);
             box-shadow: 0 12px 25px rgba(0, 191, 255, 0.4);
         }
-        .btn-secondary {
-            background: var(--gris);
-            border: none;
-            padding: 12px 30px;
-            font-family: 'Oswald', sans-serif;
-            font-weight: 600;
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: #fff;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow);
-        }
-        .btn-secondary:hover {
-            background: #3a3a3a;
-            transform: translateY(-3px);
-            box-shadow: 0 12px 25px rgba(42, 42, 42, 0.4);
-        }
-        .btn-info {
-            background: #17a2b8;
-            border: none;
-            padding: 8px 20px;
-            font-family: 'Oswald', sans-serif;
-            font-weight: 500;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #fff;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow);
-        }
-        .btn-info:hover {
-            background: #138496;
-            transform: translateY(-3px);
-            box-shadow: 0 12px 25px rgba(23, 162, 184, 0.4);
-        }
-        .btn-warning {
-            background: #f1c40f;
-            border: none;
-            padding: 8px 20px;
-            font-family: 'Oswald', sans-serif;
-            font-weight: 500;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #fff;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow);
-        }
-        .btn-warning:hover {
-            background: #e4b70d;
-            transform: translateY(-3px);
-            box-shadow: 0 12px 25px rgba(241, 196, 15, 0.4);
-        }
-        .btn-danger {
-            background: #dc3545;
-            border: none;
-            padding: 8px 20px;
-            font-family: 'Oswald', sans-serif;
-            font-weight: 500;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #fff;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow);
-        }
-        .btn-danger:hover {
-            background: #c82333;
-            transform: translateY(-3px);
-            box-shadow: 0 12px 25px rgba(220, 53, 69, 0.4);
-        }
-        .btn-light {
-            background: var(--bleu-clair);
-            color: var(--bleu-fonce);
-            padding: 12px 30px;
-            font-family: 'Oswald', sans-serif;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow);
-        }
-        .btn-light:hover {
-            background: var(--bleu-moyen);
-            color: #fff;
-            transform: translateY(-3px);
-            box-shadow: 0 12px 25px rgba(70, 130, 180, 0.3);
-        }
-        /* Social Media Icons */
-        .btn-square {
-            background: var(--bleu-clair);
-            color: var(--bleu-fonce);
-            width: 40px;
-            height: 40px;
-            line-height: 40px;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow);
-        }
-        .btn-square:hover {
-            background: var(--bleu-vif);
-            color: #fff;
-            transform: scale(1.1);
-            box-shadow: 0 8px 15px rgba(0, 191, 255, 0.4);
-        }
-        /* Contact Info */
-        .bg-secondary h6 {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 400;
-            font-size: 0.95rem;
-            margin: 0;
-        }
-        .bg-secondary i {
-            color: var(--bleu-vif);
-            font-size: 1.2rem;
-            margin-right: 8px;
-            transition: transform 0.3s ease;
-        }
-        .bg-secondary div:hover i {
-            transform: scale(1.2);
-        }
-        /* Carousel */
-        .carousel-caption {
-            background: rgba(10, 77, 104, 0.75); /* Slightly more opaque */
-            padding: 25px 50px;
-            border-radius: 12px;
-            box-shadow: var(--shadow-dark);
-            animation: fadeInUp 1s ease;
-        }
-        .carousel-caption h5 {
-            color: var(--jaune);
-            font-family: 'Oswald', sans-serif;
-            font-size: 1.6rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 15px;
-        }
-        .carousel-caption h1 {
-            color: var(--bleu-vif);
-            font-family: 'Oswald', sans-serif;
-            font-size: 3.8rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            text-shadow: 3px 3px 8px rgba(0, 191, 255, 0.5);
-            margin-bottom: 25px;
-        }
-        .carousel-control-prev, .carousel-control-next {
-            width: 5%;
-            opacity: 0.8;
-            transition: opacity 0.3s ease;
-        }
-        .carousel-control-prev:hover, .carousel-control-next:hover {
-            opacity: 1;
-        }
-        .carousel-control-prev-icon, .carousel-control-next-icon {
-            filter: drop-shadow(0 0 8px var(--bleu-vif));
-            width: 40px;
-            height: 40px;
-        }
-        /* Course Index Specific Styles */
         .container {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 1.5rem;
@@ -322,71 +149,40 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             margin-bottom: 2rem;
         }
-        .table-responsive {
+        .card {
+            border: none;
             border-radius: 12px;
-            overflow: hidden;
             box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 191, 255, 0.4);
+        }
+        .card-header {
+            background: var(--bleu);
+            font-family: 'Oswald', sans-serif;
+            font-weight: 600;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+            color: var(--bleu-clair);
         }
         .table {
             background: #fff;
-            margin-bottom: 0;
-            border-collapse: separate;
-            border-spacing: 0;
+            border-radius: 8px;
         }
-        .table thead th {
-            background: var(--bleu-fonce);
-            color: var(--bleu-clair);
+        .table th {
+            background: var(--bleu-clair);
+            color: var(--bleu-fonce);
             font-family: 'Oswald', sans-serif;
-            font-weight: 600;
+            font-weight: 500;
             font-size: 1.1rem;
-            padding: 15px;
-            border: none;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
-        .table tbody td {
+        .table td {
             font-family: 'Poppins', sans-serif;
             font-size: 1rem;
             color: var(--gris);
-            padding: 15px;
-            vertical-align: middle;
-            border: none;
-            border-bottom: 1px solid rgba(70, 130, 180, 0.1);
         }
-        .table tbody tr {
-            transition: background 0.3s ease;
-        }
-        .table tbody tr:hover {
-            background: rgba(0, 191, 255, 0.05);
-        }
-        .table-striped tbody tr:nth-of-type(odd) {
-            background: rgba(230, 240, 250, 0.3);
-        }
-        .alert {
-            border-radius: 8px;
-            box-shadow: var(--shadow);
-            font-family: 'Poppins', sans-serif;
-            font-size: 1rem;
-            padding: 15px;
-        }
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-        }
-        .alert-info {
-            background: #d1ecf1;
-            color: #0c5460;
-        }
-        .alert-danger {
-            background: #f8d7da;
-            color: #721c24;
-        }
-        /* Animations */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(60px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        /* Responsive Adjustments */
         @media (max-width: 991px) {
             .navbar-brand h1 {
                 font-size: 2rem;
@@ -398,35 +194,18 @@
                 font-size: 1rem;
                 padding: 8px 12px;
             }
-            .carousel-caption h1 {
-                font-size: 2.5rem;
-            }
-            .carousel-caption h5 {
-                font-size: 1.2rem;
-            }
-            .btn-primary, .btn-secondary, .btn-info, .btn-warning, .btn-danger {
+            .btn-primary {
                 padding: 10px 20px;
                 font-size: 0.9rem;
             }
-            .dropdown-menu .dropdown-menu {
-                left: 0;
-                margin-left: 0;
+            .card-header {
+                font-size: 1.3rem;
             }
-            .table thead th, .table tbody td {
+            .table th, .table td {
                 font-size: 0.9rem;
-                padding: 10px;
             }
         }
         @media (max-width: 576px) {
-            .carousel-caption {
-                padding: 15px 25px;
-            }
-            .carousel-caption h1 {
-                font-size: 1.8rem;
-            }
-            .carousel-caption h5 {
-                font-size: 1rem;
-            }
             .container {
                 padding: 1rem;
             }
@@ -434,20 +213,8 @@
                 font-size: 0.8rem;
                 padding: 8px 16px;
             }
-            .table-responsive {
+            .table th, .table td {
                 font-size: 0.8rem;
-            }
-            .table thead th, .table tbody td {
-                font-size: 0.8rem;
-                padding: 8px;
-            }
-            .btn-sm {
-                padding: 6px 12px;
-                font-size: 0.8rem;
-            }
-            .table-responsive {
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
             }
         }
     </style>
@@ -507,10 +274,13 @@
                             <a href="{{ path('app_home1') }}" class="nav-item nav-link">Home</a>
                             <a href="{{ path('app_about1') }}" class="nav-item nav-link">About</a>
                             <a href="{{ path('app_class') }}" class="nav-item nav-link">Classes</a>
+                            <a href="{{ path('app_cours_index', {'user_id': 2}) }}" class="nav-item nav-link">Cours</a>
+                            <a href="{{ path('app_planning_index', {'coachId': 2}) }}" class="nav-item nav-link active">Planning</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Reserver</a>
                                 <div class="dropdown-menu rounded-0 m-0">
                                     <div class="dropdown">
+                                        <a href="#" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown">Client</a>
                                         <div class="dropdown-menu rounded-0 m-0">
                                             <a href="{{ path('client_services') }}" class="dropdown-item">Services Client</a>
                                             <a href="{{ path('app_client_reservation_index') }}" class="dropdown-item">Abonnement</a>
@@ -520,17 +290,12 @@
                                             </form>
                                         </div>
                                     </div>
-                                    <div class="dropdown">
-                                        <a href="#" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown">Coach</a>
-                                        <div class="dropdown-menu rounded-0 m-0">
-                                            <a href="{{ path('app_coach_reservations') }}" class="dropdown-item">Espace coach</a>
-                                            <a href="{{ path('app_planning_index', {'coachId': 2}) }}" class="dropdown-item">Planning</a>
-                                            <a href="{{ path('app_cours_index', {'user_id': 2}) }}" class="dropdown-item">Cours</a>
-                                        </div>
-                                    </div>
+                                    <a href="{{ path('app_coach_reservations') }}" class="dropdown-item">Coach</a>
                                 </div>
                             </div>
+                            <a href="{{ path('app_contact1') }}" class="nav-item nav-link">Contact</a>
                         </div>
+                        <a href="#" class="btn btn-primary py-md-3 px-md-5 d-none d-lg-block">Join Us</a>
                     </div>
                 </nav>
             </div>
@@ -577,11 +342,10 @@
     </div>
     <!-- Carousel End -->
 
-    <!-- Course Index Section -->
+    <!-- Statistics Section -->
     <div class="container mt-5">
         <h1 class="mb-5 text-primary display-5 fw-bold d-flex align-items-center gap-3 animate__animated animate__fadeIn">
-            <i class="fas fa-dumbbell fa-beat"></i>
-            {{ 'Mes Cours'|trans|default('Mes Cours') }}
+            <i class="fas fa-chart-bar fa-beat"></i> Statistiques des Plannings
         </h1>
 
         {# Flash Messages #}
@@ -590,83 +354,86 @@
                 <div class="alert alert-{{ type }} alert-dismissible fade show animate__animated animate__fadeInUp" role="alert">
                     <i class="fas fa-{{ type == 'success' ? 'check-circle' : (type == 'danger' ? 'exclamation-circle' : 'info-circle') }} me-2"></i>
                     {{ message|trans }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'Fermer'|trans|default('Fermer') }}"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
                 </div>
             {% endfor %}
         {% endfor %}
 
-        <!-- Ajouter un formulaire de recherche -->
-        <form method="GET" action="{{ path('app_cours_index', {'user_id': user.id}) }}" class="mb-4 d-flex gap-2">
-            <input type="text" name="search" class="form-control" placeholder="Rechercher..." value="{{ app.request.query.get('search') }}">
-            <button type="submit" class="btn btn-primary">Rechercher</button>
-        </form>
-
-        <!-- Ajouter des liens de tri -->
-        <div class="mb-4 d-flex gap-2">
-            <a href="{{ path('app_cours_index', {'user_id': user.id, 'sort': 'nomCours', 'direction': app.request.query.get('direction') == 'asc' ? 'desc' : 'asc'}) }}" class="btn btn-secondary">
-                Trier par Nom {{ app.request.query.get('sort') == 'nomCours' ? (app.request.query.get('direction') == 'asc' ? '↑' : '↓') : '' }}
-            </a>
-            <a href="{{ path('app_cours_index', {'user_id': user.id, 'sort': 'duree', 'direction': app.request.query.get('direction') == 'asc' ? 'desc' : 'asc'}) }}" class="btn btn-secondary">
-                Trier par Durée {{ app.request.query.get('sort') == 'duree' ? (app.request.query.get('direction') == 'asc' ? '↑' : '↓') : '' }}
-            </a>
+        <!-- Chart Section -->
+        <div class="card mb-4 shadow-sm animate__animated animate__fadeInUp">
+            <div class="card-header bg-dark text-white">
+                <h2 class="h5 mb-0">Graphiques des Plannings</h2>
+            </div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <!-- Bar Chart -->
+                    <div class="col-md-6">
+                        <h3 class="text-center text-primary mb-4">
+                            <i class="fas fa-chart-bar me-2"></i>Répartition par Cours
+                        </h3>
+                        <div style="height: 350px;">
+                            <canvas id="courseChart"></canvas>
+                        </div>
+                    </div>
+                    <!-- Line Chart -->
+                    <div class="col-md-6">
+                        <h3 class="text-center text-primary mb-4">
+                            <i class="fas fa-chart-line me-2"></i>Évolution par Date
+                        </h3>
+                        <div style="height: 350px;">
+                            <canvas id="dateChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <a href="{{ path('app_cours_new', {'user_id': user.id}) }}" class="btn btn-primary mb-4 shadow-sm animate__animated animate__fadeInUp">
-            <i class="fas fa-plus me-2"></i> {{ 'Créer un nouveau cours'|trans|default('Créer un nouveau cours') }}
-        </a>
+        <!-- Table Section -->
+        <div class="card mb-4 shadow-sm animate__animated animate__fadeInUp">
+            <div class="card-header bg-dark text-white">
+                <h2 class="h5 mb-0">Détails par Cours</h2>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-primary">
+                            <tr>
+                                <th><i class="fas fa-book me-2"></i>Cours</th>
+                                <th><i class="fas fa-calendar-check me-2"></i>Nombre</th>
+                                <th><i class="fas fa-percentage me-2"></i>Pourcentage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if courseLabels is defined and courseValues is defined and totalPlannings is defined %}
+                                {% for key, course in courseLabels %}
+                                    <tr>
+                                        <td>{{ course }}</td>
+                                        <td>{{ courseValues[key] }}</td>
+                                        <td>
+                                            {% if totalPlannings > 0 %}
+                                                {{ (courseValues[key] / totalPlannings * 100)|number_format(2) }}%
+                                            {% else %}
+                                                0%
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="3" class="text-center text-warning">Aucune donnée disponible</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-        <a href="{{ path('app_cours_pdf', {'user_id': user.id}) }}" class="btn btn-primary mb-4 shadow-sm animate__animated animate__fadeInUp">
-    <i class="fas fa-file-pdf me-2"></i> {{ 'Générer PDF'|trans|default('Générer PDF') }}
-</a>
-
-        <div class="table-responsive shadow-sm animate__animated animate__fadeInUp animate__delay-1s">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>{{ 'Nom'|trans|default('Nom') }}</th>
-                        <th>{{ 'État'|trans|default('État') }}</th>
-                        <th>{{ 'Durée'|trans|default('Durée') }}</th>
-                        <th>{{ 'Actions'|trans|default('Actions') }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for cour in cours %}
-                    <tr>
-                        <td>{{ cour.nomCours }}</td>
-                        <td>
-                            {% set etatClass = {
-                                'actif': 'success',
-                                'inactif': 'danger',
-                                'en attente': 'warning',
-                                'default': 'secondary'
-                            } %}
-                            <span class="badge bg-{{ etatClass[cour.etatCours|lower] ?? etatClass['default'] }}">
-                                {{ cour.etatCours|trans|default(cour.etatCours) }}
-                            </span>
-                        </td>
-                        <td>{{ cour.duree }} {{ 'minutes'|trans|default('minutes') }}</td>
-                        <td class="d-flex gap-2">
-                            <a href="{{ path('app_cours_edit', {'user_id': user.id, 'id_cours': cour.idCours}) }}" class="btn btn-warning btn-sm">
-                                <i class="fas fa-edit me-1"></i> {{ 'Modifier'|trans|default('Modifier') }}
-                            </a>
-                            <form method="post" action="{{ path('app_cours_delete', {'user_id': user.id, 'id_cours': cour.idCours}) }}" style="display: inline-block;" onsubmit="return confirm('{{ 'Êtes-vous sûr de vouloir supprimer ce cours?'|trans|default('Êtes-vous sûr de vouloir supprimer ce cours?') }}');">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ cour.idCours) }}">
-                                <button class="btn btn-danger btn-sm">
-                                    <i class="fas fa-trash me-1"></i> {{ 'Supprimer'|trans|default('Supprimer') }}
-                                </button>
-                            </form>
-                            <a href="{{ path('app_cours_send_email', {'id_cours': cour.idCours, 'user_id': user.id}) }}" class="btn btn-info btn-sm">
-                                <i class="fas fa-envelope me-1"></i> {{ 'Envoyer Email'|trans|default('Envoyer Email') }}
-                            </a>
-                        </td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="4" class="text-center">{{ 'Aucun cours trouvé'|trans|default('Aucun cours trouvé') }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+        <!-- Back Button -->
+        <div class="d-flex flex-wrap gap-2 animate__animated animate__fadeInUp animate__delay-1s">
+            <a href="{{ path('app_planning_index', {'coachId': coachId}) }}" class="btn btn-secondary shadow-sm">
+                <i class="fas fa-list me-2"></i> Retour à la liste
+            </a>
         </div>
     </div>
 
@@ -678,26 +445,113 @@
     <script src="{{ asset('lib/counterup/counterup.min.js') }}"></script>
     <script src="{{ asset('lib/owlcarousel/owl.carousel.min.js') }}"></script>
 
-    <!-- Template JavaScript -->
-    <script src="{{ asset('js/main.js') }}"></script>
+    <!-- Template Javascript -->
+    <script src="{{ asset('js/main.js') }}" defer></script>
 
-    <!-- Custom JavaScript -->
+    <!-- Chart.js Script -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Smooth scroll for nav links
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    if (this.getAttribute('href').startsWith('#')) {
-                        e.preventDefault();
-                        const target = document.querySelector(this.getAttribute('href'));
-                        target.scrollIntoView({ behavior: 'smooth' });
+        document.addEventListener('DOMContentLoaded', function() {
+            // Couleurs personnalisées
+            const chartColors = [
+                'rgba(255, 102, 0, 0.7)',
+                'rgba(0, 123, 255, 0.7)',
+                'rgba(40, 167, 69, 0.7)',
+                'rgba(255, 193, 7, 0.7)',
+                'rgba(220, 53, 69, 0.7)',
+                'rgba(108, 117, 125, 0.7)'
+            ];
+
+            // Graphique pour les cours (Bar Chart)
+            const ctxCourse = document.getElementById('courseChart');
+            new Chart(ctxCourse, {
+                type: 'bar',
+                data: {
+                    labels: {{ courseLabels|json_encode|raw }},
+                    datasets: [{
+                        label: 'Nombre de plannings',
+                        data: {{ courseValues|json_encode|raw }},
+                        backgroundColor: chartColors,
+                        borderColor: chartColors.map(color => color.replace('0.7', '1')),
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                            titleFont: { size: 14 },
+                            bodyFont: { size: 12 },
+                            padding: 10
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0, 0, 0, 0.1)' },
+                            ticks: { color: '#495057' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#495057' }
+                        }
                     }
-                });
+                }
             });
 
-            // Enable Bootstrap tooltips
-            $('[data-bs-toggle="tooltip"]').tooltip();
+            // Graphique pour les dates (Line Chart)
+            const ctxDate = document.getElementById('dateChart');
+            new Chart(ctxDate, {
+                type: 'line',
+                data: {
+                    labels: {{ dateLabels|json_encode|raw }},
+                    datasets: [{
+                        label: 'Plannings par date',
+                        data: {{ dateValues|json_encode|raw }},
+                        borderColor: 'rgba(255, 102, 0, 0.8)',
+                        backgroundColor: 'rgba(255, 102, 0, 0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: 'rgba(255, 102, 0, 1)',
+                        pointRadius: 5,
+                        pointHoverRadius: 8,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#495057',
+                                font: { size: 12 }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                            titleFont: { size: 14 },
+                            bodyFont: { size: 12 },
+                            padding: 10
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0, 0, 0, 0.1)' },
+                            ticks: { color: '#495057' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#495057' }
+                        }
+                    }
+                }
+            });
         });
     </script>
 </body>
 </html>
+{% endblock %}

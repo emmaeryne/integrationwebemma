@@ -443,12 +443,10 @@
                             <a href="{{ path('app_home1') }}" class="nav-item nav-link">Home</a>
                             <a href="{{ path('app_about1') }}" class="nav-item nav-link">About</a>
                             <a href="{{ path('app_class') }}" class="nav-item nav-link">Classes</a>
-                            
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Reserver</a>
                                 <div class="dropdown-menu rounded-0 m-0">
                                     <div class="dropdown">
-                                       
                                         <div class="dropdown-menu rounded-0 m-0">
                                             <a href="{{ path('client_services') }}" class="dropdown-item">Services Client</a>
                                             <a href="{{ path('app_client_reservation_index') }}" class="dropdown-item">Abonnement</a>
@@ -458,16 +456,18 @@
                                             </form>
                                         </div>
                                     </div>
-                                  <div class="dropdown">
-            <a href="#" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown">Coach</a>
-            <div class="dropdown-menu rounded-0 m-0">
-                 <a href="{{ path('app_coach_reservations') }}" class="dropdown-item">Espace coach</a>
-                <a href="{{ path('app_planning_index',{'coachId': 2}) }}" class="dropdown-item">Planning</a>
-                 <a href="{{ path('app_cours_index', {'user_id': 2}) }}" class="dropdown-item">Cours</a>
-                
-                </form>
-            </div>
-                           
+                                    <div class="dropdown">
+                                        <a href="#" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown">Coach</a>
+                                        <div class="dropdown-menu rounded-0 m-0">
+                                            <a href="{{ path('app_coach_reservations') }}" class="dropdown-item">Espace coach</a>
+                                            <a href="{{ path('app_planning_index',{'coachId': 2}) }}" class="dropdown-item">Planning</a>
+                                            <a href="{{ path('app_cours_index', {'user_id': 2}) }}" class="dropdown-item">Cours</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </nav>
             </div>
         </div>
@@ -566,11 +566,11 @@
                                 <td>{{ planning.user.username }}</td>
                                 <td>
                                     <div class="btn-group" role="group">
-                                        <a href="{{ path('app_planning_show', {'coachId': coachId, 'id': planning.idPlanning}) }}" 
+                                        <a href="{{ path('app_planning_show', {'coachId': coachId, 'id': planning.idPlanning}) }}"
                                            class="btn btn-sm btn-info me-2 shadow-sm" title="{{ 'Voir'|trans|default('Voir') }}">
                                             <i class="fas fa-eye me-1"></i> {{ 'Voir'|trans|default('Voir') }}
                                         </a>
-                                        <a href="{{ path('app_planning_edit', {'coachId': coachId, 'id': planning.idPlanning}) }}" 
+                                        <a href="{{ path('app_planning_edit', {'coachId': coachId, 'id': planning.idPlanning}) }}"
                                            class="btn btn-sm btn-warning shadow-sm" title="{{ 'Modifier'|trans|default('Modifier') }}">
                                             <i class="fas fa-edit me-1"></i> {{ 'Modifier'|trans|default('Modifier') }}
                                         </a>
@@ -590,9 +590,14 @@
             </div>
         </div>
 
-        <a href="{{ path('app_planning_new', {'coachId': coachId}) }}" class="btn btn-success btn-lg mt-3 shadow animate__animated animate__bounceIn">
-            <i class="fas fa-plus-circle me-2"></i> {{ 'Créer un nouveau'|trans|default('Créer un nouveau') }}
-        </a>
+        <div class="d-flex gap-3 mt-3">
+            <a href="{{ path('app_planning_new', {'coachId': coachId}) }}" class="btn btn-success btn-lg shadow animate__animated animate__bounceIn">
+                <i class="fas fa-plus-circle me-2"></i> {{ 'Créer un nouveau'|trans|default('Créer un nouveau') }}
+            </a>
+            <a href="{{ path('app_planning_stats', {'coachId': coachId}) }}" class="btn btn-primary btn-lg shadow animate__animated animate__bounceIn">
+                <i class="fas fa-chart-bar me-2"></i> {{ 'Voir les Statistiques'|trans|default('Voir les Statistiques') }}
+            </a>
+        </div>
     </div>
 
     <!-- JavaScript Libraries -->

@@ -12,6 +12,7 @@
         "doctrine/doctrine-bundle": "^2.13",
         "doctrine/doctrine-migrations-bundle": "^3.4",
         "doctrine/orm": "^3.3",
+        "dompdf/dompdf": "^3.1",
         "endroid/qr-code": "^6.0",
         "knplabs/knp-paginator-bundle": "^6.7",
         "knplabs/knp-snappy-bundle": "^1.9",
@@ -52,7 +53,8 @@
         "symfony/yaml": "6.4.*",
         "twig/extra-bundle": "^3.20",
         "twig/twig": "^2.12|^3.0",
-        "twilio/sdk": "*"
+        "twilio/sdk": "*",
+        "wildbit/postmark-php": "^6.0"
     },
     "config": {
         "allow-plugins": {

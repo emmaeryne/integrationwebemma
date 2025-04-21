@@ -6,6 +6,10 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     images_directory: '%kernel.project_dir%/public/uploads/images'
+    twilio_sid: 'AC9c8296f1d70dfe60ea30213d0c69b673'
+    twilio_auth_token: '6c8cb6b0bf201d740894d3786697d790'
+    twilio_phone_number: '+21641745962'
+    POSTMARK_API_KEY: '%env(POSTMARK_API_KEY)%'
 
 services:
     # Default configuration for services in *this* file
@@ -37,6 +41,13 @@ services:
     App\Service\WeatherService:
         arguments:
             $apiKey: '%env(OPENWEATHERMAP_API_KEY)%'
+
+    App\Controller\CoursController:
+        arguments:
+            $logger: '@logger'
+            $postmarkApiKey: '%env(POSTMARK_API_KEY)%'
+        public: true
+
 
     # Add more service definitions when explicit configuration is needed
     # Please note that last definitions always *replace* previous ones
