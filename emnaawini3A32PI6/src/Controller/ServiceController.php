@@ -42,13 +42,10 @@ class ServiceController extends AbstractController
             throw $this->createNotFoundException('Le service demandé n\'existe pas.');
         }
 
-        // Suppression de tout le code lié au QR Code
         return $this->render('service/show.html.twig', [
             'service' => $service,
         ]);
     }
-
-    // Les autres méthodes restent inchangées...
 
     #[Route('/', name: 'app_service_index', methods: ['GET'])]
     public function index(Request $request, PaginatorInterface $paginator): Response
@@ -113,8 +110,6 @@ class ServiceController extends AbstractController
             return $this->redirectToRoute('app_service_show', ['id' => $service->getId()]);
         }
     }
-
-    
 
     #[Route('/new', name: 'app_service_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response

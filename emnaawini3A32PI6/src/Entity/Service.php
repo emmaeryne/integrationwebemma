@@ -98,6 +98,14 @@ class Service
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
+    #[ORM\Column(length: 10)]
+    #[Assert\NotBlank(message: 'L\'état de la salle est obligatoire.')]
+    #[Assert\Choice(
+        choices: ['ouvert', 'fermé'],
+        message: 'L\'état de la salle doit être soit "ouvert" soit "fermé".'
+    )]
+    private ?string $salle = null;
+
     #[ORM\OneToMany(targetEntity: Favoris::class, mappedBy: 'service')]
     private Collection $favoris;
 
@@ -111,8 +119,6 @@ class Service
         $this->createdAt = new \DateTime();
         $this->updatedAt = new \DateTime();
     }
-
-    // Getters et setters (inchangés, sauf pour `nom`)
 
     public function getId(): ?int
     {
@@ -259,6 +265,17 @@ class Service
     public function setImage(?string $image): self
     {
         $this->image = $image;
+        return $this;
+    }
+
+    public function getSalle(): ?string
+    {
+        return $this->salle;
+    }
+
+    public function setSalle(string $salle): self
+    {
+        $this->salle = $salle;
         return $this;
     }
 

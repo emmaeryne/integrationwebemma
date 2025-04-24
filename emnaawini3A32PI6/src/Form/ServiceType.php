@@ -122,6 +122,21 @@ class ServiceType extends AbstractType
                     ]),
                 ],
             ])
+            ->add('salle', ChoiceType::class, [
+                'label' => 'État de la salle',
+                'choices' => [
+                    'Ouvert' => 'ouvert',
+                    'Fermé' => 'fermé',
+                ],
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'L\'état de la salle est obligatoire.']),
+                    new Assert\Choice([
+                        'choices' => ['ouvert', 'fermé'],
+                        'message' => 'L\'état de la salle doit être soit "ouvert" soit "fermé".',
+                    ]),
+                ],
+                'attr' => ['class' => 'form-select'],
+            ])
             ->add('image', FileType::class, [
                 'label' => 'Image (JPG, PNG)',
                 'mapped' => false,

@@ -105,7 +105,7 @@
 {% block body %}
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
-             <!-- Menu -->
+            <!-- Menu -->
             <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
                 <div class="app-brand demo">
                     <a href="{{ path('app_dashboard') }}" class="app-brand-link">
@@ -293,12 +293,20 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="detail-item">
+                                        <span class="label">Statut de la salle :</span>
+                                        <span class="value">
+                                            <span class="status-badge {{ service.salle == 'ouvert' ? 'status-active' : 'status-inactive' }}">
+                                                {{ service.salle|default('Non spécifié')|capitalize }}
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <div class="detail-item">
                                         <span class="label">Description :</span>
                                         <span class="value">{{ service.description|default('Aucune description disponible') }}</span>
                                     </div>
                                     <div class="detail-item">
                                         <span class="label">Prix :</span>
-                                        <span class="value">{{ service.prix|number_format(2, ',', ' ') }} €</span>
+                                        <span class="value">{{ service.prix ? service.prix|number_format(2, ',', ' ') : 'Non spécifié' }} €</span>
                                     </div>
                                     <div class="detail-item">
                                         <span class="label">Catégorie :</span>

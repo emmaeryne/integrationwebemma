@@ -191,7 +191,7 @@
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
                             <i class="menu-icon tf-icons bx bx-cube-alt"></i>
                             <div data-i18n="Misc">Misc</div>
-                        </a>
+                        </ blessing>
                         <ul class="menu-sub">
                             <li class="menu-item"><a href="#" class="menu-link"><div data-i18n="Error">Error</div></a></li>
                             <li class="menu-item"><a href="#" class="menu-link"><div data-i18n="Under Maintenance">Under Maintenance</div></a></li>
@@ -354,6 +354,16 @@
                                             {{ form_widget(form.niveau, {'attr': {'class': 'form-select'}}) }}
                                         </div>
                                     </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3 form-group">
+                                            {{ form_label(form.salle, null, {'label_attr': {'class': 'form-label'}}) }}
+                                            <div class="error-message">
+                                                <i class="bi bi-exclamation-circle me-1"></i>
+                                                {{ form_errors(form.salle) }}
+                                            </div>
+                                            {{ form_widget(form.salle, {'attr': {'class': 'form-select'}}) }}
+                                        </div>
+                                    </div>
                                     <div class="col-12">
                                         <div class="mb-3 form-group">
                                             {{ form_label(form.description, null, {'label_attr': {'class': 'form-label'}}) }}
@@ -445,6 +455,7 @@
             const dureeInput = form.querySelector('#service_dureeMinutes');
             const niveauInput = form.querySelector('#service_niveau');
             const estActifInput = form.querySelector('#service_estActif');
+            const salleInput = form.querySelector('#service_salle');
 
             // Validation en temps réel pour le champ "nom"
             nomInput.addEventListener('input', function() {
@@ -545,7 +556,7 @@
             });
 
             // Validation en temps réel pour les champs obligatoires restants
-            [categorieInput, niveauInput, estActifInput].forEach(input => {
+            [categorieInput, niveauInput, estActifInput, salleInput].forEach(input => {
                 input.addEventListener('input', function() {
                     const group = input.closest('.form-group');
                     const errorMessage = group.querySelector('.error-message');
@@ -555,7 +566,8 @@
                         input.classList.add('is-invalid');
                         errorMessage.textContent = input.id === 'service_categorie' ? 'La catégorie est obligatoire.' :
                                                   input.id === 'service_niveau' ? 'Le niveau de difficulté est obligatoire.' :
-                                                  'Veuillez indiquer si le service est actif.';
+                                                  input.id === 'service_estActif' ? 'Veuillez indiquer si le service est actif.' :
+                                                  'L\'état de la salle est obligatoire.';
                     } else {
                         group.classList.remove('has-error');
                         group.classList.add('has-success');

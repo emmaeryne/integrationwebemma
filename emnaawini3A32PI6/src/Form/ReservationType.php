@@ -18,41 +18,38 @@ class ReservationType extends AbstractType
     {
         $isEdit = $options['is_edit'] ?? false;
 
-        $builder
-            ->add('typeAbonnement', EntityType::class, [
-                'class' => TypeAbonnement::class,
-                'choice_label' => 'nom',
-                'placeholder' => 'Choisir un type d\'abonnement',
-                'attr' => ['class' => 'form-control']
-            ])
-            ->add('dateDebut', DateTimeType::class, [
-                'widget' => 'single_text',
-                'required' => false,
-                'attr' => ['class' => 'form-control']
-            ])
-            ->add('dateFin', DateTimeType::class, [
-                'widget' => 'single_text',
-                'required' => false,
-                'attr' => ['class' => 'form-control']
-            ]);
-
         if ($isEdit) {
-            // Mode édition - Afficher la liste déroulante
+            // Mode édition - Afficher uniquement le champ statut avec les options "en cours" et "en attente"
             $builder->add('statut', ChoiceType::class, [
                 'choices' => [
-                    'En attente' => 'en attente',
                     'En cours' => 'en cours',
-                    'Terminé' => 'terminé',
-                    'Annulé' => 'annulé',
+                    'En attente' => 'en attente',
                 ],
                 'attr' => ['class' => 'form-control']
             ]);
         } else {
-            // Mode création - Champ caché avec valeur par défaut
-            $builder->add('statut', HiddenType::class, [
-                'data' => 'en attente',
-                'attr' => ['class' => 'd-none']
-            ]);
+            // Mode création - Inclure tous les champs
+            $builder
+                ->add('typeAbonnement', EntityType::class, [
+                    'class' => TypeAbonnement::class,
+                    'choice_label' => 'nom',
+                    'placeholder' => 'Choisir un type d\'abonnement',
+                    'attr' => ['class' => 'form-control']
+                ])
+                ->add('dateDebut', DateTimeType::class, [
+                    'widget' => 'single_text',
+                    'required' => false,
+                    'attr' => ['class' => 'form-control']
+                ])
+                ->add('dateFin', DateTimeType::class, [
+                    'widget' => 'single_text',
+                    'required' => false,
+                    'attr' => ['class' => 'form-control']
+                ])
+                ->add('statut', HiddenType::class, [
+                    'data' => 'en attente',
+                    'attr' => ['class' => 'd-none']
+                ]);
         }
     }
 
