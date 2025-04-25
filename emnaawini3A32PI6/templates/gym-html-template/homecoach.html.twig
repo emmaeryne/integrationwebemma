@@ -344,14 +344,9 @@
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Reserver</a>
                                 <div class="dropdown-menu rounded-0 m-0">
                                     <div class="dropdown">
-                                        <a href="#" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown">Client</a>
+                                       
                                         <div class="dropdown-menu rounded-0 m-0">
-                                            <a href="{{ path('client_services') }}" class="dropdown-item">Services Client</a>
-                                            <a href="{{ path('app_client_reservation_index') }}" class="dropdown-item">Abonnement</a>
-                                            <form method="post" action="{{ path('app_devenir_participant', {'user_id': 8}) }}" style="display: inline;">
-                                                <input type="hidden" name="_token" value="{{ csrf_token('devenir_participant8') }}">
-                                                <button type="submit" class="dropdown-item" style="border: none; background: none; padding: 0; cursor: pointer;">Participation</button>
-                                            </form>
+                                            
                                         </div>
                                     </div>
                                     <div class="dropdown">
@@ -391,7 +386,7 @@
                             <h5 class="animate__animated animate__fadeIn">Best Fitness Experience</h5>
                             <h1 class="mb-md-4 animate__animated animate__zoomIn">Forge Your Body with HIVE</h1>
                             <a href="#" class="btn btn-primary py-md-3 px-md-5 me-3 animate__animated animate__bounceIn">Join Now</a>
-                            <a href="" class="btn btn-light py-md-3 px-md-5 animate__animated animate__bounceIn">Contact Us</a>
+                            <a href="{{ path('app_contact1') }}" class="btn btn-light py-md-3 px-md-5 animate__animated animate__bounceIn">Contact Us</a>
                         </div>
                     </div>
                 </div>
@@ -418,6 +413,9 @@
         </div>
     </div>
     <!-- Carousel End -->
+
+    <!-- Contenu principal -->
+    {% block body %}{% endblock %}
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

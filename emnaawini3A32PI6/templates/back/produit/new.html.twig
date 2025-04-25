@@ -1,0 +1,241 @@
+{% extends 'back/dashboard.html.twig' %}
+
+{% block title %}Créer un nouveau Produit{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #ecf0f3;
+    }
+    .neumorphic-card {
+      background: #ecf0f3;
+      border-radius: 20px;
+      box-shadow: 8px 8px 16px #b9bec3, -8px -8px 16px #ffffff;
+      padding: 30px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .form-control {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      background: #ecf0f3;
+      box-shadow: inset 2px 2px 5px #b9bec3, inset -2px -2px 5px #ffffff;
+    }
+    .btn-neumorphic {
+      background: #ecf0f3;
+      padding: 10px 20px;
+      font-weight: bold;
+      border-radius: 20px;
+      border: none;
+      box-shadow: 4px 4px 8px #b9bec3, -4px -4px 8px #ffffff;
+      margin-top: 1rem;
+      cursor: pointer;
+    }
+    .btn-secondary {
+      margin-top: 1rem;
+      background-color: #6c757d;
+      color: #fff;
+      border-radius: 10px;
+      padding: 10px 16px;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <h1>Créer un nouveau Produit</h1>
+
+  <div class="neumorphic-card">
+    {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+      {{ form_row(form.Categorie, {'attr': {'class': 'form-control categorie-field'}}) }}
+      {{ form_row(form.Nom_Produit, {'attr': {'class': 'form-control nom-field'}}) }}
+
+      <div id="extra-fields" class="hidden">
+        {{ form_row(form.Prix, {'attr': {'class': 'form-control'}}) }}
+        <div class="currency-convert">
+  <button type="button" class="btn btn-secondary" onclick="convertirDevise()">Convertir la devise</button>
+  <p id="converted-price" style="margin-top: 10px; font-weight: bold;"></p>
+</div>
+
+        {{ form_row(form.Stock_Dispo, {'attr': {'class': 'form-control'}}) }}
+        {{ form_row(form.Date, {'attr': {'class': 'form-control'}}) }}
+        {{ form_row(form.Fournisseur, {'attr': {
+          'class': 'form-control', 'id': 'produit_fournisseur'
+        }}) }}
+      </div>
+
+      <button type="submit" class="btn-neumorphic">Enregistrer</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('app2_produit_index') }}" class="btn btn-secondary">Retour à la liste</a>
+  </div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    let debounceTimeout;
+
+    function normalize(str) {
+      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+    }
+
+    function verifierProduit() {
+      const nomInput = document.querySelector(".nom-field");
+      const catInput = document.querySelector(".categorie-field");
+      const champsExtra = document.getElementById("extra-fields");
+
+      if (!nomInput || !catInput) return;
+
+      const nom = nomInput.value.trim();
+      const catValue = catInput.tagName === "SELECT"
+        ? catInput.options[catInput.selectedIndex].text.trim().toLowerCase()
+        : catInput.value.trim().toLowerCase();
+
+      if (!nom || !catValue) {
+        champsExtra.classList.add("hidden");
+        return;
+      }
+
+      fetch("https://127.0.0.1:5004/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nom_produit: nom,
+          categorie_reelle: catValue
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log("✅ Réponse IA :", data);
+        if (data.coherent) {
+          champsExtra.classList.remove("hidden");
+          Swal.fire("✅ Produit valide", `Confiance : ${data.confiance}`, "success");
+          chargerFournisseurs(nom, catValue);
+        } else {
+          champsExtra.classList.add("hidden");
+          Swal.fire("❌ Produit invalide", "Ce produit ne correspond pas à la catégorie.", "error");
+        }
+      })
+      .catch(error => {
+        console.error("❌ Erreur IA :", error);
+        champsExtra.classList.add("hidden");
+        Swal.fire("Erreur IA", "Impossible de contacter le serveur Flask", "error");
+      });
+    }
+
+    function chargerFournisseurs(nom, categorie) {
+      fetch("/api/fournisseurs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ produit: nom, categorie: categorie })
+      })
+      .then(res => res.json())
+      .then(data => {
+const select = document.getElementById("produit1_Fournisseur");
+        select.innerHTML = "";
+
+        if (data.fournisseurs && data.fournisseurs.length > 0) {
+          const defaultOption = document.createElement("option");
+          defaultOption.text = "Sélectionner un fournisseur";
+          defaultOption.value = "";
+          select.appendChild(defaultOption);
+
+          data.fournisseurs.forEach(fournisseur => {
+            const option = document.createElement("option");
+            option.value = fournisseur;
+            option.text = fournisseur;
+            select.appendChild(option);
+          });
+        } else {
+          const option = document.createElement("option");
+          option.value = "";
+          option.text = "⚠ Aucun fournisseur trouvé";
+          select.appendChild(option);
+        }
+      })
+      .catch(err => {
+        console.error("Erreur lors du chargement des fournisseurs :", err);
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const nomInput = document.querySelector(".nom-field");
+      const catInput = document.querySelector(".categorie-field");
+
+      const triggerVerification = () => {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(verifierProduit, 700);
+      };
+
+      if (nomInput) nomInput.addEventListener("input", triggerVerification);
+      if (catInput) {
+        catInput.addEventListener("input", triggerVerification);
+        catInput.addEventListener("change", triggerVerification);
+      }
+    });
+    function convertirDevise() {
+  const prix = parseFloat(document.querySelector('#produit1_Prix').value);
+
+  if (isNaN(prix) || prix <= 0) {
+    Swal.fire("Erreur", "Veuillez entrer un prix valide avant de convertir.", "warning");
+    return;
+  }
+
+  Swal.fire({
+    title: "Choisir la devise",
+    input: "select",
+    inputOptions: {
+      "USD": "Dollar ($)",
+      "EUR": "Euro (€)",
+      "GBP": "Livre (£)",
+      "JPY": "Yen (¥)",
+      "CAD": "Dollar Canadien",
+      "AUD": "Dollar Australien"
+    },
+    inputPlaceholder: "Sélectionner une devise",
+    showCancelButton: true,
+    confirmButtonText: "Convertir"
+  }).then(result => {
+    if (result.isConfirmed && result.value) {
+      const toCurrency = result.value;
+
+      fetch('/api/convert-currency', {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: prix,
+          from: 'TND',
+          to: toCurrency
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.converted_amount !== undefined) {
+          document.getElementById("converted-price").innerText =
+            `≈ ${data.converted_amount} ${toCurrency}`;
+        } else {
+          Swal.fire("Erreur", "Conversion échouée", "error");
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        Swal.fire("Erreur serveur", "Impossible de contacter l'API de conversion", "error");
+      });
+    }
+  });
+}
+
+  </script>
+{% endblock %}

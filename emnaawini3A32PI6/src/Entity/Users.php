@@ -1,128 +1,124 @@
 <?php
-
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
-use Doctrine\Common\Collections\Collection;
-use App\Entity\Planning;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
-class Users
+#[ORM\Table(name: 'users')]
+class Users implements UserInterface, PasswordAuthenticatedUserInterface
 {
-
     #[ORM\Id]
+    #[ORM\GeneratedValue]
     #[ORM\Column(type: "integer")]
-    private int $id;
+    private ?int $id = null;
 
-    #[ORM\Column(type: "string", length: 50)]
+    #[ORM\Column(type: "string", length: 50, unique: true)]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 3, max: 50)]
     private string $username;
 
-    #[ORM\Column(type: "string", length: 100)]
+    #[ORM\Column(type: "string", length: 100, unique: true)]
+    #[Assert\NotBlank]
+    #[Assert\Email]
     private string $email;
 
-    #[ORM\Column(type: "string", length: 255)]
-    private string $password_hash;
+    #[ORM\Column(name: "password_hash", type: "string", length: 255)]
+    private string $password;
 
-    #[ORM\Column(type: "boolean")]
-    private bool $is_active;
+    #[ORM\Column(name: "is_active", type: "boolean")]
+    private bool $isActive;
 
-    #[ORM\Column(type: "string", length: 255)]
+    #[ORM\Column(name: "role", type: "string", length: 255)]
     private string $role;
 
-    public function getId()
+    public function __construct()
+    {
+        $this->isActive = true;
+        $this->role = 'ROLE_CLIENT'; // Default role
+    }
+
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setId($value)
-    {
-        $this->id = $value;
-    }
-
-    public function getUsername()
+    public function getUsername(): string
     {
         return $this->username;
     }
 
-    public function setUsername($value)
+    public function setUsername(string $username): self
     {
-        $this->username = $value;
+        $this->username = $username;
+        return $this;
     }
 
-    public function getEmail()
+    public function getEmail(): string
     {
         return $this->email;
     }
 
-    public function setEmail($value)
+    public function setEmail(string $email): self
     {
-        $this->email = $value;
+        $this->email = $email;
+        return $this;
     }
 
-    public function getPassword_hash()
+    public function getPassword(): string
     {
-        return $this->password_hash;
+        return $this->password;
     }
 
-    public function setPassword_hash($value)
+    public function setPassword(string $password): self
     {
-        $this->password_hash = $value;
+        $this->password = $password;
+        return $this;
     }
 
-    public function getIs_active()
+    public function isActive(): bool
     {
-        return $this->is_active;
+        return $this->isActive;
     }
 
-    public function setIs_active($value)
+    public function setIsActive(bool $isActive): self
     {
-        $this->is_active = $value;
+        $this->isActive = $isActive;
+        return $this;
     }
 
-    public function getRole()
+    public function getRole(): string
     {
         return $this->role;
     }
 
-    public function setRole($value)
+    public function setRole(string $role): self
     {
-        $this->role = $value;
+        if (!in_array($role, ['ROLE_CLIENT', 'ROLE_COACH', 'ROLE_ADMIN'])) {
+            throw new \InvalidArgumentException('Invalid role');
+        }
+        $this->role = $role;
+        return $this;
     }
 
-    #[ORM\OneToMany(mappedBy: "id_user", targetEntity: Cours::class)]
-    private Collection $courss;
+    public function getRoles(): array
+    {
+        return [$this->role];
+    }
 
-        public function getCourss(): Collection
-        {
-            return $this->courss;
-        }
-    
-        public function addCours(Cours $cours): self
-        {
-            if (!$this->courss->contains($cours)) {
-                $this->courss[] = $cours;
-                $cours->setId_user($this);
-            }
-    
-            return $this;
-        }
-    
-        public function removeCours(Cours $cours): self
-        {
-            if ($this->courss->removeElement($cours)) {
-                // set the owning side to null (unless already changed)
-                if ($cours->getId_user() === $this) {
-                    $cours->setId_user(null);
-                }
-            }
-    
-            return $this;
-        }
+    public function getSalt(): ?string
+    {
+        return null;
+    }
 
-    #[ORM\OneToMany(mappedBy: "id_user", targetEntity: Participant::class)]
-    private Collection $participants;
+    public function eraseCredentials(): void
+    {
+    }
 
-    #[ORM\OneToMany(mappedBy: "id_user", targetEntity: Planning::class)]
-    private Collection $plannings;
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
+    }
 }

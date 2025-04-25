@@ -1,0 +1,139 @@
+{% extends 'back/dashboard.html.twig' %}
+
+{% block title %}Liste des Produits{% endblock %}
+
+{% block stylesheets %}
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Conteneur principal */
+    .container-fluid {
+      padding: 2rem;
+    }
+    /* Carte avec effet Claymorphism */
+    .table-card {
+      border-radius: 0.75rem;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      background: #ffffff;
+    }
+    /* Header de la carte avec dégradé */
+    .table-card .card-header {
+      background: linear-gradient(135deg, #007bff, #0056b3);
+      color: #fff;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .table-card .card-header h3 {
+      margin: 0;
+      font-size: 1.25rem;
+    }
+    /* Corps de la carte */
+    .table-card .card-body {
+      padding: 1rem;
+      background: #fff;
+    }
+    /* Footer de la carte */
+    .table-card .card-footer {
+      background-color: #f8f9fa;
+      padding: 0.75rem 1rem;
+      text-align: right;
+    }
+    /* Styles du tableau */
+    .table-responsive {
+      margin-top: 1rem;
+    }
+    .table thead th {
+      vertical-align: middle;
+    }
+    /* Boutons d'action */
+    .btn-action {
+      padding: 0.25rem 0.5rem;
+      margin-right: 0.25rem;
+      font-size: 0.875rem;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="table-card card">
+    <div class="card-header">
+      <h3 class="text-center">Liste des Produits</h3>
+      <a href="{{ path('app2_produit_new') }}" class="btn btn-success btn-sm">Create New</a>
+            <a href="{{ path('admin_stats') }}" class="btn btn-success btn-sm">Statistique</a>
+            <a href="{{ path('pdf') }}" class="btn btn-success btn-sm">pdf</a>
+
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover table-striped">
+          <thead class="bg-info text-white">
+            <tr>
+              <th>Nom du produit</th>
+              <th>Catégorie</th>
+              <th>Prix (€)</th>
+              <th>Stock Disponible</th>
+              <th>Date</th>
+              <th>Fournisseur</th>
+              <th>QR Code 🔳</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for produit in produits %}
+              <tr>
+                <td>{{ produit.NomProduit }}</td>
+                <td>{{ produit.categorie ? produit.categorie.nomcategorie : 'Non défini' }}</td>
+                <td>{{ produit.Prix|number_format(2, '.', ' ') }}</td>
+                <td>{{ produit.StockDispo }}</td>
+                <td>{{ produit.Date|date('d/m/Y') }}</td>
+                <td>{{ produit.Fournisseur }}</td>
+          <td>
+  <img src="{{ qrCodes[produit.id] }}" alt="QR Code" style="width:80px; height:auto;">
+</td>
+
+                <td>
+                  <a href="{{ path('app2_produit_edit', {'id': produit.id}) }}" class="btn btn-warning btn-sm btn-action">Edit</a>
+                  {{ include('back/produit/_delete_form.html.twig') }}
+                </td>
+              </tr>
+            {% else %}
+              <tr>
+                <td colspan="7" class="text-center">Aucun produit trouvé.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+  </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <!-- Import SweetAlert2 pour la confirmation de suppression -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    // Fonction de confirmation pour la suppression d'un produit
+    function confirmDelete(event) {
+      event.preventDefault();
+      Swal.fire({
+        title: "Supprimer ce produit ?",
+        text: "Voulez-vous vraiment supprimer ce produit ?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Supprimer",
+        cancelButtonText: "Annuler"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          event.target.submit();
+        }
+      });
+    }
+  </script>
+{% endblock %}

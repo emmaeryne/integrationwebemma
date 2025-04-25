@@ -22,33 +22,22 @@ class MainController extends AbstractController
     }
 
     #[Route('/classes', name: 'app_classes')]
-
     public function classes(): Response
     {
-        return $this->render('home/classes.html.twig', );
-           
-        
+        return $this->render('home/classes.html.twig');
     }
 
     #[Route('/trainers', name: 'app_trainers')]
     public function trainers(): Response
     {
-       
-        return $this->render('home/trainers.html.twig', 
-            
-        );
+        return $this->render('home/trainers.html.twig');
     }
 
     #[Route('/blog', name: 'app_blog_grid1')]
     public function blogGrid(): Response
     {
-
-        return $this->render('home/blog_grid.html.twig', 
-           
-        );
+        return $this->render('home/blog_grid.html.twig');
     }
-
-   
 
     #[Route('/testimonial', name: 'app_testimonial')]
     public function testimonial(): Response
@@ -68,5 +57,17 @@ class MainController extends AbstractController
     public function contact(): Response
     {
         return $this->render('home/contact.html.twig');
+    }
+
+    #[Route('/home/client', name: 'app_home_client')]
+    public function homeClient(): Response
+    {
+        return $this->render('gym-html-template/homeclient.html.twig');
+    }
+
+    #[Route('/home/coach', name: 'app_home_coach')]
+    public function homeCoach(): Response
+    {
+        return $this->render('gym-html-template/homecoach.html.twig');
     }
 }
