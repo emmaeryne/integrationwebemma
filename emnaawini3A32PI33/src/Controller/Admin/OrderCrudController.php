@@ -22,7 +22,7 @@ class OrderCrudController extends AbstractController
     public function __construct(Pdf $knpSnappyPdf)
     {
         $this->knpSnappyPdf = $knpSnappyPdf;
-        $this->knpSnappyPdf->setBinary('"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"');
+        $this->knpSnappyPdf->setBinary('"C:\Users\MSI\Desktop\wkhtmltopdf\bin\wkhtmltopdf.exe"');
     }
 
     #[Route('/', name: 'admin_order_index', methods: ['GET'])]
