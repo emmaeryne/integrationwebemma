@@ -1,8 +1,0 @@
-<form method="post" action="{{ path('app_planning_delete', {'coachId': coachId, 'id': planning.idPlanning}) }}" 
-      class="d-inline" 
-      onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce planning ?');">
-    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ planning.idPlanning) }}">
-    <button class="btn btn-danger">
-        <i class="fas fa-trash-alt"></i> Supprimer
-    </button>
-</form>
