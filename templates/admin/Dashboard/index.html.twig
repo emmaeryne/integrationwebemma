@@ -1,0 +1,275 @@
+{% extends 'basesalma.html.twig' %}
+
+{% block title %}Tableau de Bord Admin{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+:root {
+    --primary: #696cff;
+    --success: #28d094;
+    --info: #00cfe8;
+    --warning: #ff9f43;
+    --danger: #ff4d4f;
+    --text-muted: #6c757d;
+}
+
+.dashboard-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 1.5rem;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+}
+
+.stat-card {
+    padding: 24px;
+    position: relative;
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    background: rgba(var(--color-rgb), 0.1);
+    color: var(--color);
+}
+
+.stat-value {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin: 12px 0 8px;
+    color: var(--color);
+}
+
+.stat-label {
+    font-size: 1rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.trend-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+    margin-top: 8px;
+}
+
+.trend-up { color: var(--success); }
+.trend-down { color: var(--danger); }
+
+.chart-container {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.chart-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-muted);
+}
+
+.recent-orders-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.recent-orders-table th {
+    background-color: #f8f9fa;
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.recent-orders-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.recent-orders-table tr:last-child td {
+    border-bottom: none;
+}
+
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.status-paid {
+    background-color: rgba(40, 208, 148, 0.1);
+    color: #28d094;
+}
+
+.status-unpaid {
+    background-color: rgba(255, 77, 79, 0.1);
+    color: #ff4d4f;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row g-4">
+        <!-- Orders Card -->
+        <div class="col-12 col-sm-6 col-xl-3 animate-fade-in">
+            <div class="dashboard-card">
+                <div class="stat-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="stat-label">Commandes</h6>
+                            <h3 class="stat-value" style="--color: var(--primary)">{{ totalOrders }}</h3>
+                            <div class="trend-indicator {{ paidPercentage >= unpaidPercentage ? 'trend-up' : 'trend-down' }}">
+                                <i class="bx bx-trending-{{ paidPercentage >= unpaidPercentage ? 'up' : 'down' }}"></i>
+                                <span>{{ paidPercentage }}% payées</span>
+                            </div>
+                        </div>
+                        <div class="stat-icon" style="--color: var(--primary); --color-rgb: 105, 108, 255">
+                            <i class="bx bx-cart"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Card -->
+        <div class="col-12 col-sm-6 col-xl-3 animate-fade-in delay-1">
+            <div class="dashboard-card">
+                <div class="stat-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="stat-label">Utilisateurs</h6>
+                            <h3 class="stat-value" style="--color: var(--success)">{{ totalUsers }}</h3>
+                            <div class="trend-indicator trend-up">
+                                <i class="bx bx-trending-up"></i>
+                                <span>+8% ce mois</span>
+                            </div>
+                        </div>
+                        <div class="stat-icon" style="--color: var(--success); --color-rgb: 40, 208, 148">
+                            <i class="bx bx-user"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Card -->
+        <div class="col-12 col-sm-6 col-xl-3 animate-fade-in delay-2">
+            <div class="dashboard-card">
+                <div class="stat-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="stat-label">Produits</h6>
+                            <h3 class="stat-value" style="--color: var(--info)">{{ totalProducts }}</h3>
+                            <div class="trend-indicator trend-up">
+                                <i class="bx bx-trending-up"></i>
+                                <span>+15% ce mois</span>
+                            </div>
+                        </div>
+                        <div class="stat-icon" style="--color: var(--info); --color-rgb: 0, 207, 232">
+                            <i class="bx bx-package"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Categories Card -->
+        <div class="col-12 col-sm-6 col-xl-3 animate-fade-in delay-3">
+            <div class="dashboard-card">
+                <div class="stat-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="stat-label">Catégories</h6>
+                            <h3 class="stat-value" style="--color: var(--warning)">{{ totalCategories }}</h3>
+                            <div class="trend-indicator trend-up">
+                                <i class="bx bx-trending-up"></i>
+                                <span>+5% ce mois</span>
+                            </div>
+                        </div>
+                        <div class="stat-icon" style="--color: var(--warning); --color-rgb: 255, 159, 67">
+                            <i class="bx bx-category"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+       
+
+        <!-- Recent Orders -->
+        <div class="col-12 col-lg-6">
+            <div class="chart-container">
+                <h5 class="chart-title">Dernières Commandes</h5>
+                <div class="table-responsive">
+                    <table class="recent-orders-table">
+                        <thead>
+                            <tr>
+                                <th>Référence</th>
+                                <th>Date</th>
+                                <th>Total</th>
+                                <th>Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in recentOrders %}
+                            <tr>
+                                <td>{{ order.reference }}</td>
+                                <td>{{ order.createdAt|date('d/m/Y') }}</td>
+                                <td>{{ (order.total / 100)|format_currency('EUR') }}</td>
+                                <td>
+                                    <span class="status-badge status-{{ order.isPaid ? 'paid' : 'unpaid' }}">
+                                        {{ order.isPaid ? 'Payée' : 'Non payée' }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center">Aucune commande récente</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Cours{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Liste des Cours Disponibles</h1>
+
+        <div class="row">
+            {% for cour in cours %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ cour.nomCours }}</h5>
+                            <p class="card-text">
+                                <strong>État:</strong> {{ cour.etatCours }}<br>
+                                <strong>Durée:</strong> {{ cour.duree }} minutes<br>
+                                <strong>Coach:</strong> {{ cour.idUser.username}} 
+                            </p>
+                            <a href="{{ path('app_cours_show', {'user_id': user.id, 'id_cours': cour.idCours}) }}" class="btn btn-primary">Voir détails</a>
+                            <a href="#" class="btn btn-success">Participer</a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-info">Aucun cours disponible pour le moment.</div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

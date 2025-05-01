@@ -1,0 +1,197 @@
+{% extends 'users/base.html.twig' %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white py-3">
+                    <h3 class="card-title mb-0"><i class="fas fa-user-edit me-2"></i>Modifier le profil</h3>
+                </div>
+                <div class="card-body p-4">
+                    {% for label, messages in app.flashes %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+
+                    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            {{ form_row(form.nom, {
+                                'attr': {
+                                    'class': 'form-control form-control-lg',
+                                    'placeholder': 'Votre nom'
+                                }
+                            }) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.prenom, {
+                                'attr': {
+                                    'class': 'form-control form-control-lg',
+                                    'placeholder': 'Votre prénom'
+                                }
+                            }) }}
+                        </div>
+                    </div>
+
+                    {{ form_row(form.email, {
+                        'attr': {
+                            'class': 'form-control form-control-lg mb-3',
+                            'placeholder': 'Votre email'
+                        }
+                    }) }}
+
+                    {{ form_row(form.tel, {
+                        'attr': {
+                            'class': 'form-control form-control-lg mb-3',
+                            'placeholder': 'Votre numéro de téléphone'
+                        }
+                    }) }}
+
+                    {{ form_row(form.localisation, {
+                        'attr': {
+                            'class': 'form-control form-control-lg mb-4',
+                            'placeholder': 'Votre localisation'
+                        }
+                    }) }}
+
+                    <div class="password-section bg-light p-4 rounded mb-4">
+                        <h5 class="mb-3 text-primary"><i class="fas fa-lock me-2"></i>Changer le mot de passe</h5>
+                        {{ form_row(form.currentPassword, {
+                            'attr': {
+                                'class': 'form-control mb-3',
+                                'placeholder': 'Mot de passe actuel'
+                            }
+                        }) }}
+                        {{ form_row(form.newPassword.first, {
+                            'attr': {
+                                'class': 'form-control mb-3',
+                                'placeholder': 'Nouveau mot de passe'
+                            }
+                        }) }}
+                        {{ form_row(form.newPassword.second, {
+                            'attr': {
+                                'class': 'form-control mb-3',
+                                'placeholder': 'Confirmer le nouveau mot de passe'
+                            }
+                        }) }}
+                    </div>
+
+                    {% if app.session.get('role') == 'ROLE_COACH' %}
+                        <div class="coach-section bg-light p-4 rounded mb-4">
+                            <h5 class="mb-3 text-primary"><i class="fas fa-dumbbell me-2"></i>Informations Coach</h5>
+                            <div class="mb-3">
+                                {{ form_row(form.experienceYears, {
+                                    'attr': {
+                                        'class': 'form-control',
+                                        'placeholder': 'Nombre d\'années d\'expérience'
+                                    }
+                                }) }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form_row(form.specialty, {
+                                    'attr': {
+                                        'class': 'form-control'
+                                    }
+                                }) }}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="image-upload-section mb-4">
+                        <h5 class="mb-3 text-primary"><i class="fas fa-image me-2"></i>Photo de profil</h5>
+                        {{ form_row(form.image, {
+                            'attr': {
+                                'class': 'form-control form-control-lg'
+                            }
+                        }) }}
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a href="{{ path('app_user_profile') }}" class="btn btn-secondary btn-lg me-md-2">
+                            <i class="fas fa-times me-2"></i>Annuler
+                        </a>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-save me-2"></i>Enregistrer
+                        </button>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-header {
+        border-radius: 15px 15px 0 0;
+    }
+    
+    .form-control {
+        border-radius: 8px;
+        border: 1px solid #ced4da;
+        padding: 0.75rem 1rem;
+    }
+    
+    .form-control:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+    
+    .password-section {
+        border: 1px solid #e9ecef;
+        border-radius: 10px;
+    }
+    
+    .btn {
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+    }
+    
+    .alert {
+        border-radius: 10px;
+        border: none;
+    }
+    
+    .image-upload-section {
+        background-color: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 10px;
+    }
+</style>
+{% for flash_error in app.flashes('error') %}
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Erreur',
+            text: '{{ flash_error|e('js') }}',
+            confirmButtonText: 'OK'
+        });
+    </script>
+{% endfor %}
+ {% for message in app.flashes('success') %}
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: '{{ message|e('js') }}',
+                confirmButtonText: 'OK'
+            });
+        </script>
+    {% endfor %}
+{% endblock %}
+

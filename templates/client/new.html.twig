@@ -1,0 +1,252 @@
+{% extends 'base.html.twig' %}
+
+{# Variables globales pour réutilisation #}
+{% set translations = {
+    'title': 'Reservation'|trans|default('Nouvelle réservation'),
+    'new_reservation': 'Reserver'|trans|default('Créer une nouvelle réservation'),
+    'save': 'save'|trans|default('Enregistrer'),
+    'cancel': 'cancel'|trans|default('Annuler'),
+    'type_abonnement': 'type abonnement'|trans,
+    'date_debut': 'date de debut'|trans,
+    'date_fin': 'date de fin'|trans,
+    'statut': 'statut'|trans,
+    'status_in_progress': 'En cours'|trans,
+    'status_pending': 'En attente'|trans
+} %}
+
+{% block title %}
+    {{ translations.title }}
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        {# Titre principal #}
+        <h1 class="mb-5 text-primary display-5 fw-bold d-flex align-items-center gap-3">
+            <i class="fas fa-calendar-plus"></i>
+            {{ translations.title }}
+        </h1>
+
+        {# Messages flash avec macro #}
+        {% macro render_flash(type, messages, icon) %}
+            {% if messages|length > 0 %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ type }} fade show d-flex align-items-center shadow-sm mb-5 rounded-3" role="alert">
+                        <i class="fas fa-{{ icon }} me-3 text-{{ type }} fs-5"></i>
+                        <span class="fs-5">{{ message }}</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endmacro %}
+        {{ _self.render_flash('success', app.flashes('success'), 'check-circle') }}
+        {{ _self.render_flash('error', app.flashes('error'), 'exclamation-circle') }}
+
+        {# Formulaire encapsulé dans une carte #}
+        <section class="card shadow-sm mb-5 border-0 rounded-4" aria-label="Formulaire de réservation">
+            <div class="card-body p-5">
+                <h5 class="card-title text-muted mb-4 fs-4 d-flex align-items-center gap-3">
+                    <i class="fas fa-pen-alt text-primary"></i>
+                    {{ translations.new_reservation }}
+                </h5>
+
+                {{ form_start(form, {
+                    'attr': {
+                        'class': 'row g-4 needs-validation',
+                        'novalidate': '',
+                        'data-controller': 'form-validation'
+                    }
+                }) }}
+
+                {# Macro pour champs de formulaire #}
+                {% macro render_field(field, icon, label, translations) %}
+                    <div class="col-md-6">
+                        <label for="{{ field.vars.id }}"
+                               class="form-label fw-bold text-muted fs-5 d-flex align-items-center gap-2">
+                            <i class="fas fa-{{ icon }} text-primary"></i>
+                            {{ translations[label] }}
+                        </label>
+                        {{ form_widget(field, {
+                            'attr': {
+                                'class': 'form-control form-control-lg rounded-3',
+                                'data-form-validation-target': 'input'
+                            }
+                        }) }}
+                        {% if field.vars.errors|length > 0 %}
+                            <div class="invalid-feedback">{{ form_errors(field) }}</div>
+                        {% endif %}
+                    </div>
+                {% endmacro %}
+
+                {# Macro pour champ statut conditionnel #}
+                {% macro render_status_field(field, icon, label, translations, is_edit) %}
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-muted fs-5 d-flex align-items-center gap-2">
+                            <i class="fas fa-{{ icon }} text-primary"></i>
+                            {{ translations[label] }}
+                        </label>
+                        
+                        {% if is_edit %}
+                            {# Mode édition - Liste déroulante #}
+                            {{ form_widget(field, {
+                                'attr': {
+                                    'class': 'form-control form-control-lg rounded-3'
+                                }
+                            }) }}
+                        {% else %}
+                            {# Mode création - Champ statique #}
+                            <div class="form-control-static bg-light p-3 rounded-3 d-flex align-items-center" style="height: 50px;">
+                                <i class="fas fa-lock text-muted me-2"></i>
+                                {{ translations.status_in_progress }}
+                            </div>
+                            {# Champ caché pour envoyer la valeur au serveur #}
+                            {{ form_widget(field, {
+                                'attr': {
+                                    'value': 'en cours',
+                                    'class': 'd-none'
+                                }
+                            }) }}
+                        {% endif %}
+                    </div>
+                {% endmacro %}
+
+                {# Champs du formulaire #}
+                {{ _self.render_field(form.typeAbonnement, 'tag', 'type_abonnement', translations) }}
+                {{ _self.render_field(form.dateDebut, 'calendar-alt', 'date_debut', translations) }}
+                {{ _self.render_field(form.dateFin, 'calendar-alt', 'date_fin', translations) }}
+                {{ _self.render_status_field(form.statut, 'info-circle', 'statut', translations, is_edit|default(false)) }}
+
+                {# Boutons d'action #}
+                <div class="col-12 mt-4 d-flex flex-wrap gap-3">
+                    <button type="submit"
+                            class="btn btn-primary btn-lg shadow-sm rounded-pill px-5 py-2 fs-5 d-flex align-items-center gap-2">
+                        <i class="fas fa-save"></i>
+                        {{ translations.save }}
+                    </button>
+                    <a href="{{ path('app_client_reservation_index') }}"
+                       class="btn btn-outline-secondary btn-lg shadow-sm rounded-pill px-4 py-2 fs-5 d-flex align-items-center gap-2"
+                       data-bs-toggle="tooltip"
+                       title="{{ translations.cancel }}"
+                       aria-label="{{ translations.cancel }}">
+                        <i class="fas fa-times"></i>
+                        {{ translations.cancel }}
+                    </a>
+                </div>
+
+                {{ form_end(form) }}
+            </div>
+        </section>
+    </div>
+{% endblock %}
+
+{# Styles personnalisés #}
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        :root {
+            --primary-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --focus-shadow: 0 0 10px rgba(0, 123, 255, 0.2);
+        }
+        .btn {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--primary-shadow) !important;
+        }
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--card-shadow) !important;
+        }
+        .form-control {
+            border: 1px solid #ced4da;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: var(--focus-shadow);
+        }
+        .form-label {
+            margin-bottom: 0.75rem;
+        }
+        .invalid-feedback {
+            display: none;
+        }
+        .was-validated .form-control:invalid ~ .invalid-feedback,
+        .form-control.is-invalid ~ .invalid-feedback {
+            display: block;
+        }
+        .form-control-static {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+        }
+        select.form-control {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+        }
+    </style>
+{% endblock %}
+
+{# Scripts personnalisés #}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialisation des tooltips
+            document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
+                new bootstrap.Tooltip(el);
+            });
+
+            // Gestion des alertes (disparition progressive)
+            const alerts = document.querySelectorAll('.alert');
+            if (alerts.length) {
+                setTimeout(() => alerts.forEach(alert => alert.classList.remove('show')), 5000);
+            }
+
+            // Validation des formulaires avec écouteur unique
+            document.querySelectorAll('.needs-validation').forEach(form => {
+                form.addEventListener('submit', e => {
+                    if (!form.checkValidity()) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                });
+            });
+
+            // Calcul automatique de la date de fin si date de début changée
+            const dateDebutInput = document.querySelector('#{{ form.dateDebut.vars.id }}');
+            const dateFinInput = document.querySelector('#{{ form.dateFin.vars.id }}');
+            const typeAbonnementSelect = document.querySelector('#{{ form.typeAbonnement.vars.id }}');
+
+            if (dateDebutInput && dateFinInput && typeAbonnementSelect) {
+                dateDebutInput.addEventListener('change', updateDateFin);
+                typeAbonnementSelect.addEventListener('change', updateDateFin);
+
+                function updateDateFin() {
+                    const selectedOption = typeAbonnementSelect.options[typeAbonnementSelect.selectedIndex];
+                    const dureeMois = selectedOption ? parseInt(selectedOption.getAttribute('data-duree')) : 0;
+                    
+                    if (dateDebutInput.value && dureeMois > 0) {
+                        const dateDebut = new Date(dateDebutInput.value);
+                        const dateFin = new Date(dateDebut);
+                        dateFin.setMonth(dateFin.getMonth() + dureeMois);
+                        
+                        // Format YYYY-MM-DD pour le champ date
+                        const formattedDate = dateFin.toISOString().split('T')[0];
+                        dateFinInput.value = formattedDate;
+                    }
+                }
+            }
+        });
+    </script>
+{% endblock %}

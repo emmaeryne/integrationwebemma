@@ -1,0 +1,88 @@
+{% extends 'users/base.html.twig' %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                <img src="{{ app.session.get('image') }}" alt="Profile Picture">
+                    <h5 class="my-3">{{ user.nom }} {{ user.prenom }}</h5>
+                    <p class="text-muted mb-1">{{ user.role }}</p>
+                    <p class="text-muted mb-4">{{ user.localisation }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">Full Name</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-muted mb-0">{{ user.nom }} {{ user.prenom }}</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">Email</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-muted mb-0">{{ user.email }}</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">Phone</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-muted mb-0">{{ user.tel }}</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">Location</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-muted mb-0">{{ user.localisation }}</p>
+                        </div>
+                    </div>
+                    {% if app.session.get('role') == 'ROLE_COACH' %}
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Experience</p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="text-muted mb-0">{{ user.experienceYears ?? 'Non spécifié' }} {% if user.experienceYears %}ans{% endif %}</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Specialty</p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="text-muted mb-0">{{ user.specialty ?? 'Non spécifié' }}</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <hr>
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <a href="{{ path('app_users_editProfile', {'id': user.id}) }}" class="btn btn-primary">
+                                <i class="fas fa-edit me-2"></i>Edit Profile
+                            </a>
+                        
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

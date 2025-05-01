@@ -1,0 +1,255 @@
+{% extends 'base-front.html.twig' %}
+
+{% block title %}Détails de la commande #{{ reference }}{% endblock %}
+
+{% block content %}
+<style>
+    .order-summary {
+        max-width: 800px;
+        margin: 2rem auto;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    .order-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    .order-header {
+        background: linear-gradient(135deg, #4bb8a9 0%, #26A69A 100%);
+    .qr-header {
+        background: linear-gradient(135deg, #4bb8a9 0%, #3a9188 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 15px 15px 0 0;
+        text-align: center;
+        position: relative;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .qr-header h1 {
+        font-size: 1.5rem;
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .reference-badge {
+        background: rgba(255,255,255,0.2);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+        display: inline-block;
+    }
+
+    .qr-content {
+        background: white;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .section {
+        padding: 1.5rem;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .section:last-child {
+        border-bottom: none;
+    }
+
+    .section-title {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        color: #4bb8a9;
+        font-weight: 600;
+    }
+
+    .section-title i {
+        margin-right: 0.5rem;
+        width: 24px;
+        height: 24px;
+        background: #4bb8a9;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+    }
+
+    .product-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .product-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.8rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+    }
+
+    .product-info {
+        display: flex;
+        align-items: center;
+    }
+
+    .product-quantity {
+        background: #4bb8a9;
+        color: white;
+        padding: 0.2rem 0.6rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        margin-right: 0.8rem;
+    }
+
+    .product-name {
+        font-weight: 500;
+    }
+
+    .product-price {
+        color: #4bb8a9;
+        font-weight: 600;
+    }
+
+    .delivery-box {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+        border-left: 4px solid #4bb8a9;
+    }
+
+    .carrier-box {
+        display: flex;
+        align-items: center;
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+    }
+
+    .carrier-icon {
+        width: 40px;
+        height: 40px;
+        background: #4bb8a9;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        margin-right: 1rem;
+    }
+
+    .total-section {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 1rem;
+    }
+
+    .total-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        border-bottom: 1px dashed #dee2e6;
+    }
+
+    .total-row:last-child {
+        border: none;
+        padding-top: 1rem;
+        font-weight: 600;
+        color: #4bb8a9;
+        font-size: 1.1rem;
+    }
+
+    @media (max-width: 768px) {
+        .qr-result {
+            margin: 1rem;
+        }
+
+        .qr-header {
+            padding: 1.5rem;
+        }
+
+        .section {
+            padding: 1rem;
+        }
+    }
+</style>
+
+<div class="qr-result">
+    <div class="qr-header">
+        <h1>Détails de votre commande</h1>
+        <div class="reference-badge">{{ reference }}</div>
+    </div>
+
+    <div class="qr-content">
+        <div class="section">
+            <div class="section-title">
+                <i class="fas fa-map-marker-alt"></i>
+                Adresse de livraison
+            </div>
+            <div class="delivery-box">
+                {{ livraison|raw }}
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                <i class="fas fa-truck"></i>
+                Mode de livraison
+            </div>
+            <div class="carrier-box">
+                <div class="carrier-icon">
+                    <i class="fas fa-box"></i>
+                </div>
+                <div>
+                    <div style="font-weight: 500;">{{ transporteur.nom }}</div>
+                    <div style="color: #666; font-size: 0.9rem;">
+                        {{ transporteur.prix|number_format(2, ',', '.') }} TND
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                <i class="fas fa-shopping-cart"></i>
+                Produits commandés
+            </div>
+            <ul class="product-list">
+                {% for produit in produits %}
+                    <li class="product-item">
+                        <div class="product-info">
+                            <span class="product-quantity">x{{ produit.quantite }}</span>
+                            <span class="product-name">{{ produit.produit }}</span>
+                        </div>
+                        <span class="product-price">{{ produit.prix|number_format(2, ',', '.') }} TND</span>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <div class="total-section">
+                <div class="total-row">
+                    <span>Sous-total</span>
+                    <span>{{ (total - transporteur.prix)|number_format(2, ',', '.') }} TND</span>
+                </div>
+                <div class="total-row">
+                    <span>Frais de livraison</span>
+                    <span>{{ transporteur.prix|number_format(2, ',', '.') }} TND</span>
+                </div>
+                <div class="total-row">
+                    <span>Total</span>
+                    <span>{{ total|number_format(2, ',', '.') }} TND</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
