@@ -1,0 +1,91 @@
+{% extends 'back/dashboard.html.twig' %}
+
+{% block title %}Modifier un Produit{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #ecf0f3;
+        margin: 0;
+        padding: 0;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 2rem;
+        font-weight: 700;
+        font-size: 2rem;
+        text-decoration: underline;
+    }
+
+    .neumorphic-card {
+        background: #ecf0f3;
+        border-radius: 20px;
+        box-shadow: 8px 8px 16px #b9bec3, -8px -8px 16px #ffffff;
+        padding: 30px;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .form-control {
+        width: 100%;
+        border: none;
+        border-radius: 12px;
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+        background: #ecf0f3;
+        box-shadow: inset 2px 2px 5px #b9bec3, inset -2px -2px 5px #ffffff;
+    }
+
+    .btn-neumorphic {
+        background: #ecf0f3;
+        padding: 10px 20px;
+        font-weight: bold;
+        border-radius: 20px;
+        border: none;
+        box-shadow: 4px 4px 8px #b9bec3, -4px -4px 8px #ffffff;
+        margin-top: 1rem;
+    }
+
+    .btn-secondary {
+        margin-top: 1rem;
+        background-color: #6c757d;
+        color: #fff;
+        border-radius: 10px;
+        padding: 10px 16px;
+        text-decoration: none;
+        display: inline-block;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <h1>Modifier un Produit</h1>
+  <div class="neumorphic-card">
+      {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+          {{ form_row(form.Nom_Produit, {'attr': {'class': 'form-control'}}) }}
+          {{ form_row(form.Prix, {'attr': {'class': 'form-control'}}) }}
+          {{ form_row(form.Stock_Dispo, {'attr': {'class': 'form-control'}}) }}
+          {{ form_row(form.Date, {'attr': {'class': 'form-control'}}) }}
+          {{ form_row(form.Fournisseur, {'attr': {'class': 'form-control'}}) }}
+          {{ form_row(form.Categorie, {'attr': {'class': 'form-control'}}) }}
+          <button type="submit" class="btn-neumorphic">{{ button_label|default('Mettre à jour') }}</button>
+      {{ form_end(form) }}
+
+      <a href="{{ path('app2_produit_index') }}" class="btn btn-secondary">Retour à la liste</a>
+
+      {# Supprimer (formulaire) #}
+      {{ include('back/produit/_delete_form.html.twig') }}
+  </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% endblock %}

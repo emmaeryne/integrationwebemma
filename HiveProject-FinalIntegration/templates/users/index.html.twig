@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Users index{% endblock %}
+
+{% block body %}
+    <h1>Users index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Email</th>
+                <th>Is_active</th>
+                <th>Role</th>
+                <th>Tel</th>
+                <th>Image</th>
+                <th>Localisation</th>
+                <th>Nom</th>
+                <th>Prenom</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.email ?? '' }}</td>
+                <td>{{ user.isActive ? 'Yes' : 'No' }}</td>
+                <td>{{ user.role ?? '' }}</td>
+                <td>{{ user.tel ?? '' }}</td>
+                <td>{{ user.image ?? '' }}</td>
+                <td>{{ user.localisation ?? '' }}</td>
+                <td>{{ user.nom ?? '' }}</td>
+                <td>{{ user.prenom ?? '' }}</td>
+                <td>
+                    <a href="{{ path('app_users_show', {'id': user.id}) }}" class="btn btn-info btn-sm">show</a>
+                    <a href="{{ path('app_users_edit', {'id': user.id}) }}" class="btn btn-primary btn-sm">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="11">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_users_new') }}" class="btn btn-success">Create new</a>
+{% endblock %}

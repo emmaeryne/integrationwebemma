@@ -1,0 +1,345 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register - HIVE{% endblock %}
+
+{% block body %}
+    <div class="register-container">
+        <div class="container">
+            <div class="register-card">
+                {% for flash_error in app.flashes('verify_email_error') %}
+                    <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+                {% endfor %}
+
+                <h1 class="register-title">Create Account</h1>
+
+                {{ form_start(registrationForm, {'attr': {'class': 'register-form', 'novalidate': 'novalidate'}}) }}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(registrationForm.nom, 'Last Name') }}
+                                {{ form_widget(registrationForm.nom, {
+                                    'attr': {
+                                        'class': 'form-control' ~ (form_errors(registrationForm.nom) ? ' is-invalid' : ''),
+                                        'placeholder': 'Enter your last name'
+                                    }
+                                }) }}
+                                <div class="invalid-feedback">
+                                    {{ form_errors(registrationForm.nom) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(registrationForm.prenom, 'First Name') }}
+                                {{ form_widget(registrationForm.prenom, {
+                                    'attr': {
+                                        'class': 'form-control' ~ (form_errors(registrationForm.prenom) ? ' is-invalid' : ''),
+                                        'placeholder': 'Enter your first name'
+                                    }
+                                }) }}
+                                <div class="invalid-feedback">
+                                    {{ form_errors(registrationForm.prenom) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(registrationForm.email, 'Email Address') }}
+                                {{ form_widget(registrationForm.email, {
+                                    'attr': {
+                                        'class': 'form-control' ~ (form_errors(registrationForm.email) ? ' is-invalid' : ''),
+                                        'placeholder': 'Enter your email'
+                                    }
+                                }) }}
+                                <div class="invalid-feedback">
+                                    {{ form_errors(registrationForm.email) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(registrationForm.tel, 'Phone Number') }}
+                                {{ form_widget(registrationForm.tel, {
+                                    'attr': {
+                                        'class': 'form-control' ~ (form_errors(registrationForm.tel) ? ' is-invalid' : ''),
+                                        'placeholder': 'Enter your phone number'
+                                    }
+                                }) }}
+                                <div class="invalid-feedback">
+                                    {{ form_errors(registrationForm.tel) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(registrationForm.localisation, 'Location') }}
+                                {{ form_widget(registrationForm.localisation, {
+                                    'attr': {
+                                        'class': 'form-control' ~ (form_errors(registrationForm.localisation) ? ' is-invalid' : ''),
+                                        'placeholder': 'Enter your location'
+                                    }
+                                }) }}
+                                <div class="invalid-feedback">
+                                    {{ form_errors(registrationForm.localisation) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-group">
+                                {{ form_label(registrationForm.image, 'Profile Picture') }}
+                                {{ form_widget(registrationForm.image, {
+                                    'attr': {
+                                        'class': 'form-control',
+                                        'onchange': 'handleImageSelect(this)'
+                                    }
+                                }) }}
+                                <input type="hidden" id="imagePath" name="imagePath" />
+                                <small class="text-muted">Formats acceptés : JPEG, PNG, WEBP (max 2Mo)</small>
+                            </div>
+                        </div>
+
+                        <script>
+                        function handleImageSelect(input) {
+                            if (input.files && input.files[0]) {
+                                document.getElementById('imagePath').value = input.value;
+                            }
+                        }
+                        </script>
+
+
+                    <div class="form-group">
+                        {{ form_label(registrationForm.password_hash, 'password_hash') }}
+                        {{ form_widget(registrationForm.password_hash, {
+                            'attr': {
+                                'class': 'form-control' ~ (form_errors(registrationForm.password_hash) ? ' is-invalid' : ''),
+                                'placeholder': 'Choose a strong password',
+                                'type': 'password'
+                            }
+                        }) }}
+                        <div class="invalid-feedback">
+                            {{ form_errors(registrationForm.password_hash) }}
+                        </div>
+                    </div>
+
+                    <div class="form-group terms-check">
+                        {{ form_widget(registrationForm.agreeTerms, {
+                            'attr': {
+                                'class': 'form-check-input'
+                            }
+                        }) }}
+                        {{ form_label(registrationForm.agreeTerms, 'I agree to the terms of service', {
+                            'label_attr': {
+                                'class': 'form-check-label'
+                            }
+                        }) }}
+                    </div>
+                   <div class="form-group">
+                             {{ form_widget(registrationForm.recaptcha, {
+                                'attr': {'class': (form_errors(registrationForm.recaptcha) ? 'is-invalid' : '')}
+                       }) }}
+                     <div class="invalid-feedback">
+                               {{ form_errors(registrationForm.recaptcha) }}
+                     </div>
+                 </div>
+
+
+                    <button type="submit" class="btn btn-register">Create Account</button>
+                    
+                    <div class="text-center mt-4">
+                        <p class="text-light">Already have an account? 
+                            <a href="{{path('app_user_login')}}" class="text-primary">Sign In</a>
+                        </p>
+                    </div>
+                {{ form_end(registrationForm) }}
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+{% for error in registrationForm.recaptcha.vars.errors %}
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Vérification reCAPTCHA',
+            text: '{{ error.message|e('js') }}',
+            confirmButtonText: 'OK'
+        });
+    </script>
+{% endfor %}
+ {% for flash_error in app.flashes('error') %}
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Erreur',
+            text: '{{ flash_error|e('js') }}',
+            confirmButtonText: 'OK'
+        });
+    </script>
+{% endfor %}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+    /* Force le texte en blanc dans la carte d'inscription */
+ :root {
+            --primary: #0d6efd; /* Bleu principal (Bootstrap blue) */
+            --primary-rgb: 13, 110, 253;
+        }
+
+        /* Conteneur principal */
+        .register-container {
+            min-height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url('{{ asset('img/carousel-1.jpg') }}') center/cover fixed;
+            padding: 50px 0;
+        }
+
+        /* Carte avec effet "glassmorphism" */
+        .register-card {
+            background: rgba(33, 37, 41, 0.6);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 45px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            max-width: 900px;
+            margin: auto;
+            animation: fadeInUp 0.8s ease-out;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .register-title {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 35px;
+            font-size: 2.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Champs de formulaire */
+        .form-group {
+            margin-bottom: 28px;
+            position: relative;
+        }
+
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 15px;
+            color: #ffffff;
+            transition: all 0.4s ease;
+            font-size: 1rem;
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .form-control:focus {
+            background-color: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.6);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .form-label {
+            color: #ffffff;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .invalid-feedback {
+            display: block;
+            color: #ff4444;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+
+        /* Conditions */
+        .terms-check {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Bouton principal */
+        .btn-register {
+            background: linear-gradient(45deg, var(--primary), #339cff);
+            color: #fff;
+            padding: 15px 35px;
+            border-radius: 12px;
+            width: 100%;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.4s ease;
+            margin-top: 25px;
+            border: none;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 14px rgba(var(--primary-rgb), 0.4);
+        }
+
+        .btn-register:hover {
+            background: linear-gradient(45deg, #339cff, var(--primary));
+            transform: scale(1.03);
+            box-shadow: 0 6px 20px rgba(var(--primary-rgb), 0.6);
+        }
+
+        /* Animation d'apparition */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Texte global en blanc dans la carte */
+        .register-card, 
+        .register-card label, 
+        .register-card h1, 
+        .register-card p, 
+        .register-card input, 
+        .register-card small,
+        .register-card .form-check-label,
+        .register-card .invalid-feedback,
+        .register-card .text-muted {
+            color: #ffffff !important;
+        }
+
+        /* Lien bleu */
+        a.text-primary {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        a.text-primary:hover {
+            color: #ffffff;
+            text-shadow: 0 0 5px rgba(var(--primary-rgb), 0.8);
+        }
+
+        .text-center.mt-4 p {
+            font-size: 1.1rem;
+        }
+
+    </style>
+{% endblock %}

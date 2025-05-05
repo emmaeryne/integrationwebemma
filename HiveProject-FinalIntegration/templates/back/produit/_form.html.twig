@@ -1,0 +1,19 @@
+{{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+
+  {# Champs pour l'IA #}
+  {{ form_row(form.Categorie, {'attr': {'class': 'form-control', 'id': 'produit_categorie'}}) }}
+  {{ form_row(form.Nom_Produit, {'attr': {'class': 'form-control', 'id': 'produit_nom'}}) }}
+
+  {# Champs dynamiques affichés uniquement si l'IA valide #}
+  <div id="extra-fields" class="hidden">
+    {{ form_row(form.Prix, {'attr': {'class': 'form-control'}}) }}
+    {{ form_row(form.Stock_Dispo, {'attr': {'class': 'form-control'}}) }}
+    {{ form_row(form.Date, {'attr': {'class': 'form-control'}}) }}
+{{ form_row(form.Fournisseur, {'attr': {'class': 'form-control', 'id': 'produit_fournisseur'}}) }}
+  </div>
+
+  <button type="submit" class="btn-neumorphic">
+    {{ button_label|default('Enregistrer') }}
+  </button>
+
+{{ form_end(form) }}
