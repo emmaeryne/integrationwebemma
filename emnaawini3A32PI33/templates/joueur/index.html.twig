@@ -389,6 +389,7 @@
                                                 <th scope="col">CIN</th>
                                                 <th scope="col">Photo</th>
                                                 <th scope="col">ID User</th>
+                                                <th scope="col">Team</th> {# New column for the team name #}
                                                 <th scope="col">Actions</th>
                                             </tr>
                                         </thead>
@@ -406,6 +407,7 @@
                                                         {% endif %}
                                                     </td>
                                                     <td>{{ joueur.idUser }}</td>
+                                                    <td>{{ joueur.equipe ? joueur.equipe.nomEquipe : 'No team assigned' }}</td> {# Display the team name or fallback #}
                                                     <td>
                                                         <div class="d-flex gap-1">
                                                             <a href="{{ path('app_joueur_show', {'id_joueur': joueur.idJoueur}) }}" class="btn btn-action btn-show text-white" title="Show" aria-label="Show player">

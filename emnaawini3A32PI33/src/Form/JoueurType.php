@@ -20,9 +20,10 @@ class JoueurType extends AbstractType
             ->add('id_user')
             ->add('equipe', EntityType::class, [
                 'class' => Equipe::class,
-                'choice_label' => 'id',
-            ])
-        ;
+                'choice_label' => 'nom_equipe',
+                'placeholder' => 'Select a team',
+                'required' => true,
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

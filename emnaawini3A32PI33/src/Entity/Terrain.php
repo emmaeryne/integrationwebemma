@@ -23,6 +23,11 @@ class Terrain
         return $this->id_terrain;
     }
 
+    public function getId(): ?int
+    {
+        return $this->id_terrain;
+    }
+
     public function setId_terrain(int $id_terrain): self
     {
         $this->id_terrain = $id_terrain;
@@ -30,35 +35,38 @@ class Terrain
     }
 
     #[ORM\OneToMany(targetEntity: 'App\Entity\GameMatch', mappedBy: 'terrain')]
-    private Collection $matchs;
+    private Collection $matches;
 
     public function __construct()
     {
-        $this->matchs = new ArrayCollection();
+        $this->matches = new ArrayCollection();
     }
 
     /**
      * @return Collection<int, GameMatch>
      */
-    public function getMatchs(): Collection
+    public function getMatches(): Collection
     {
-        if (!$this->matchs instanceof Collection) {
-            $this->matchs = new ArrayCollection();
-        }
-        return $this->matchs;
+        return $this->matches;
     }
 
-    public function addMatch(GameMatch $matchEntity): self
+    public function addMatch(GameMatch $match): self
     {
-        if (!$this->getMatchs()->contains($matchEntity)) {
-            $this->getMatchs()->add($matchEntity);
+        if (!$this->matches->contains($match)) {
+            $this->matches->add($match);
+            $match->setTerrain($this); // Ensure the inverse side is set
         }
         return $this;
     }
 
-    public function removeMatch(GameMatch $matchEntity): self
+    public function removeMatch(GameMatch $match): self
     {
-        $this->getMatchs()->removeElement($matchEntity);
+        if ($this->matches->removeElement($match)) {
+            // Set the owning side to null (unless already changed)
+            if ($match->getTerrain() === $this) {
+                $match->setTerrain(null);
+            }
+        }
         return $this;
     }
 
