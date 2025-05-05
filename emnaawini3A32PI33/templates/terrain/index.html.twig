@@ -357,9 +357,13 @@
                             <!-- Header -->
                             <div class="header-section">
                                 <h1>Terrain List</h1>
-                                <a href="{{ path('app_terrain_new') }}" class="btn btn-add-terrain text-white" aria-label="Create new terrain">
-                                    <i class="bi bi-plus-circle me-2"></i> Create New Terrain
-                                </a>
+                                <!-- Create New Terrain Form -->
+                                <form method="post" action="{{ path('app_terrain_new') }}" style="display:inline;">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('create_terrain') }}">
+                                    <button type="submit" class="btn btn-add-terrain text-white" aria-label="Create new terrain">
+                                        <i class="bi bi-plus-circle me-2"></i> Create New Terrain
+                                    </button>
+                                </form>
                             </div>
 
                             <!-- Flash Messages -->
@@ -394,9 +398,6 @@
                                                         <div class="d-flex gap-1">
                                                             <a href="{{ path('app_terrain_show', {'id_terrain': terrain.idTerrain}) }}" class="btn btn-action btn-show text-white" title="Show" aria-label="Show terrain">
                                                                 <i class="bi bi-eye"></i>
-                                                            </a>
-                                                            <a href="{{ path('app_terrain_edit', {'id_terrain': terrain.idTerrain}) }}" class="btn btn-action btn-edit text-white" title="Edit" aria-label="Edit terrain">
-                                                                <i class="bi bi-pencil"></i>
                                                             </a>
                                                             <form method="post" action="{{ path('app_terrain_delete', {'id_terrain': terrain.idTerrain}) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete Terrain #{{ terrain.idTerrain }}?');">
                                                                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ terrain.idTerrain) }}">

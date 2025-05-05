@@ -353,9 +353,31 @@
                             <!-- Breadcrumb -->
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">Dashboard</a></li>
-                                    <li class="breadcrumb-item"><a href="{{ path('app_game_match_index') }}">Game Matches</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Edit GameMatch #{{ game_match.idMatch }}</li>
+                                    <li class="breadcrumb-item">
+                                        <a href="{{ path('app_dashboard') }}">
+                                            {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                                Tableau de Bord
+                                            {% else %}
+                                                Dashboard
+                                            {% endif %}
+                                        </a>
+                                    </li>
+                                    <li class="breadcrumb-item">
+                                        <a href="{{ path('app_game_match_index') }}">
+                                            {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                                Matchs de Jeu
+                                            {% else %}
+                                                Game Matches
+                                            {% endif %}
+                                        </a>
+                                    </li>
+                                    <li class="breadcrumb-item active" aria-current="page">
+                                        {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                            Modifier le Match de Jeu #{{ game_match.idMatch }}
+                                        {% else %}
+                                            Edit GameMatch #{{ game_match.idMatch }}
+                                        {% endif %}
+                                    </li>
                                 </ol>
                             </nav>
 
@@ -364,6 +386,17 @@
                                 <h1>Edit GameMatch #{{ game_match.idMatch }}</h1>
                                 <a href="{{ path('app_game_match_index') }}" class="btn btn-back text-white" aria-label="Back to game matches list">
                                     <i class="bi bi-arrow-left-circle me-2"></i> Back to List
+                                </a>
+                            </div>
+
+                            <div class="language-switcher mb-3">
+                                <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all | merge({'lang': 'en', 'id': game_match.id})) }}"
+                                   class="btn {% if app.request.query.get('lang', 'en') == 'en' %}btn-primary{% else %}btn-secondary{% endif %}">
+                                    🇬🇧
+                                </a>
+                                <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all | merge({'lang': 'fr', 'id': game_match.id})) }}"
+                                   class="btn {% if app.request.query.get('lang', 'en') == 'fr' %}btn-primary{% else %}btn-secondary{% endif %}">
+                                    🇫🇷
                                 </a>
                             </div>
 
@@ -385,35 +418,127 @@
                             <div class="card">
                                 <div class="card-body">
                                     {{ form_start(form, {'attr': {'id': 'game-match-form', 'novalidate': 'novalidate'}}) }}
-                                        <div class="form-row">
-                                            {% for field in form %}
-                                                {% if field.vars.name != '_token' %}
-                                                    <div class="form-group">
-                                                        {{ form_label(field, null, {'label_attr': {'class': 'form-label'}}) }}
-                                                        {{ form_widget(field, {'attr': {'class': 'form-control', 'aria-describedby': 'error-' ~ field.vars.id}}) }}
-                                                        {{ form_errors(field) }}
-                                                        <div id="error-{{ field.vars.id }}" class="invalid-feedback"></div>
-                                                    </div>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </div>
-                                        <div class="form-actions">
-                                            <a href="{{ path('app_game_match_index') }}" class="btn btn-cancel text-white" aria-label="Cancel and return to list">Cancel</a>
-                                            <button type="submit" class="btn btn-primary" id="submit-btn">
-                                                <span>Update Match</span>
-                                                <div class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></div>
-                                            </button>
-                                        </div>
+                                    <div class="form-row">
+                                        {% for field in form %}
+                                            {% if field.vars.name == 'statutMatch' %}
+                                                <div class="form-group">
+                                                    <label for="{{ field.vars.id }}" class="form-label">
+                                                        {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                                            Statut du Match
+                                                        {% else %}
+                                                            Match Status
+                                                        {% endif %}
+                                                    </label>
+                                                    <select id="{{ field.vars.id }}" name="{{ field.vars.full_name }}" class="form-control">
+                                                        <option value="ongoing" {{ field.vars.value == 'ongoing' ? 'selected' : '' }}>
+                                                            {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                                                En Cours
+                                                            {% else %}
+                                                                Ongoing
+                                                            {% endif %}
+                                                        </option>
+                                                        <option value="completed" {{ field.vars.value == 'completed' ? 'selected' : '' }}>
+                                                            {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                                                Terminé
+                                                            {% else %}
+                                                                Completed
+                                                            {% endif %}
+                                                        </option>
+                                                        <option value="pending" {{ field.vars.value == 'pending' ? 'selected' : '' }}>
+                                                            {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                                                En Attente
+                                                            {% else %}
+                                                                Pending
+                                                            {% endif %}
+                                                        </option>
+                                                        <option value="cancelled" {{ field.vars.value == 'cancelled' ? 'selected' : '' }}>
+                                                            {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                                                Annulé
+                                                            {% else %}
+                                                                Cancelled
+                                                            {% endif %}
+                                                        </option>
+                                                    </select>
+                                                    {{ form_errors(field) }}
+                                                </div>
+                                            {% elseif field.vars.name != '_token' %}
+                                                <div class="form-group">
+                                                    <label for="{{ field.vars.id }}" class="form-label">
+                                                        {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                                            {% if field.vars.name == 'dateMatch' %}
+                                                                Date du Match
+                                                            {% elseif field.vars.name == 'equipe1' %}
+                                                                Équipe 1
+                                                            {% elseif field.vars.name == 'equipe2' %}
+                                                                Équipe 2
+                                                            {% elseif field.vars.name == 'scoreEquipe1' %}
+                                                                Score Équipe 1
+                                                            {% elseif field.vars.name == 'scoreEquipe2' %}
+                                                                Score Équipe 2
+                                                            {% elseif field.vars.name == 'tournoi' %}
+                                                                Tournoi
+                                                            {% else %}
+                                                                {{ field.vars.name|capitalize }}
+                                                            {% endif %}
+                                                        {% else %}
+                                                            {% if field.vars.name == 'dateMatch' %}
+                                                                Match Date
+                                                            {% elseif field.vars.name == 'equipe1' %}
+                                                                Team 1
+                                                            {% elseif field.vars.name == 'equipe2' %}
+                                                                Team 2
+                                                            {% elseif field.vars.name == 'scoreEquipe1' %}
+                                                                Team 1 Score
+                                                            {% elseif field.vars.name == 'scoreEquipe2' %}
+                                                                Team 2 Score
+                                                            {% elseif field.vars.name == 'tournoi' %}
+                                                                Tournament
+                                                            {% else %}
+                                                                {{ field.vars.name|capitalize }}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    </label>
+                                                    {{ form_widget(field, {'attr': {'class': 'form-control', 'aria-describedby': 'error-' ~ field.vars.id}}) }}
+                                                    {{ form_errors(field) }}
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <div class="form-actions">
+                                        <a href="{{ path('app_game_match_index', app.request.query.all | merge({'lang': app.request.query.get('lang', 'en')})) }}" 
+                                           class="btn btn-cancel text-white" aria-label="Cancel and return to list">
+                                            {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                                Annuler
+                                            {% else %}
+                                                Cancel
+                                            {% endif %}
+                                        </a>
+                                        <button type="submit" class="btn btn-primary" id="submit-btn">
+                                            {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                                Mettre à Jour le Match
+                                            {% else %}
+                                                Update Match
+                                            {% endif %}
+                                            <div class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></div>
+                                        </button>
+                                    </div>
                                     {{ form_end(form) }}
                                 </div>
                             </div>
 
                             <!-- Delete Action -->
                             <div class="actions">
-                                <form method="post" action="{{ path('app_game_match_delete', {'id': game_match.id}) }}" onsubmit="return confirm('Are you sure you want to delete GameMatch #{{ game_match.idMatch }}?');" style="display:inline;">
+                                <form method="post" action="{{ path('app_game_match_delete', {'id': game_match.id}) }}" 
+                                      onsubmit="return confirm('{% if app.request.query.get('lang', 'en') == 'fr' %}Êtes-vous sûr de vouloir supprimer le Match de Jeu #{{ game_match.idMatch }} ?{% else %}Are you sure you want to delete GameMatch #{{ game_match.idMatch }}?{% endif %}');" 
+                                      style="display:inline;">
                                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ game_match.id) }}">
                                     <button type="submit" class="btn btn-delete text-white" aria-label="Delete game match">
-                                        <i class="bi bi-trash me-2"></i> Delete
+                                        <i class="bi bi-trash me-2"></i>
+                                        {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                            Supprimer
+                                        {% else %}
+                                            Delete
+                                        {% endif %}
                                     </button>
                                 </form>
                             </div>
