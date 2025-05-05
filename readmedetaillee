@@ -1,0 +1,36 @@
+Présentation du projet
+Notre projet consiste à développer une gestion innovante d’un complexe sportif à travers une plateforme composée d’un site web et d’une application desktop. Cette solution comprend plusieurs modules destinés à faciliter l’usage pour les différents types d’utilisateurs : client, coach et administrateur.
+
+Modules et fonctionnalités principales :
+Authentification complète : Chaque utilisateur (client, coach ou admin) doit créer un compte ou se connecter afin d'accéder aux services proposés.
+
+Gestion des cours et du planning :
+
+Le coach peut créer des cours, organiser son planning, et gérer les réservations associées.
+
+Le client peut consulter les cours disponibles et s’inscrire pour y participer.
+
+Gestion des abonnements et des réservations :
+
+Le client, une fois connecté, peut réserver un service ou souscrire à un abonnement.
+
+Il reçoit ensuite un badge numérique qui lui permet d'accéder au service réservé.
+
+Le coach peut consulter les réservations qui lui sont attribuées.
+
+L’administrateur est responsable de la création des services et abonnements, de leur classification, et de la validation des réservations.
+
+Gestion des produits et catégories :
+
+Une boutique est disponible où le client peut consulter une variété de produits, les ajouter au panier, puis procéder à l’achat et au paiement.
+
+L’administrateur peut gérer les produits et les catégories en les ajoutant ou en les modifiant.
+
+Gestion des terrains et des joueurs :
+
+L’administrateur organise les terrains disponibles et crée des matchs.
+
+Les joueurs (clients) peuvent participer à ces matchs via l’interface.
+
+Aspects techniques :
+Le projet repose sur plusieurs APIs et services métiers qui permettent de rendre l’utilisation plus fluide, intuitive et performante.
