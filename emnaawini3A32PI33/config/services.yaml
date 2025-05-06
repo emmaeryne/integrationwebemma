@@ -25,15 +25,6 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-        
-    App\Service\HuggingFaceChatbot:
-        arguments:
-            $client: '@Symfony\Contracts\HttpClient\HttpClientInterface'
-            $apiKey: '%env(HUGGINGFACE_API_KEY)%'
-            $model: '%env(HUGGINGFACE_MODEL)%'
-            $timeout: '%env(int:HUGGINGFACE_TIMEOUT)%'
-        # Optionnel : ajouter des tags si nécessaire
-        tags: ['app.chatbot_service']
 
     # Configuration spécifique pour GiphyService
     App\Service\GiphyService:

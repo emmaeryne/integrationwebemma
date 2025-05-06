@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Classe\Cart;
 use App\Entity\Order;
-use App\Entity\Users;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,7 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class OrderValidateController extends AbstractController
 {
-    private EntityManagerInterface $entityManager;
+    private $entityManager;
 
     public function __construct(EntityManagerInterface $entityManager)
     {
@@ -20,24 +19,25 @@ class OrderValidateController extends AbstractController
     }
 
     #[Route('/commande/merci/{stripeSessionId}', name: 'app_order_validate')]
-    public function index(Cart $cart, string $stripeSessionId): Response
+    public function index(Cart $cart,$stripeSessionId): Response
     {
         $order = $this->entityManager->getRepository(Order::class)->findOneByStripeSessionId($stripeSessionId);
+        
 
-        /** @var Users|null $currentUser */
-        $currentUser = $this->getUser();
-
-        if (!$order || $order->getUser() !== $currentUser) {
+        if (!$order || $order->getUser() != $this->getUser()) {
             return $this->redirectToRoute('app_home');
         }
 
-        if (!$order->isIsPaid()) {
-            // Empty cart session
-            $cart->remove();
+        if ($order->isIsPaid() == 0) {
+             // Vider la session "cart"
+             $cart->remove();
 
-            // Set order as paid
-            $order->setIsPaid(true);
+
+
+            // Modifier le statut isPaid de notre commande en mettant 1
+            $order->setIsPaid(1);
             $this->entityManager->flush();
+
         }
 
         return $this->render('order_validate/index.html.twig', [

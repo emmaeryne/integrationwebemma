@@ -17,22 +17,24 @@ class Cart{
     }
 
     public function add($id)
-{
-    $cart = $this->requestStack->getSession()->get('cart', []);
-    $product = $this->entityManager->getRepository(Produit::class)->find($id);
-
-    if ($product) {
-        $currentQuantity = isset($cart[$id]) ? $cart[$id] : 0;
-        if ($currentQuantity + 1 > $product->getStockDispo()) {
-            // Ne pas ajouter si le stock est dépassé
-            return false;
+    {
+        $cart = $this->requestStack->getSession()->get('cart', []);
+        $product = $this->entityManager->getRepository(Produit::class)->find($id);
+        
+        if ($product) {
+            if (!empty($cart[$id])) {
+                // On ne permet pas de dépasser le stock disponible
+                if ($cart[$id] < $product->getStockDispo()) {
+                    $cart[$id]++;
+                }
+            } else {
+                $cart[$id] = 1;
+            }
         }
-        $cart[$id] = $currentQuantity + 1;
+        
+        $this->requestStack->getSession()->set('cart', $cart);
     }
 
-    $this->requestStack->getSession()->set('cart', $cart);
-    return true;
-}
 
     public function decrease($id)
     {

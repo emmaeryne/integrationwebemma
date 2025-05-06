@@ -1,418 +1,312 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <title>Récapitulatif de commande - Hive</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends 'base-front.html.twig' %}
 
-  <link href="{{ asset('img/favicon.ico') }}" rel="icon">
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="{{ asset('lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
-  <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
-  <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+{% block title %}Récapitulatif de commande{% endblock %}
 
-  <!-- Custom Styles for Header and Footer -->
-  <style>
-    :root {
-      --bleu-vif: #00BFFF;
-      --bleu: #1E90FF;
-      --bleu-fonce: #0A4D68;
-      --bleu-clair: #E6F0FA;
-      --bleu-moyen: #4682B4;
-      --gris: #2A2A2A;
-      --jaune: #FFD700;
-      --shadow: 0 10px 30px rgba(30, 144, 255, 0.2);
-      --shadow-dark: 0 8px 20px rgba(10, 77, 104, 0.3);
-    }
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-      color: var(--gris);
-      line-height: 1.6;
-      margin: 0;
-      padding: 0;
-    }
-    .bg-dark {
-      background: var(--bleu-fonce) !important;
-      box-shadow: var(--shadow-dark);
-      transition: background 0.3s ease;
-    }
-    .bg-secondary {
-      background: var(--bleu-clair) !important;
-      color: var(--bleu-fonce);
-      border-bottom: 1px solid rgba(70, 130, 180, 0.2);
-    }
-    .navbar-brand {
-      display: flex;
-      align-items: center;
-      transition: transform 0.3s ease, filter 0.3s ease;
-    }
-    .navbar-brand:hover {
-      transform: scale(1.05);
-      filter: brightness(1.1);
-    }
-    .navbar-brand h1 {
-      color: var(--bleu-vif);
-      font-family: 'Oswald', sans-serif;
-      font-weight: 700;
-      font-size: 2.5rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      text-shadow: 2px 2px 6px rgba(0, 191, 255, 0.4);
-      margin: 0;
-    }
-    .navbar-brand img {
-      max-height: 80px;
-      margin-right: 15px;
-      filter: drop-shadow(0 0 8px var(--bleu-vif));
-      transition: transform 0.3s ease;
-    }
-    .navbar-brand:hover img {
-      transform: rotate(5deg);
-    }
-    .nav-link {
-      color: var(--bleu-clair) !important;
-      font-family: 'Poppins', sans-serif;
-      font-weight: 500;
-      font-size: 1.1rem;
-      padding: 10px 15px;
-      transition: color 0.3s ease, background 0.3s ease;
-    }
-    .nav-link:hover, .nav-link.active {
-      color: var(--bleu-vif) !important;
-      background: rgba(0, 191, 255, 0.1);
-      border-radius: 5px;
-    }
-    .dropdown-menu {
-      background: var(--bleu-fonce);
-      border: none;
-      box-shadow: var(--shadow-dark);
-    }
-    .dropdown-item {
-      color: var(--bleu-clair);
-      font-weight: 400;
-      transition: background 0.3s ease, color 0.3s ease;
-    }
-    .dropdown-item:hover {
-      background: var(--bleu);
-      color: #fff;
-    }
-    .dropdown-menu .dropdown-menu {
-      top: 0;
-      left: 100%;
-      margin-left: 0.1rem;
-      background: var(--bleu-fonce);
-      box-shadow: var(--shadow-dark);
-    }
-    .dropdown-menu .dropdown:hover > .dropdown-menu {
-      display: block;
-    }
-    .btn-square {
-      background: var(--bleu-clair);
-      color: var(--bleu-fonce);
-      width: 40px;
-      height: 40px;
-      line-height: 40px;
-      border-radius: 50%;
-      transition: all 0.3s ease;
-      box-shadow: var(--shadow);
-    }
-    .btn-square:hover {
-      background: var(--bleu-vif);
-      color: #fff;
-      transform: scale(1.1);
-      box-shadow: 0 8px 15px rgba(0, 191, 255, 0.4);
-    }
-    .bg-secondary h6 {
-      font-family: 'Poppins', sans-serif;
-      font-weight: 400;
-      font-size: 0.95rem;
-      margin: 0;
-    }
-    .bg-secondary i {
-      color: var(--bleu-vif);
-      font-size: 1.2rem;
-      margin-right: 8px;
-      transition: transform 0.3s ease;
-    }
-    .bg-secondary div:hover i {
-      transform: scale(1.2);
-    }
-    /* Footer Styles */
-    .footer {
-      background: var(--bleu-fonce);
-      color: var(--bleu-clair);
-      padding: 2rem 0;
-      margin-top: 2rem;
-    }
-    .footer h5 {
-      font-family: 'Oswald', sans-serif;
-      font-weight: 600;
-      font-size: 1.5rem;
-      color: var(--bleu-vif);
-      margin-bottom: 1.5rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    .footer p {
-      font-family: 'Poppins', sans-serif;
-      font-size: 0.95rem;
-      margin-bottom: 0.5rem;
-    }
-    .footer a {
-      color: var(--bleu-clair);
-      transition: color 0.3s ease;
-    }
-    .footer a:hover {
-      color: var(--bleu-vif);
-    }
-    .footer .btn-square {
-      margin: 0 5px;
-    }
-    @media (max-width: 991px) {
-      .navbar-brand h1 {
-        font-size: 2rem;
-      }
-      .navbar-brand img {
-        max-height: 60px;
-      }
-      .nav-link {
-        font-size: 1rem;
-        padding: 8px 12px;
-      }
-      .footer h5 {
-        font-size: 1.3rem;
-      }
-    }
-    @media (max-width: 576px) {
-      .footer {
-        text-align: center;
-      }
-      .footer .btn-square {
-        margin: 5px;
-      }
-    }
-  </style>
-</head>
-
-<body>
-
-<!-- Header Start -->
-<div class="container-fluid bg-dark px-0 fixed-top">
-  <div class="row gx-0">
-    <div class="col-lg-3 bg-dark d-none d-lg-block">
-      <a href="{{ path('app_home1') }}" class="navbar-brand w-100 h-100 m-0 p-0 d-flex align-items-center justify-content-center">
-        <img src="{{ asset('images/logo.png') }}" alt="HIVE Logo">
-        <h1>HIVE</h1>
-      </a>
-    </div>
-    <div class="col-lg-9">
-      <div class="row gx-0 bg-secondary d-none d-lg-flex animate__animated animate__fadeInDown">
-        <div class="col-lg-7 px-5 text-start">
-          <div class="h-100 d-inline-flex align-items-center py-3 me-4">
-            <i class="fa fa-envelope"></i>
-            <h6>info@hivebybeeu.com</h6>
-          </div>
-          <div class="h-100 d-inline-flex align-items-center py-3">
-            <i class="fa fa-phone-alt"></i>
-            <h6>+21622820210</h6>
-          </div>
-        </div>
-        <div class="col-lg-5 px-5 text-end">
-          <div class="d-inline-flex align-items-center py-3">
-            <a class="btn btn-square rounded-circle me-2 animate__animated animate__pulse animate__infinite" href="#">
-              <i class="fab fa-facebook-f"></i>
-            </a>
-            <a class="btn btn-square rounded-circle me-2 animate__animated animate__pulse animate__infinite" href="#">
-              <i class="fab fa-twitter"></i>
-            </a>
-            <a class="btn btn-square rounded-circle me-2 animate__animated animate__pulse animate__infinite" href="#">
-              <i class="fab fa-linkedin-in"></i>
-            </a>
-            <a class="btn btn-square rounded-circle me-2 animate__animated animate__pulse animate__infinite" href="#">
-              <i class="fab fa-instagram"></i>
-            </a>
-            <a class="btn btn-square rounded-circle animate__animated animate__pulse animate__infinite" href="#">
-              <i class="fab fa-youtube"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-      <nav class="navbar navbar-expand-lg bg-dark navbar-dark p-3 p-lg-0 px-lg-5">
-        <a href="{{ path('app_home1') }}" class="navbar-brand d-block d-lg-none">
-          <img src="{{ asset('images/logo.png') }}" alt="HIVE Logo">
-          <h1>HIVE</h1>
-        </a>
-        <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
-          <div class="navbar-nav mr-auto py-0">
-            <a href="{{ path('app_home_client') }}" class="nav-item nav-link">Home</a>
-            <a href="{{ path('app_about1') }}" class="nav-item nav-link">About</a>
-            <a href="{{ path('app_produit_index') }}" class="nav-item nav-link">Liste Produits</a>
-            <div class="nav-item dropdown">
-              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Reserver</a>
-              <div class="dropdown-menu rounded-0 m-0">
-                <div class="dropdown">
-                  
-                   
-                  </div><a href="{{ path('app_cours_liste_participant', {'user_id': app.user.id}) }}" class="dropdown-item">Participation</a>
-      
-                  
-                  
-                    <a href="{{ path('client_services') }}" class="dropdown-item">Services Client</a>
-                    <a href="{{ path('app_client_reservation_index') }}" class="dropdown-item">Abonnement</a>
-                    
-                  </div>
-
-
-
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
-    </div>
-  </div>
-</div>
-<!-- Header End -->
-
-<!-- Carousel -->
-<div class="container-fluid p-0 mb-5">
-  <div id="header-carousel" class="carousel slide" data-bs-ride="carousel">
-    <div class="carousel-inner">
-      <div class="carousel-item active">
-        <img class="w-100" src="{{ asset('img/carousel-1.jpg') }}" alt="Hive Recap" style="object-fit: cover; height: 50vh; filter: brightness(0.8);">
-        <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
-          <h1 class="text-white display-4 animate__animated animate__fadeInDown">Récapitulatif de votre commande</h1>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Order Recap -->
-<div class="container animate__animated animate__fadeInUp animate__delay-1s">
-  <div class="card shadow-lg border-0">
-    <div class="row g-0">
-
-      <!-- QR Code -->
-      <div class="col-md-5 text-center p-4">
-        <h4 class="text-primary mb-4"><i class="fas fa-qrcode me-2"></i> Scanner pour voir</h4>
-        <img src="{{ asset(qrCodePath) }}" alt="QR Code de la commande" class="img-fluid rounded" style="max-width: 250px;">
-        <p class="text-muted mt-3">Utilisez ce QR code pour retrouver votre commande rapidement.</p>
-      </div>
-
-     <!-- Commande Details -->
-<div class="col-md-7 p-4">
-    <h3 class="text-dark mb-4">Détails de votre commande</h3>
-
-    <div class="mb-4">
-        <h5 class="text-secondary mb-3"><i class="fas fa-shopping-bag"></i> Produits :</h5>
-
-        {% for item in fullCarts %}
-            <div class="d-flex justify-content-between border-bottom py-2">
-                <div>
-                    <strong>{{ item.product.nomProduit }}</strong>
-                    <small class="d-block text-muted">{{ item.product.categorie ? item.product.categorie.nomCategorie : 'Non catégorisé' }}</small>
-                </div>
-                <div>
-                    <span>{{ item.quantity }} × {{ (item.product.prix / 100)|number_format(2, ',', ' ') }} TND</span><br>
-                    <strong>{{ (item.product.prix * item.quantity / 100)|number_format(2, ',', ' ') }} TND</strong>
-                </div>
-            </div>
-        {% else %}
-            <p class="text-muted">Aucun produit dans cette commande.</p>
-        {% endfor %}
-    </div>
-
-    <div class="border-top pt-3">
-        <div class="d-flex justify-content-between mb-2">
-            <span>Sous-total :</span>
-            <span>{{ (total / 100)|number_format(2, ',', ' ') }} TND</span>
-        </div>
-        <div class="d-flex justify-content-between mb-2">
-            <span>Frais de livraison :</span>
-            <span>{{ (carrier.price / 100)|number_format(2, ',', ' ') }} TND</span>
-        </div>
-        <div class="d-flex justify-content-between fw-bold border-top pt-2">
-            <span>Total :</span>
-            <span>{{ ((total + carrier.price) / 100)|number_format(2, ',', ' ') }} TND</span>
-        </div>
-    </div>
-
-    <div class="text-center mt-4">
-        <form action="{{ path('app_stripe_ceckout_session', {'reference': reference}) }}" method="POST">
-            <button type="submit" class="btn btn-primary btn-lg px-4">
-                <i class="fas fa-credit-card me-2"></i> Payer {{ ((total + carrier.price) / 100)|number_format(2, ',', ' ') }} TND
-            </button>
-        </form>
-    </div>
-</div>
-
-    </div>
-  </div>
-</div>
-
-<!-- Footer Start -->
-<div class="footer">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-6 text-center text-lg-start mb-4 mb-lg-0">
-        <h5>Contactez-nous</h5>
-        <p><i class="fa fa-envelope me-2"></i>info@hivebybeeu.com</p>
-        <p><i class="fa fa-phone-alt me-2"></i>+21622820210</p>
-      </div>
-      <div class="col-lg-6 text-center text-lg-end">
-        <h5>Suivez-nous</h5>
-        <div class="d-inline-flex">
-          <a class="btn btn-square rounded-circle me-2 animate__animated animate__pulse animate__infinite" href="#">
-            <i class="fab fa-facebook-f"></i>
-          </a>
-          <a class="btn btn-square rounded-circle me-2 animate__animated animate__pulse animate__infinite" href="#">
-            <i class="fab fa-twitter"></i>
-          </a>
-          <a class="btn btn-square rounded-circle me-2 animate__animated animate__pulse animate__infinite" href="#">
-            <i class="fab fa-linkedin-in"></i>
-          </a>
-          <a class="btn btn-square rounded-circle me-2 animate__animated animate__pulse animate__infinite" href="#">
-            <i class="fab fa-instagram"></i>
-          </a>
-          <a class="btn btn-square rounded-circle animate__animated animate__pulse animate__infinite" href="#">
-            <i class="fab fa-youtube"></i>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- Footer End -->
-
-<!-- JS Libraries -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{{ asset('lib/owlcarousel/owl.carousel.min.js') }}"></script>
-<script src="{{ asset('js/main.js') }}"></script>
-
-<!-- Custom JavaScript for Header -->
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.nav-link').forEach(link => {
-      link.addEventListener('click', function(e) {
-        if (this.getAttribute('href').startsWith('#')) {
-          e.preventDefault();
-          const target = document.querySelector(this.getAttribute('href'));
-          target.scrollIntoView({ behavior: 'smooth' });
+{% block content %}
+    <style>
+        .shop {
+            font-size: 10px;
         }
-      });
-    });
-  });
-</script>
+        
+        .space {
+            letter-spacing: 0.8px !important;
+        }
+        
+        .second a:hover {
+            color: rgb(92, 92, 92);
+        }
+        
+        .active-2 {
+            color: rgb(92, 92, 92)
+        }
+        
+        .breadcrumb>li+li:before {
+            content: "" !important
+        }
+        
+        .breadcrumb {
+            padding: 0;
+            font-size: 10px;
+            color: #aaa !important;
+        }
+        
+        .first {
+            background-color: white;
+        }
+        
+        a {
+            text-decoration: none !important;
+            color: #aaa;
+        }
+        
+        .btn-lg,
+        .form-control-sm:focus,
+        .form-control-sm:active,
+        a:focus,
+        a:active {
+            outline: none !important;
+            box-shadow: none !important
+        }
+        
+        .form-control-sm:focus {
+            border: 1.5px solid #4bb8a9;
+        }
+        
+        .btn-group-lg > .btn,
+        .btn-lg {
+            padding: 0.5rem 0.1rem;
+            font-size: 1rem;
+            border-radius: 0;
+            color: white !important;
+            background-color: #4bb8a9;
+            height: 2.8rem !important;
+            border-radius: 0.2rem !important;
+        }
+        
+        .btn-group-lg>.btn:hover,
+        .btn-lg:hover {
+            background-color: #26A69A;
+        }
+        
+        .btn-outline-primary {
+            background-color: #fff !important;
+            color: #4bb8a9 !important;
+            border-radius: 0.2rem !important;
+            border: 1px solid #4bb8a9;
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: #4bb8a9 !important;
+            color: #fff !important;
+            border: 1px solid #4bb8a9;
+        }
+        
+        .card-2 {
+            margin-top: 40px !important;
+        }
+        
+        .card-header {
+            background-color: #fff;
+            border-bottom: 0 solid #aaaa !important;
+        }
+        
+        p {
+            font-size: 13px;
+        }
+        
+        .small {
+            font-size: 9px !important;
+        }
+        
+        .form-control-sm {
+            height: calc(2.2em + 0.5rem + 2px);
+            font-size: 0.875rem;
+            line-height: 1.5;
+            border-radius: 0;
+        }
+        
+        .cursor-pointer {
+            cursor: pointer;
+        }
+        
+        .boxed {
+            padding: 0 8px;
+            background-color: #4bb8a9;
+            color: white;
+        }
+        
+        .boxed-1 {
+            padding: 0 8px;
+            color: black !important;
+            border: 1px solid #aaaa;
+        }
+        
+        .bell {
+            opacity: 0.5;
+            cursor: pointer;
+        }
+        
+        /* New styles */
+        .qr-container {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .qr-code {
+            max-width: 200px;
+            margin: 0 auto;
+        }
+        
+        .info-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+        }
+        
+        .info-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            font-size: 1.1em;
+        }
+        
+        .info-title i {
+            margin-right: 10px;
+            font-size: 1.2em;
+            color: #4bb8a9;
+        }
+        
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        
+        .summary-section {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        
+        @media(max-width: 767px) {
+            .breadcrumb-item+.breadcrumb-item {
+                padding-left: 0
+            }
+        }
+    </style>
 
-</body>
-</html>
+    <div class="container-fluid my-5">
+        <div class="row justify-content-center">
+            <div class="col-xl-10">
+                <div class="card shadow-lg">
+                    <div class="row mx-auto justify-content-center text-center">
+                        <div class="col-12 mt-3">
+                            <nav aria-label="breadcrumb" class="second">
+                                <ol class="breadcrumb indigo lighten-6 first">
+                                    <li class="breadcrumb-item font-weight-bold">
+                                        <a class="black-text text-uppercase" href="{{path('app_products')}}">
+                                            <span class="mr-md-3 mr-1">Produits</span>
+                                        </a>
+                                        <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                                    </li>
+                                    <li class="breadcrumb-item font-weight-bold">
+                                        <a class="black-text text-uppercase" href="{{path('app_panier')}}">
+                                            <span class="mr-md-3 mr-1">Panier</span>
+                                        </a>
+                                        <i class="fa fa-angle-double-right text-uppercase" aria-hidden="true"></i>
+                                    </li>
+                                    <li class="breadcrumb-item font-weight-bold">
+                                        <a class="black-text text-uppercase active-2" href="#">
+                                            <span class="mr-md-3 mr-1">Récapitulatif</span>
+                                        </a>
+                                    </li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-around">
+                        <!-- Colonne gauche avec uniquement le QR code -->
+                        <div class="col-md-5">
+                            <div class="card border-0">
+                                <div class="card-header pb-0">
+                                    <h2 class="card-title space">Mon récapitulatif</h2>
+                                    <p class="card-text text-muted mt-4 space">Vérifiez vos informations avant de payer votre commande.</p>
+                                    <hr class="my-0">
+                                </div>
+                                <div class="card-body">
+                                    <div class="qr-container">
+                                        <div class="info-title">
+                                            <i class="fas fa-qrcode"></i> Scanner pour voir les détails
+                                        </div>
+                                        <img src="{{ asset(qrCodePath) }}" alt="QR Code de la commande" class="qr-code">
+                                        <p class="text-muted small mt-2">Scannez ce QR code pour accéder aux détails de votre commande</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Colonne droite avec les détails de la commande -->
+                        <div class="col-md-5">
+                            <div class="card border-0">
+                                <div class="card-header card-2">
+                                    <p class="card-text text-muted mt-md-4 mb-2 space">VOTRE COMMANDE</p>
+                                    <hr class="my-2">
+                                </div>
+                                <div class="card-body pt-0">
+                                    <div class="info-section mb-3">
+                                        <div class="info-title">
+                                            <i class="fas fa-shopping-cart"></i> Produits commandés
+                                        </div>
+                                        {% if fullCarts|length > 0 %}
+                                            {% for cart in fullCarts %}
+                                                <div class="product-item">
+                                                    <div>
+                                                        <b>{{ cart.product.nomProduit }}</b>
+                                                        <small class="text-muted d-block">{{ cart.product.categorie.nomcategorie }}</small>
+                                                    </div>
+                                                    <div class="text-center">
+                                                        <span class="boxed-1">{{ cart.quantity }}</span> × 
+                                                        {{ (cart.product.prix / 100)|number_format(2, ',', ' ') }} TND
+                                                    </div>
+                                                    <div class="text-right">
+                                                        <b>{{ (cart.product.prix * cart.quantity / 100)|number_format(2, ',', ' ') }} TND</b>
+                                                    </div>
+                                                </div>
+                                                {% if not loop.last %}<hr class="my-2">{% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            <p>ℹ️ Aucun produit dans cette commande</p>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="summary-section">
+                                        <div class="info-title">
+                                            <i class="fas fa-receipt"></i> Récapitulatif
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Sous-total :</span>
+                                            <span>{{ (total / 100)|number_format(2, ',', ' ') }} TND</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Frais de livraison :</span>
+                                            <span>{{ (carrier.price / 100)|number_format(2, ',', ' ') }} TND</span>
+                                        </div>
+                                        <hr>
+                                        <div class="d-flex justify-content-between font-weight-bold">
+                                            <span>Total :</span>
+                                            <span>{{ ((total + carrier.price) / 100)|number_format(2, ',', ' ') }} TND</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-5 mt-4">
+                                        <div class="col-md-7 col-lg-6 mx-auto">
+                                            <form action="{{ path('app_stripe_ceckout_session', {'reference': reference}) }}" method="POST">
+                                                <button type="submit" id="checkout-button" class="btn btn-block btn-outline-primary btn-lg">
+                                                    <i class="fas fa-credit-card"></i> Payer {{ ((total + carrier.price) / 100)|number_format(2, ',', ' ') }} TND
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?version=3.52.1&features=fetch"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+{% endblock %}

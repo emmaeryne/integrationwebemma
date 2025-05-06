@@ -102,74 +102,57 @@ class OrderRepository extends ServiceEntityRepository
             'weekly' => $formattedWeekly
         ];
     }
+    public function findBySearch(?string $searchTerm, int $start = 0, int $length = 10): array
+{
+    $qb = $this->createQueryBuilder('o')
+        ->leftJoin('o.user', 'u')
+        ->setFirstResult($start)
+        ->setMaxResults($length)
+        ->orderBy('o.id', 'DESC');
     
-    public function findByFilters(array $filters, string $sortBy = 'id', string $sortOrder = 'DESC', int $offset = 0, int $limit = 10): array
+    if ($searchTerm) {
+        $qb->where('o.reference LIKE :searchTerm')
+            ->orWhere('u.firstname LIKE :searchTerm')
+            ->orWhere('u.lastname LIKE :searchTerm')
+            ->orWhere('CONCAT(u.firstname, \' \', u.lastname) LIKE :searchTerm')
+            ->setParameter('searchTerm', '%'.addcslashes($searchTerm, '%_').'%');
+    }
+    
+    return $qb->getQuery()->getResult();
+}
+
+public function countSearchResults(string $searchTerm): int
+{
+    $qb = $this->createQueryBuilder('o')
+        ->select('COUNT(o.id)')
+        ->leftJoin('o.user', 'u');
+    
+    $qb->where('o.reference LIKE :searchTerm')
+        ->orWhere('u.firstname LIKE :searchTerm')
+        ->orWhere('u.lastname LIKE :searchTerm')
+        ->orWhere('CONCAT(u.firstname, \' \', u.lastname) LIKE :searchTerm')
+        ->setParameter('searchTerm', '%'.addcslashes($searchTerm, '%_').'%');
+    
+    return (int) $qb->getQuery()->getSingleScalarResult();
+}
+    
+    public function searchOrders(string $query): array
     {
-        $qb = $this->createQueryBuilder('o')
-            ->setFirstResult($offset)
-            ->setMaxResults($limit)
-            ->orderBy("o.{$sortBy}", $sortOrder);
-
-        // Filtre par statut
-        if (!empty($filters['status'])) {
-            $qb->andWhere('o.isPaid = :isPaid')
-               ->setParameter('isPaid', $filters['status'] === 'paid' ? 1 : 0);
-        }
-
-        // Filtre par plage de dates
-        if (!empty($filters['dateFrom'])) {
-            $qb->andWhere('o.createdAt >= :dateFrom')
-               ->setParameter('dateFrom', new \DateTime($filters['dateFrom']));
-        }
-        if (!empty($filters['dateTo'])) {
-            $qb->andWhere('o.createdAt <= :dateTo')
-               ->setParameter('dateTo', (new \DateTime($filters['dateTo']))->setTime(23, 59, 59));
-        }
-
-        // Filtre par montant
-        if (!empty($filters['amountMin'])) {
-            $qb->andWhere('o.total >= :amountMin')
-               ->setParameter('amountMin', $filters['amountMin'] * 100);
-        }
-        if (!empty($filters['amountMax'])) {
-            $qb->andWhere('o.total <= :amountMax')
-               ->setParameter('amountMax', $filters['amountMax'] * 100);
-        }
-
-        return $qb->getQuery()->getResult();
+        return $this->createQueryBuilder('o')
+            ->leftJoin('o.user', 'u')
+            ->where('o.id = :id')
+            ->orWhere('o.reference LIKE :query')
+            ->orWhere('u.firstname LIKE :query')
+            ->orWhere('u.lastname LIKE :query')
+            ->orWhere('CONCAT(u.firstname, \' \', u.lastname) LIKE :query')
+            ->setParameter('id', is_numeric($query) ? (int)$query : 0)
+            ->setParameter('query', '%'.$query.'%')
+            ->orderBy('o.id', 'DESC')
+            ->setMaxResults(20)
+            ->getQuery()
+            ->getResult();
     }
 
-    public function countByFilters(array $filters): int
-    {
-        $qb = $this->createQueryBuilder('o')
-            ->select('COUNT(o.id)');
 
-        // Filtre par statut
-        if (!empty($filters['status'])) {
-            $qb->andWhere('o.isPaid = :isPaid')
-               ->setParameter('isPaid', $filters['status'] === 'paid' ? 1 : 0);
-        }
-
-        // Filtre par plage de dates
-        if (!empty($filters['dateFrom'])) {
-            $qb->andWhere('o.createdAt >= :dateFrom')
-               ->setParameter('dateFrom', new \DateTime($filters['dateFrom']));
-        }
-        if (!empty($filters['dateTo'])) {
-            $qb->andWhere('o.createdAt <= :dateTo')
-               ->setParameter('dateTo', (new \DateTime($filters['dateTo']))->setTime(23, 59, 59));
-        }
-
-        // Filtre par montant
-        if (!empty($filters['amountMin'])) {
-            $qb->andWhere('o.total >= :amountMin')
-               ->setParameter('amountMin', $filters['amountMin'] * 100);
-        }
-        if (!empty($filters['amountMax'])) {
-            $qb->andWhere('o.total <= :amountMax')
-               ->setParameter('amountMax', $filters['amountMax'] * 100);
-        }
-
-        return (int) $qb->getQuery()->getSingleScalarResult();
-    }
+    
 }

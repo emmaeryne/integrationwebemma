@@ -348,12 +348,9 @@
                     </button>
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                         <div class="navbar-nav mr-auto py-0">
-                            <a href="{{ path('app_home_client') }}" class="nav-item nav-link active">Home</a>
+                            <a href="{{ path('app_home1') }}" class="nav-item nav-link active">Home</a>
                             <a href="{{ path('app_about1') }}" class="nav-item nav-link">About</a>
     <a href="{{ path('app_produit_index') }}" class="nav-item nav-link">Liste Produits</a>
-    <a href="{{ path('app_account_add_adress') }}" class="nav-item nav-link">Adresse</a>
-
-    
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Réserver</a>
                                 <div class="dropdown-menu rounded-0 m-0">
@@ -391,7 +388,6 @@
                             {% else %}
                                 <a href="{{ path('app_login') }}" class="nav-item nav-link">Connexion</a>
                                 <a href="{{ path('app_register') }}" class="nav-item nav-link">Inscription</a>
-                                
                             {% endif %}
                         </div>
                     </div>

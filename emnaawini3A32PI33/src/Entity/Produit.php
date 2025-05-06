@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use App\Entity\Avis;
 use App\Entity\CategorieProduit;
-
+use App\Entity\Commande_produits;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -57,11 +57,13 @@ class Produit
     #[ORM\OneToMany(mappedBy: "produit", targetEntity: Avis::class, cascade: ["persist", "remove"])]
     private Collection $aviss;
 
-
+    #[ORM\OneToMany(mappedBy: "idProduit", targetEntity: Commande_produits::class)]
+    private Collection $commande_produitss;
 
     public function __construct()
     {
         $this->aviss = new ArrayCollection();
+        $this->commande_produitss = new ArrayCollection();
 
         // Initialisation de la date par défaut : date actuelle.
         $this->Date = new \DateTime();
@@ -169,5 +171,28 @@ class Produit
         return $this;
     }
 
- 
+    /** @return Collection<int, Commande_produits> */
+    public function getCommande_produitss(): Collection
+    {
+        return $this->commande_produitss;
+    }
+
+    public function addCommande_produits(Commande_produits $commande_produits): self
+    {
+        if (!$this->commande_produitss->contains($commande_produits)) {
+            $this->commande_produitss[] = $commande_produits;
+            $commande_produits->setIdProduit($this);
+        }
+        return $this;
+    }
+
+    public function removeCommande_produits(Commande_produits $commande_produits): self
+    {
+        if ($this->commande_produitss->removeElement($commande_produits)) {
+            if ($commande_produits->getIdProduit() === $this) {
+                $commande_produits->setIdProduit(null);
+            }
+        }
+        return $this;
+    }
 }

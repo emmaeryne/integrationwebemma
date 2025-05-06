@@ -19,26 +19,27 @@ class CartController extends AbstractController
     }
 
     #[Route('/mon-panier', name: 'app_panier')]
-    public function index(Cart $cart): Response
-    {
-        $fullCarts = $cart->getfull();
-        $stockError = false;
+public function index(Cart $cart): Response
+{
+    $fullCarts = $cart->getfull();
+    $stockError = false;
     
-        foreach ($fullCarts as $item) {
-            if ($item['quantity'] > $item['product']->getStockDispo()) {
-                $stockError = true;
-                break;
-            }
+    foreach ($fullCarts as $item) {
+        if ($item['quantity'] > $item['product']->getStockDispo()) {
+            $stockError = true;
+            break;
         }
-    
-        return $this->render('cart/index.html.twig', [
-            'fullCarts' => $fullCarts,
-            'stockError' => $stockError,
-            'total' => array_reduce($fullCarts, function($total, $item) {
-                return $total + ($item['product']->getPrix() * $item['quantity']);
-            }, 0)
-        ]);
     }
+
+    return $this->render('cart/index.html.twig', [
+        'fullCarts' => $fullCarts,
+        'stockError' => $stockError,
+        'total' => array_reduce($fullCarts, function($total, $item) {
+            return $total + ($item['product']->getPrix() * $item['quantity']);
+        }, 0)
+    ]);
+}
+
     #[Route('/cart/add/{id}', name: 'app_add_to_cart')]
     public function add(Cart $cart, $id): Response
     {

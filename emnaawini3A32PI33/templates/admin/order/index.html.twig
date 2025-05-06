@@ -1,247 +1,83 @@
-<!DOCTYPE html>
-<html lang="en" class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="{{ asset('sneat-1.0.0/') }}" data-template="vertical-menu-template-free">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-    <title>Gestion des Commandes - Admin | Hive</title>
+{% extends 'base.html.twig' %}
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{ asset('sneat-1.0.0/assets/img/favicon/favicon.ico') }}" />
+{% block title %}Gestion des commandes{% endblock %}
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-
-    <!-- Icons -->
-    <link rel="stylesheet" href="{{ asset('sneat-1.0.0/assets/vendor/fonts/boxicons.css') }}" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+{% block stylesheets %}
+    {{ parent() }}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Core CSS -->
-    <link rel="stylesheet" href="{{ asset('sneat-1.0.0/assets/vendor/css/core.css') }}" class="template-customizer-core-css" />
-    <link rel="stylesheet" href="{{ asset('sneat-1.0.0/assets/vendor/css/theme-default.css') }}" class="template-customizer-theme-css" />
-    <link rel="stylesheet" href="{{ asset('sneat-1.0.0/assets/css/demo.css') }}" />
-
-    <!-- Vendors CSS -->
-    <link rel="stylesheet" href="{{ asset('sneat-1.0.0/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
-    <link rel="stylesheet" href="{{ asset('sneat-1.0.0/assets/vendor/libs/apex-charts/apex-charts.css') }}" />
-
-    <!-- Custom CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
-        .orders-wrapper {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 30px;
-            background: #ffffff;
-            border-radius: 15px;
-            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
-            font-family: 'Poppins', sans-serif;
-        }
-        .header-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 35px;
-            border-bottom: 4px solid #3498db;
-            padding-bottom: 15px;
-        }
-        .header-section h1 {
-            font-size: 2.5rem;
-            color: #2c3e50;
-            margin: 0;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            font-family: 'Public Sans', sans-serif;
-        }
-        .card {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-            background: #f8f9fa;
-            margin-bottom: 1.5rem;
-            transition: transform 0.3s ease;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-        }
-        .card-header {
-            background-color: #3498db;
-            color: #fff;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            border-radius: 10px 10px 0 0;
-        }
-        .card-header h6 {
-            margin: 0;
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
-        .card-body {
-            padding: 1.5rem;
-            background: #fff;
-            border-radius: 0 0 10px 10px;
-        }
-        .btn-primary {
-            background-color: #28a745;
-            border-color: #28a745;
-            padding: 8px 16px;
-            font-weight: 600;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-        .btn-primary:hover {
-            background-color: #218838;
-            border-color: #218838;
-            transform: translateY(-2px);
-        }
-        .btn-stats {
-            background-color: #FF9800;
-            border-color: #FF9800;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-        .btn-stats:hover {
-            background-color: #e68a00;
-            transform: translateY(-2px);
-        }
-        .btn-pdf-paid {
-            background-color: #28a745;
-            border-color: #28a745;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-        .btn-pdf-paid:hover {
-            background-color: #218838;
-            transform: translateY(-2px);
-        }
-        .btn-pdf-unpaid {
-            background-color: #f44336;
-            border-color: #f44336;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-        .btn-pdf-unpaid:hover {
-            background-color: #d32f2f;
-            transform: translateY(-2px);
-        }
-        .btn-view {
-            background-color: #17a2b8;
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            padding: 6px 12px;
-            font-size: 0.875rem;
-            transition: all 0.3s ease;
-        }
-        .btn-view:hover {
-            background-color: #138496;
-            transform: translateY(-2px);
-        }
-        .btn-edit {
-            background-color: #FF9800;
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            padding: 6px 12px;
-            font-size: 0.875rem;
-            transition: all 0.3s ease;
-        }
-        .btn-edit:hover {
-            background-color: #e68a00;
-            transform: translateY(-2px);
-        }
-        .table-responsive {
-            margin-top: 1rem;
-        }
-        .table thead th {
-            background-color: #343a40;
-            color: #fff;
-            font-weight: 600;
-            vertical-align: middle;
-        }
-        .table tbody tr:hover {
-            background-color: #f1f3f5;
-        }
-        .badge-paid {
-            background-color: #28a745;
-            color: #fff;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.875rem;
-        }
-        .badge-unpaid {
-            background-color: #f44336;
-            color: #fff;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.875rem;
-        }
-        .filter-panel {
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            transition: all 0.3s ease;
-        }
-        .filter-toggle-btn {
-            background-color: #3498db;
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 10px;
-            font-size: 0.875rem;
-            transition: all 0.3s ease;
-        }
-        .filter-toggle-btn:hover {
-            background-color: #2980b9;
-            transform: translateY(-2px);
-        }
-        .filter-form .form-control, .filter-form .form-select {
-            border-radius: 10px;
-            font-size: 0.875rem;
-        }
-        .filter-btn {
-            background-color: #28a745;
-            border: none;
-            border-radius: 10px;
-            font-size: 0.875rem;
-            transition: all 0.3s ease;
-        }
-        .filter-btn:hover {
-            background-color: #218838;
-            transform: translateY(-2px);
-        }
-        .reset-btn {
-            background-color: #f44336;
-            border: none;
-            border-radius: 10px;
-            font-size: 0.875rem;
-            transition: all 0.3s ease;
-        }
-        .reset-btn:hover {
-            background-color: #d32f2f;
-            transform: translateY(-2px);
-        }
-        .modal-content {
-            border-radius: 10px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        }
-        .modal-header {
-            background-color: #3498db;
-            color: #fff;
-            border-radius: 10px 10px 0 0;
-        }
         .chart-container {
             position: relative;
             height: 300px;
             width: 100%;
         }
+        .badge-paid {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+        .badge-unpaid {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+        .stats-btn {
+            background-color: #696cff;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .stats-btn:hover {
+            background-color: #5a5fe0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .table-hover tbody tr {
+            transition: all 0.2s ease;
+        }
+        .table-hover tbody tr:hover {
+            transform: scale(1.01);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-group .btn {
+            transition: all 0.2s ease;
+        }
+        .btn-group .btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .badge-paid, .badge-unpaid {
+            transition: all 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+        .badge-paid:hover, .badge-unpaid:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .modal-content {
+            animation: fadeInUp 0.4s ease;
+        }
+        
+        @keyframes cardEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .card {
+            animation: cardEntrance 0.6s ease forwards;
+        }
+        
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        
         canvas {
             opacity: 0;
             transition: opacity 1s ease;
@@ -249,549 +85,596 @@
         canvas.show {
             opacity: 1;
         }
-        #filterPanel.collapsed .card-body {
-            display: none;
+
+        /* Styles pour la recherche */
+        #searchResults {
+            z-index: 1000;
         }
-        #filterPanel {
-            transition: all 0.3s ease;
+
+        #searchResults .list-group-item {
+            border-left: none;
+            border-right: none;
+            padding: 0.75rem 1.25rem;
         }
+
+        #searchResults .list-group-item:first-child {
+            border-top: none;
+        }
+
+        #searchResults .list-group-item:last-child {
+            border-bottom: none;
+        }
+
+        #searchResults .list-group-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        #orderSearch:focus {
+            border-color: #696cff;
+            box-shadow: 0 0 0 0.25rem rgba(105, 108, 255, 0.25);
+        }
+        
+        .search-container {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+}
+
+#searchResults {
+    position: absolute;
+    width: 100%;
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 1000;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    display: none;
+}
+
+#searchResults .list-group-item {
+    border-left: none;
+    border-right: none;
+    padding: 0.75rem 1.25rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#searchResults .list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+#searchResults .list-group-item:first-child {
+    border-top: none;
+}
+
+#searchResults .list-group-item:last-child {
+    border-bottom: none;
+}
+
+.infinite-loader {
+    background-color: #f8f9fa;
+    font-style: italic;
+}
     </style>
-</head>
-<body>
-    <div class="layout-wrapper layout-content-navbar">
-        <div class="layout-container">
-            <!-- Menu -->
-            <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
-                <div class="app-brand demo">
-                    <a href="{{ path('app_dashboard') }}" class="app-brand-link">
-                        <span class="app-brand-logo demo">
-                            <img src="{{ asset('images/logo.png') }}" alt="Hive Logo" style="height: 80px; width: auto;" />
-                        </span>
-                        <span class="app-brand-text demo menu-text fw-bolder ms-2">HIVE</span>
-                    </a>
-                    <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
-                        <i class="bx bx-chevron-left bx-sm align-middle"></i>
-                    </a>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="d-flex justify-content-between align-items-center mb-4 animate__animated animate__fadeInDown">
+        <h4 class="fw-bold py-3 mb-0">Gestion des commandes</h4>
+        <button type="button" 
+                class="btn stats-btn animate__animated animate__pulse animate__infinite animate__slower"
+                data-bs-toggle="modal" 
+                data-bs-target="#statsModal">
+            <i class="fas fa-chart-bar me-2"></i> Statistiques
+        </button>
+    </div>
+
+    <div class="card animate__animated animate__fadeIn">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <h5 class="mb-0 me-3">Liste des commandes</h5>
+                <div class="search-container position-relative">
+                    <input type="text" 
+                           class="form-control form-control-sm" 
+                           id="orderSearch" 
+                           placeholder="Rechercher une commande..."
+                           autocomplete="off">
+                    <div class="position-absolute top-100 start-0 end-0 z-10 mt-1 d-none" 
+                         id="searchResults" 
+                         style="max-height: 300px; overflow-y: auto; border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem; background-color: #fff; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);">
+                        <div class="list-group"></div>
+                    </div>
                 </div>
-                <ul class="menu-inner py-1">
-                    <li class="menu-item">
-                        <a href="{{ path('app_dashboard') }}" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-home-circle"></i>
-                            <div data-i18n="Analytics">Dashboard</div>
-                        </a>
-                    </li>
-                    <li class="menu-item active">
-                        <a href="{{ path('admin_order_index') }}" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-cart"></i>
-                            <div data-i18n="Orders">Commandes</div>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="{{ path('admin_carrier_index') }}" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-cog"></i>
-                            <div data-i18n="Carrier">Carriers</div>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="https://127.0.0.1:8000/service/" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-cog"></i>
-                            <div data-i18n="Services">Services</div>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="https://127.0.0.1:8000/abonnement/" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-cog"></i>
-                            <div data-i18n="Abonnements">Abonnements</div>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="https://127.0.0.1:8000/type-abonnement/" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-cog"></i>
-                            <div data-i18n="Association">Association</div>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="https://127.0.0.1:8000/reservation/" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-cog"></i>
-                            <div data-i18n="Reservations">Reservations</div>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="https://127.0.0.1:8000/cours/4" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-cog"></i>
-                            <div data-i18n="Cours">Cours</div>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="https://127.0.0.1:8000/tournoi/" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-cog"></i>
-                            <div data-i18n="Tournois">Tournois</div>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="https://127.0.0.1:8000/match/" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-cog"></i>
-                            <div data-i18n="Match">Match</div>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="https://127.0.0.1:8000/terrain/" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-cog"></i>
-                            <div data-i18n="Terrain">Terrain</div>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="https://127.0.0.1:8000/equipe/" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-cog"></i>
-                            <div data-i18n="Equipe">Equipe</div>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="https://127.0.0.1:8000/joueur/" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-cog"></i>
-                            <div data-i18n="Joueur">Joueur</div>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="https://127.0.0.1:8000/categorie/produit/" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-cog"></i>
-                            <div data-i18n="Categories">Categories</div>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="https://127.0.0.1:8000/admin/dashboard/produits" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-cog"></i>
-                            <div data-i18n="Produit">Produit</div>
-                        </a>
-                    </li>
-                </ul>
-            </aside>
-            <!-- / Menu -->
-
-            <!-- Layout container -->
-            <div class="layout-page">
-                <!-- Navbar -->
-                <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" id="layout-navbar">
-                    <!-- Navbar content can be added as needed -->
-                </nav>
-                <!-- / Navbar -->
-
-                <!-- Content wrapper -->
-                <div class="content-wrapper">
-                    <div class="container-xxl flex-grow-1 container-p-y">
-                        <div class="orders-wrapper">
-                            <!-- Header -->
-                            <div class="header-section">
-                                <h1><i class="bi bi-cart4 me-2"></i> Gestion des Commandes</h1>
-                                <div>
-                                    <button type="button" class="btn btn-stats me-2" data-bs-toggle="modal" data-bs-target="#statsModal">
-                                        <i class="bi bi-graph-up me-2"></i> Statistiques
-                                    </button>
-                                    <a href="{{ path('admin_order_pdf', {'status': 'paid'}) }}" class="btn btn-pdf-paid me-2">
-                                        <i class="bi bi-file-earmark-pdf me-2"></i> PDF Payées
-                                    </a>
-                                    <a href="{{ path('admin_order_pdf', {'status': 'unpaid'}) }}" class="btn btn-pdf-unpaid">
-                                        <i class="bi bi-file-earmark-pdf me-2"></i> PDF Non Payées
-                                    </a>
-                                </div>
-                            </div>
-
-                            <!-- Filter Panel -->
-                            <div class="filter-panel card" id="filterPanel">
-                                <div class="card-header">
-                                    <h6>Filtres et Tri</h6>
-                                    <button class="filter-toggle-btn" onclick="toggleFilterPanel()">
-                                        <i class="fas fa-filter me-1"></i> Masquer les filtres
-                                    </button>
-                                </div>
-                                <div class="card-body">
-                                    <form id="filterForm" method="get" action="{{ path('admin_order_index') }}" class="filter-form">
-                                        <div class="row g-3">
-                                            <!-- Filter by Status -->
-                                            <div class="col-md-3">
-                                                <label for="statusFilter" class="form-label">Statut</label>
-                                                <select name="status" id="statusFilter" class="form-select">
-                                                    <option value="">Tous</option>
-                                                    <option value="paid" {{ app.request.query.get('status') == 'paid' ? 'selected' : '' }}>Payée</option>
-                                                    <option value="unpaid" {{ app.request.query.get('status') == 'unpaid' ? 'selected' : '' }}>Non payée</option>
-                                                </select>
-                                            </div>
-                                            <!-- Filter by Date -->
-                                            <div class="col-md-3">
-                                                <label for="date" class="form-label">À partir de</label>
-                                                <input type="date" name="date" id="date" class="form-control" value="{{ app.request.query.get('date') }}">
-                                            </div>
-                                            <!-- Sort By -->
-                                            <div class="col-md-3">
-                                                <label for="sortBy" class="form-label">Trier par</label>
-                                                <select name="sortBy" id="sortBy" class="form-select">
-                                                    <option value="id" {{ app.request.query.get('sortBy') == 'id' ? 'selected' : '' }}>ID</option>
-                                                    <option value="createdAt" {{ app.request.query.get('sortBy') == 'createdAt' ? 'selected' : '' }}>Date</option>
-                                                    <option value="total" {{ app.request.query.get('sortBy') == 'total' ? 'selected' : '' }}>Montant</option>
-                                                </select>
-                                            </div>
-                                            <!-- Sort Order -->
-                                            <div class="col-md-3">
-                                                <label for="sortOrder" class="form-label">Ordre</label>
-                                                <select name="sortOrder" id="sortOrder" class="form-select">
-                                                    <option value="DESC" {{ app.request.query.get('sortOrder') == 'DESC' ? 'selected' : '' }}>Décroissant</option>
-                                                    <option value="ASC" {{ app.request.query.get('sortOrder') == 'ASC' ? 'selected' : '' }}>Croissant</option>
-                                                </select>
-                                            </div>
-                                            <!-- Buttons -->
-                                            <div class="col-md-12 d-flex justify-content-end gap-2">
-                                                <button type="submit" class="btn filter-btn"><i class="fas fa-check me-1"></i> Appliquer</button>
-                                                <a href="{{ path('admin_order_index') }}" class="btn reset-btn"><i class="fas fa-times me-1"></i> Réinitialiser</a>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-
-                            <!-- Orders Table -->
-                            <div class="card">
-                                <div class="card-header">
-                                    <h6>Liste des Commandes</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-striped table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th>ID</th>
-                                                    <th>Référence</th>
-                                                    <th>Date</th>
-                                                    <th>Total</th>
-                                                    <th>Statut</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {% for order in orders %}
-                                                    <tr>
-                                                        <td>{{ order.id }}</td>
-                                                        <td>{{ order.reference }}</td>
-                                                        <td>{{ order.createdAt|date('d/m/Y H:i') }}</td>
-                                                        <td>{{ (order.total / 100)|number_format(2, ',', ' ') }} TND</td>
-                                                        <td>
-                                                            {% if order.isPaid %}
-                                                                <span class="badge badge-paid">Payée</span>
-                                                            {% else %}
-                                                                <span class="badge badge-unpaid">Non payée</span>
-                                                            {% endif %}
-                                                        </td>
-                                                        <td>
-                                                            <a href="{{ path('admin_order_show', {'id': order.id}) }}" class="btn-view btn-sm">Voir</a>
-                                                            <a href="{{ path('admin_order_edit', {'id': order.id}) }}" class="btn-edit btn-sm">Éditer</a>
-                                                        </td>
-                                                    </tr>
-                                                {% else %}
-                                                    <tr>
-                                                        <td colspan="6" class="no-results">
-                                                            <i class="bi bi-info-circle me-2"></i> Aucune commande trouvée.
-                                                        </td>
-                                                    </tr>
-                                                {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    </div>
-
-                                    {% if totalPages > 1 %}
-                                        <nav aria-label="Page navigation">
-                                            <ul class="pagination justify-content-center mt-4">
-                                                {% if currentPage > 1 %}
-                                                    <li class="page-item">
-                                                        <a class="page-link" href="{{ path('admin_order_index', app.request.query.all|merge({'page': currentPage - 1})) }}">
-                                                            <i class="fas fa-chevron-left"></i>
-                                                        </a>
-                                                    </li>
-                                                {% endif %}
-
-                                                {% for i in 1..totalPages %}
-                                                    <li class="page-item {% if i == currentPage %}active{% endif %}">
-                                                        <a class="page-link" href="{{ path('admin_order_index', app.request.query.all|merge({'page': i})) }}">{{ i }}</a>
-                                                    </li>
-                                                {% endfor %}
-
-                                                {% if currentPage < totalPages %}
-                                                    <li class="page-item">
-                                                        <a class="page-link" href="{{ path('admin_order_index', app.request.query.all|merge({'page': currentPage + 1})) }}">
-                                                            <i class="fas fa-chevron-right"></i>
-                                                        </a>
-                                                    </li>
-                                                {% endif %}
-                                            </ul>
-                                        </nav>
+            </div>
+            <div class="btn-group">
+                <a href="{{ path('admin_order_pdf', {'status': 'paid'}) }}" class="btn btn-success btn-sm animate__animated animate__bounceIn">
+                    <i class="fas fa-file-pdf me-1"></i> PDF Payées
+                </a>
+                <a href="{{ path('admin_order_pdf', {'status': 'unpaid'}) }}" class="btn btn-danger btn-sm animate__animated animate__bounceIn" style="animation-delay: 0.1s">
+                    <i class="fas fa-file-pdf me-1"></i> PDF Non Payées
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr class="animate__animated animate__fadeIn">
+                            <th>ID</th>
+                            <th>Référence</th>
+                            <th>Date</th>
+                            <th>Client</th>
+                            <th>Total</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                            <tr class="animate__animated animate__fadeIn" style="animation-delay: {{ loop.index * 0.05 }}s">
+                                <td>{{ order.id }}</td>
+                                <td>{{ order.reference }}</td>
+                                <td>{{ order.createdAt|date('d/m/Y H:i') }}</td>
+                                <td>{{ order.user.firstname }} {{ order.user.lastname }}</td>
+                                <td>{{ (order.total / 100)|number_format(2, ',', ' ') }} TND</td>
+                                <td>
+                                    {% if order.isPaid %}
+                                        <span class="badge badge-paid animate__animated animate__bounceIn" style="animation-delay: {{ loop.index * 0.1 }}s">Payée</span>
+                                    {% else %}
+                                        <span class="badge badge-unpaid animate__animated animate__bounceIn" style="animation-delay: {{ loop.index * 0.1 }}s">Non payée</span>
                                     {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ path('admin_order_show', {'id': order.id}) }}" class="btn btn-info animate__animated animate__zoomIn" style="animation-delay: {{ loop.index * 0.1 }}s">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ path('admin_order_edit', {'id': order.id}) }}" class="btn btn-primary animate__animated animate__zoomIn" style="animation-delay: {{ loop.index * 0.15 }}s">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr class="animate__animated animate__fadeIn">
+                                <td colspan="7" class="text-center">Aucune commande trouvée</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% if totalPages > 1 %}
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center mt-4 animate__animated animate__fadeInUp">
+                        {% if currentPage > 1 %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ path('admin_order_index', {'page': currentPage - 1}) }}">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% for i in 1..totalPages %}
+                            <li class="page-item {% if i == currentPage %}active{% endif %} animate__animated animate__bounceIn" style="animation-delay: {{ loop.index * 0.05 }}s">
+                                <a class="page-link" href="{{ path('admin_order_index', {'page': i}) }}">{{ i }}</a>
+                            </li>
+                        {% endfor %}
+
+                        {% if currentPage < totalPages %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ path('admin_order_index', {'page': currentPage + 1}) }}">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Modal Statistiques -->
+<div class="modal fade" id="statsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Statistiques des commandes</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5>Statut de paiement</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="paymentChart"></canvas>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Footer -->
-                    <footer class="content-footer footer bg-footer-theme">
-                        <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
-                            <div class="mb-2 mb-md-0">
-                                © {{ "now"|date("Y") }}, made with ❤️ by beeu
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5>Commandes par jour (30 derniers jours)</h5>
                             </div>
-                        </div>
-                    </footer>
-                    <!-- / Footer -->
-                </div>
-                <!-- / Content wrapper -->
-            </div>
-            <!-- / Layout page -->
-        </div>
-        <div class="layout-overlay layout-menu-toggle"></div>
-    </div>
-
-    <!-- Statistics Modal -->
-    <div class="modal fade" id="statsModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Statistiques des commandes</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6 mb-4">
-                            <div class="card h-100">
-                                <div class="card-header">
-                                    <h6>Statut de paiement</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="chart-container">
-                                        <canvas id="paymentChart"></canvas>
-                                    </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="dailyChart"></canvas>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6 mb-4">
-                            <div class="card h-100">
-                                <div class="card-header">
-                                    <h6>Commandes par jour (30 derniers jours)</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="chart-container">
-                                        <canvas id="dailyChart"></canvas>
-                                    </div>
-                                </div>
+                    </div>
+                    <div class="col-md-12 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5>Commandes par semaine</h5>
                             </div>
-                        </div>
-                        <div class="col-md-12 mb-4">
-                            <div class="card h-100">
-                                <div class="card-header">
-                                    <h6>Commandes par semaine</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="chart-container">
-                                        <canvas id="weeklyChart"></canvas>
-                                    </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="weeklyChart"></canvas>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
             </div>
         </div>
     </div>
+</div>
+{% endblock %}
 
-    <!-- Core JS -->
-    <script src="{{ asset('sneat-1.0.0/assets/vendor/libs/jquery/jquery.js') }}"></script>
-    <script src="{{ asset('sneat-1.0.0/assets/vendor/libs/popper/popper.js') }}"></script>
-    <script src="{{ asset('sneat-1.0.0/assets/vendor/js/bootstrap.js') }}"></script>
-    <script src="{{ asset('sneat-1.0.0/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
-    <script src="{{ asset('sneat-1.0.0/assets/vendor/js/menu.js') }}"></script>
-    <script src="{{ asset('sneat-1.0.0/assets/vendor/libs/apex-charts/apexcharts.js') }}"></script>
-    <script src="{{ asset('sneat-1.0.0/assets/js/main.js') }}"></script>
-    <script src="{{ asset('sneat-1.0.0/assets/js/dashboards-analytics.js') }}"></script>
-
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- Custom JS -->
-    <script>
-        window.toggleFilterPanel = function() {
-            const panel = document.getElementById('filterPanel');
-            const btn = document.querySelector('.filter-toggle-btn');
-            if (panel && btn) {
-                panel.classList.toggle('collapsed');
-                btn.innerHTML = panel.classList.contains('collapsed')
-                    ? '<i class="fas fa-filter me-1"></i> Afficher les filtres'
-                    : '<i class="fas fa-filter me-1"></i> Masquer les filtres';
-            } else {
-                console.error('Filter panel or button not found.');
-            }
-        };
-
-        // Chart Data
-        const paymentData = {
-            paid: {{ paidCount }},
-            unpaid: {{ unpaidCount }}
-        };
-
-        const dailyStats = {{ dailyStats|json_encode|raw }};
-        const dailyDates = Object.keys(dailyStats);
-        const dailyCounts = Object.values(dailyStats);
-
-        const weeklyStats = {{ weeklyStats|json_encode|raw }};
-        const weeklyLabels = Object.keys(weeklyStats);
-        const weeklyCounts = Object.values(weeklyStats);
-
-        // Animate Charts
-        const animateCharts = () => {
-            const options = {
-                threshold: 0.1
-            };
-
+{% block javascripts %}
+{{ parent() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animation d'entrée des éléments
+    const animateElements = () => {
+        const elements = document.querySelectorAll('.animate__animated');
+        elements.forEach(el => {
+            el.style.opacity = '0';
+            const animation = el.getAttribute('class').match(/animate__(\w+)/)[1];
+            el.classList.add('animate__' + animation);
+            
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        entry.target.classList.add('show');
+                        entry.target.style.opacity = '1';
                         observer.unobserve(entry.target);
                     }
                 });
-            }, options);
-
-            document.querySelectorAll('canvas').forEach(canvas => {
-                observer.observe(canvas);
-            });
+            }, { threshold: 0.1 });
+            
+            observer.observe(el);
+        });
+    };
+    
+    // Recherche dynamique
+const setupSearch = () => {
+    const searchInput = document.getElementById('orderSearch');
+    const resultsContainer = document.getElementById('searchResults');
+    const resultsList = resultsContainer.querySelector('.list-group');
+    
+    let currentPage = 1;
+    let isLoading = false;
+    let searchTerm = '';
+    
+    const debounce = (func, delay) => {
+        let timeoutId;
+        return (...args) => {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                func.apply(null, args);
+            }, delay);
         };
-
-        // Payment Chart
-        const renderPaymentChart = () => {
-            const paymentCtx = document.getElementById('paymentChart').getContext('2d');
-            new Chart(paymentCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Payées', 'Non payées'],
-                    datasets: [{
-                        data: [paymentData.paid, paymentData.unpaid],
-                        backgroundColor: ['#28a745', '#f44336'],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const percentage = Math.round((context.raw / total) * 100);
-                                    return `${context.label}: ${context.raw} (${percentage}%)`;
-                                }
-                            }
-                        }
-                    },
-                    animation: {
-                        duration: 1500,
-                        easing: 'easeOutQuart'
-                    }
-                }
-            });
-        };
-
-        // Daily Orders Chart
-        const renderDailyChart = () => {
-            const dailyCtx = document.getElementById('dailyChart').getContext('2d');
-            new Chart(dailyCtx, {
-                type: 'line',
-                data: {
-                    labels: dailyDates,
-                    datasets: [{
-                        label: 'Commandes par jour',
-                        data: dailyCounts,
-                        backgroundColor: 'rgba(52, 152, 219, 0.2)',
-                        borderColor: '#3498db',
-                        borderWidth: 2,
-                        tension: 0.1,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                precision: 0
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                maxRotation: 45,
-                                minRotation: 45
-                            }
-                        }
-                    },
-                    animation: {
-                        duration: 1500,
-                        easing: 'easeOutQuart'
-                    }
-                }
-            });
-        };
-
-        // Weekly Orders Chart
-        const renderWeeklyChart = () => {
-            const weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
-            new Chart(weeklyCtx, {
-                type: 'bar',
-                data: {
-                    labels: weeklyLabels,
-                    datasets: [{
-                        label: 'Commandes par semaine',
-                        data: weeklyCounts,
-                        backgroundColor: '#3498db',
-                        borderColor: '#3498db',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                precision: 0
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                maxRotation: 45,
-                                minRotation: 45
-                            }
-                        }
-                    },
-                    animation: {
-                        duration: 1500,
-                        easing: 'easeOutQuart'
-                    }
-                }
-            });
-        };
-
-        // Initialize Charts on Modal Show
-        const statsModal = document.getElementById('statsModal');
-        if (statsModal) {
-            statsModal.addEventListener('shown.bs.modal', function() {
-                animateCharts();
-                renderPaymentChart();
-                renderDailyChart();
-                renderWeeklyChart();
-            });
+    };
+    
+    const displayNoResults = () => {
+        resultsList.innerHTML = '<div class="list-group-item text-muted">Aucun résultat trouvé</div>';
+        resultsContainer.classList.remove('d-none');
+    };
+    
+    const searchOrders = (term, page = 1) => {
+        if (isLoading) return;
+        
+        isLoading = true;
+        searchTerm = term.trim();
+        currentPage = page;
+        
+        if (searchTerm.length < 2) {
+            resultsContainer.classList.add('d-none');
+            isLoading = false;
+            return;
         }
-    </script>
-</body>
-</html>
+        
+        // Afficher un indicateur de chargement
+        if (page === 1) {
+            resultsList.innerHTML = '<div class="list-group-item text-muted">Recherche en cours...</div>';
+            resultsContainer.classList.remove('d-none');
+        }
+        
+        fetch(`/admin/order/search/ajax?term=${encodeURIComponent(searchTerm)}&page=${page}`)
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(data => {
+                if (page === 1) {
+                    resultsList.innerHTML = '';
+                }
+                
+                if (data.results.length === 0 && page === 1) {
+                    displayNoResults();
+                } else {
+                    data.results.forEach(order => {
+                        const item = document.createElement('a');
+                        item.href = `/admin/order/${order.id}`;
+                        item.className = 'list-group-item list-group-item-action';
+                        item.innerHTML = `
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>${order.text}</span>
+                                <span class="badge ${order.isPaid ? 'badge-paid' : 'badge-unpaid'}">
+                                    ${order.isPaid ? 'Payée' : 'Non payée'}
+                                </span>
+                            </div>
+                        `;
+                        resultsList.appendChild(item);
+                    });
+                }
+                
+                // Chargement infini
+                if (data.pagination.more) {
+                    const loader = document.createElement('div');
+                    loader.className = 'list-group-item text-center text-muted infinite-loader';
+                    loader.innerHTML = 'Chargement...';
+                    resultsList.appendChild(loader);
+                    
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting && !isLoading) {
+                                observer.unobserve(entry.target);
+                                searchOrders(searchTerm, currentPage + 1);
+                            }
+                        });
+                    }, { threshold: 0.1 });
+                    
+                    observer.observe(resultsList.lastElementChild);
+                }
+                
+                resultsContainer.classList.remove('d-none');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                resultsList.innerHTML = '<div class="list-group-item text-danger">Erreur lors de la recherche</div>';
+            })
+            .finally(() => {
+                isLoading = false;
+            });
+    };
+    
+    const debouncedSearch = debounce(searchOrders, 300);
+    
+    searchInput.addEventListener('input', (e) => {
+        const term = e.target.value.trim();
+        if (term !== searchTerm) {
+            currentPage = 1;
+            debouncedSearch(term);
+        }
+    });
+    
+    // Gestion des événements de focus et de clic
+    searchInput.addEventListener('focus', () => {
+        if (searchTerm.length >= 2 && resultsList.children.length > 0) {
+            resultsContainer.classList.remove('d-none');
+        }
+    });
+    
+    document.addEventListener('click', (e) => {
+        if (!resultsContainer.contains(e.target) && e.target !== searchInput) {
+            resultsContainer.classList.add('d-none');
+        }
+    });
+    
+    // Gestion des touches pour la navigation
+    searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            resultsContainer.classList.add('d-none');
+        }
+    });
+};
+    // Données des graphiques
+    const paymentData = {
+        paid: {{ paidCount }},
+        unpaid: {{ unpaidCount }}
+    };
+
+    const dailyStats = {{ dailyStats|json_encode|raw }};
+    const dailyDates = Object.keys(dailyStats);
+    const dailyCounts = Object.values(dailyStats);
+
+    const weeklyStats = {{ weeklyStats|json_encode|raw }};
+    const weeklyLabels = Object.keys(weeklyStats);
+    const weeklyCounts = Object.values(weeklyStats);
+
+    // Animation pour afficher les graphiques lorsqu'ils sont visibles
+    const animateCharts = () => {
+        const options = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, options);
+
+        document.querySelectorAll('canvas').forEach(canvas => {
+            observer.observe(canvas);
+        });
+    };
+
+    // Graphique des statuts de paiement
+    const renderPaymentChart = () => {
+        const paymentCtx = document.getElementById('paymentChart').getContext('2d');
+        new Chart(paymentCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Payées', 'Non payées'],
+                datasets: [{
+                    data: [paymentData.paid, paymentData.unpaid],
+                    backgroundColor: ['#28a745', '#dc3545'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = Math.round((context.raw / total) * 100);
+                                return `${context.label}: ${context.raw} (${percentage}%)`;
+                            }
+                        }
+                    }
+                },
+                animation: {
+                    duration: 1500,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
+    };
+
+    // Graphique des commandes quotidiennes
+    const renderDailyChart = () => {
+        const dailyCtx = document.getElementById('dailyChart').getContext('2d');
+        new Chart(dailyCtx, {
+            type: 'line',
+            data: {
+                labels: dailyDates,
+                datasets: [{
+                    label: 'Commandes par jour',
+                    data: dailyCounts,
+                    backgroundColor: 'rgba(105, 108, 255, 0.2)',
+                    borderColor: '#696cff',
+                    borderWidth: 2,
+                    tension: 0.1,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 45
+                        }
+                    }
+                },
+                animation: {
+                    duration: 1500,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
+    };
+
+    // Graphique des commandes hebdomadaires
+    const renderWeeklyChart = () => {
+        const weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
+        new Chart(weeklyCtx, {
+            type: 'bar',
+            data: {
+                labels: weeklyLabels,
+                datasets: [{
+                    label: 'Commandes par semaine',
+                    data: weeklyCounts,
+                    backgroundColor: '#696cff',
+                    borderColor: '#696cff',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 45
+                        }
+                    }
+                },
+                animation: {
+                    duration: 1500,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
+    };
+
+    // Initialiser les graphiques lorsque le modal est ouvert
+    const statsModal = document.getElementById('statsModal');
+    if (statsModal) {
+        statsModal.addEventListener('shown.bs.modal', function() {
+            animateCharts();
+            renderPaymentChart();
+            renderDailyChart();
+            renderWeeklyChart();
+        });
+    }
+
+    // Initialisation
+    animateElements();
+    setupSearch();
+    
+    // Animation au survol des boutons
+    const buttons = document.querySelectorAll('.btn');
+    buttons.forEach(button => {
+        button.addEventListener('mouseenter', () => {
+            button.style.transform = 'translateY(-2px)';
+            button.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
+        });
+        button.addEventListener('mouseleave', () => {
+            button.style.transform = '';
+            button.style.boxShadow = '';
+        });
+    });
+});
+</script>
+{% endblock %}

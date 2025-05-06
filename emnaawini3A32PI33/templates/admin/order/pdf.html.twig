@@ -117,7 +117,7 @@
             {% for order in orders %}
                 <tr>
                     <td>{{ order.reference }}</td>
-                    <td>{{ order.user.email|default('Anonyme') }}</td>
+                    <td>{{ order.user ? order.user.email : 'Anonyme' }}</td>
                     <td>{{ order.createdAt|date('d/m/Y H:i') }}</td>
                     <td>{{ (order.total / 100)|format_currency('EUR') }}</td>
                     <td class="{{ order.isPaid ? 'status-paid' : 'status-unpaid' }}">

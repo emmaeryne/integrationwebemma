@@ -12,7 +12,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
-#[Route('/admin')]
 class DashboardSalmaController extends AbstractController
 {
     private ChartBuilderInterface $chartBuilder;
@@ -22,7 +21,7 @@ class DashboardSalmaController extends AbstractController
         $this->chartBuilder = $chartBuilder;
     }
 
-    #[Route('/', name: 'admin_dashboard')]
+    #[Route('/admin', name: 'admin_dashboard')]
     public function index(
         OrderRepository $orderRepository,
         UserRepository $userRepository,
@@ -30,14 +29,10 @@ class DashboardSalmaController extends AbstractController
         CategoryRepository $categoryRepository
     ): Response {
         $orderStats = $this->getOrderStatistics($orderRepository);
-
-        $paymentStatusChart = $this->createPaymentStatusChart(
-            $orderStats['paid'],
-            $orderStats['unpaid']
-        );
-
+        
+        $paymentStatusChart = $this->createPaymentStatusChart($orderStats['paid'], $orderStats['unpaid']);
         $recentOrders = $orderRepository->findBy([], ['createdAt' => 'DESC'], 5);
-
+        
         return $this->render('admin/dashboard/index.html.twig', [
             'totalOrders' => $orderStats['total'],
             'totalUsers' => $userRepository->count([]),
@@ -48,7 +43,7 @@ class DashboardSalmaController extends AbstractController
             'paidPercentage' => $orderStats['paidPercentage'],
             'unpaidPercentage' => $orderStats['unpaidPercentage'],
             'paymentStatusChart' => $paymentStatusChart,
-            'recentOrders' => $recentOrders,
+            'recentOrders' => $recentOrders
         ]);
     }
 
@@ -57,13 +52,13 @@ class DashboardSalmaController extends AbstractController
         $paidOrders = $orderRepository->count(['isPaid' => true]);
         $unpaidOrders = $orderRepository->count(['isPaid' => false]);
         $totalOrders = $paidOrders + $unpaidOrders;
-
+        
         return [
             'paid' => $paidOrders,
             'unpaid' => $unpaidOrders,
             'total' => $totalOrders,
             'paidPercentage' => $totalOrders > 0 ? round(($paidOrders / $totalOrders) * 100) : 0,
-            'unpaidPercentage' => $totalOrders > 0 ? round(($unpaidOrders / $totalOrders) * 100) : 0,
+            'unpaidPercentage' => $totalOrders > 0 ? round(($unpaidOrders / $totalOrders) * 100) : 0
         ];
     }
 
@@ -73,13 +68,15 @@ class DashboardSalmaController extends AbstractController
 
         $chart->setData([
             'labels' => ['Payées', 'Non payées'],
-            'datasets' => [[
-                'label' => 'Statut des paiements',
-                'data' => [$paidOrders, $unpaidOrders],
-                'backgroundColor' => ['#28d094', '#ff4d4f'],
-                'borderColor' => ['#ffffff', '#ffffff'],
-                'borderWidth' => 2,
-            ]],
+            'datasets' => [
+                [
+                    'label' => 'Statut des paiements',
+                    'data' => [$paidOrders, $unpaidOrders],
+                    'backgroundColor' => ['#28d094', '#ff4d4f'],
+                    'borderColor' => ['#fff', '#fff'],
+                    'borderWidth' => 2,
+                ],
+            ],
         ]);
 
         $chart->setOptions([
@@ -91,11 +88,22 @@ class DashboardSalmaController extends AbstractController
                 ],
                 'title' => [
                     'display' => true,
-                    'text' => 'Répartition des paiements',
+                    'text' => 'Statut des paiements',
                     'font' => [
-                        'size' => 16,
-                    ],
+                        'size' => 16
+                    ]
                 ],
+                'tooltip' => [
+                    'callbacks' => [
+                        'label' => 'function(context) {
+                            let label = context.label || "";
+                            let value = context.raw || 0;
+                            let total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            let percentage = Math.round((value / total) * 100);
+                            return ${label}: ${value} (${percentage}%);
+                        }'
+                    ]
+                ]
             ],
             'cutout' => '70%',
         ]);

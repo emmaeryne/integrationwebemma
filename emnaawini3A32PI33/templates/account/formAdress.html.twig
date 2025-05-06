@@ -1,432 +1,98 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %}Nouvelle adresse{% endblock %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends 'base.html.twig' %}
 
-    <link href="{{ asset('img/favicon.ico') }}" rel="icon">
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="{{ asset('lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
-    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+{% block title %}Nouvelle adresse{% endblock %}
 
-    <!-- Custom Styles for Header and Footer -->
-    <style>
-        :root {
-            --bleu-vif: #00BFFF;
-            --bleu: #1E90FF;
-            --bleu-fonce: #0A4D68;
-            --bleu-clair: #E6F0FA;
-            --bleu-moyen: #4682B4;
-            --gris: #2A2A2A;
-            --jaune: #FFD700;
-            --shadow: 0 10px 30px rgba(30, 144, 255, 0.2);
-            --shadow-dark: 0 8px 20px rgba(10, 77, 104, 0.3);
-        }
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-            color: var(--gris);
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-        }
-        .bg-dark {
-            background: var(--bleu-fonce) !important;
-            box-shadow: var(--shadow-dark);
-            transition: background 0.3s ease;
-        }
-        .bg-secondary {
-            background: var(--bleu-clair) !important;
-            color: var(--bleu-fonce);
-            border-bottom: 1px solid rgba(70, 130, 180, 0.2);
-        }
-        .navbar-brand {
-            display: flex;
-            align-items: center;
-            transition: transform 0.3s ease, filter 0.3s ease;
-        }
-        .navbar-brand:hover {
-            transform: scale(1.05);
-            filter: brightness(1.1);
-        }
-        .navbar-brand h1 {
-            color: var(--bleu-vif);
-            font-family: 'Oswald', sans-serif;
-            font-weight: 700;
-            font-size: 2.5rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            text-shadow: 2px 2px 6px rgba(0, 191, 255, 0.4);
-            margin: 0;
-        }
-        .navbar-brand img {
-            max-height: 80px;
-            margin-right: 15px;
-            filter: drop-shadow(0 0 8px var(--bleu-vif));
-            transition: transform 0.3s ease;
-        }
-        .navbar-brand:hover img {
-            transform: rotate(5deg);
-        }
-        .nav-link {
-            color: var(--bleu-clair) !important;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 500;
-            font-size: 1.1rem;
-            padding: 10px 15px;
-            transition: color 0.3s ease, background 0.3s ease;
-        }
-        .nav-link:hover, .nav-link.active {
-            color: var(--bleu-vif) !important;
-            background: rgba(0, 191, 255, 0.1);
-            border-radius: 5px;
-        }
-        .dropdown-menu {
-            background: var(--bleu-fonce);
-            border: none;
-            box-shadow: var(--shadow-dark);
-        }
-        .dropdown-item {
-            color: var(--bleu-clair);
-            font-weight: 400;
-            transition: background 0.3s ease, color 0.3s ease;
-        }
-        .dropdown-item:hover {
-            background: var(--bleu);
-            color: #fff;
-        }
-        .dropdown-menu .dropdown-menu {
-            top: 0;
-            left: 100%;
-            margin-left: 0.1rem;
-            background: var(--bleu-fonce);
-            box-shadow: var(--shadow-dark);
-        }
-        .dropdown-menu .dropdown:hover > .dropdown-menu {
-            display: block;
-        }
-        .btn-square {
-            background: var(--bleu-clair);
-            color: var(--bleu-fonce);
-            width: 40px;
-            height: 40px;
-            line-height: 40px;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow);
-        }
-        .btn-square:hover {
-            background: var(--bleu-vif);
-            color: #fff;
-            transform: scale(1.1);
-            box-shadow: 0 8px 15px rgba(0, 191, 255, 0.4);
-        }
-        .bg-secondary h6 {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 400;
-            font-size: 0.95rem;
-            margin: 0;
-        }
-        .bg-secondary i {
-            color: var(--bleu-vif);
-            font-size: 1.2rem;
-            margin-right: 8px;
-            transition: transform 0.3s ease;
-        }
-        .bg-secondary div:hover i {
-            transform: scale(1.2);
-        }
-        .footer {
-            background: var(--bleu-fonce);
-            color: var(--bleu-clair);
-            padding: 2rem 0;
-            margin-top: 2rem;
-        }
-        .footer h5 {
-            font-family: 'Oswald', sans-serif;
-            font-weight: 600;
-            font-size: 1.5rem;
-            color: var(--bleu-vif);
-            margin-bottom: 1.5rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .footer p {
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.95rem;
-            margin-bottom: 0.5rem;
-        }
-        .footer a {
-            color: var(--bleu-clair);
-            transition: color 0.3s ease;
-        }
-        .footer a:hover {
-            color: var(--bleu-vif);
-        }
-        .footer .btn-square {
-            margin: 0 5px;
-        }
-        @media (max-width: 991px) {
-            .navbar-brand h1 {
-                font-size: 2rem;
-            }
-            .navbar-brand img {
-                max-height: 60px;
-            }
-            .nav-link {
-                font-size: 1rem;
-                padding: 8px 12px;
-            }
-            .footer h5 {
-                font-size: 1.3rem;
-            }
-        }
-        @media (max-width: 576px) {
-            .footer {
-                text-align: center;
-            }
-            .footer .btn-square {
-                margin: 5px;
-            }
-        }
-    </style>
-</head>
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-5 text-center">Gérer mes adresses</h1>
 
-<body>
-    <!-- Header Start -->
-    <div class="container-fluid bg-dark px-0 fixed-top">
-        <div class="row gx-0">
-            <div class="col-lg-3 bg-dark d-none d-lg-block">
-                <a href="{{ path('app_home1') }}" class="navbar-brand w-100 h-100 m-0 p-0 d-flex align-items-center justify-content-center">
-                    <img src="{{ asset('images/logo.png') }}" alt="HIVE Logo">
-                    <h1>HIVE</h1>
-                </a>
-            </div>
-            <div class="col-lg-9">
-                <div class="row gx-0 bg-secondary d-none d-lg-flex animate__animated animate__fadeInDown">
-                    <div class="col-lg-7 px-5 text-start">
-                        <div class="h-100 d-inline-flex align-items-center py-3 me-4">
-                            <i class="fa fa-envelope"></i>
-                            <h6>info@hivebybeeu.com</h6>
-                        </div>
-                        <div class="h-100 d-inline-flex align-items-center py-3">
-                            <i class="fa fa-phone-alt"></i>
-                            <h6>+21622820210</h6>
-                        </div>
-                    </div>
-                    <div class="col-lg-5 px-5 text-end">
-                        <div class="d-inline-flex align-items-center py-3">
-                            <a class="btn btn-square rounded-circle me-2 animate__animated animate__pulse animate__infinite" href="#">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                            <a class="btn btn-square rounded-circle me-2 animate__animated animate__pulse animate__infinite" href="#">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                            <a class="btn btn-square rounded-circle me-2 animate__animated animate__pulse animate__infinite" href="#">
-                                <i class="fab fa-linkedin-in"></i>
-                            </a>
-                            <a class="btn btn-square rounded-circle me-2 animate__animated animate__pulse animate__infinite" href="#">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                            <a class="btn btn-square rounded-circle animate__animated animate__pulse animate__infinite" href="#">
-                                <i class="fab fa-youtube"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <nav class="navbar navbar-expand-lg bg-dark navbar-dark p-3 p-lg-0 px-lg-5">
-                    <a href="{{ path('app_home1') }}" class="navbar-brand d-block d-lg-none">
-                        <img src="{{ asset('images/logo.png') }}" alt="HIVE Logo">
-                        <h1>HIVE</h1>
-                    </a>
-                    <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
-                        <div class="navbar-nav mr-auto py-0">
-                            <a href="{{ path('app_home_client') }}" class="nav-item nav-link">Home</a>
-                            <a href="{{ path('app_about1') }}" class="nav-item nav-link">About</a>
-                            <a href="{{ path('app_produit_index') }}" class="nav-item nav-link">Liste Produits</a>
-                            <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Reserver</a>
-                                <div class="dropdown-menu rounded-0 m-0">
-                                    <div class="dropdown">
-                                        <div class="dropdown-menu rounded-0 m-0">
-                                            
-                                        </div>
-                                    </div>
-                                    <div class="dropdown">
-                                        <a href="#" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown">Client</a>
-                                        <div class="dropdown-menu rounded-0 m-0">
-                                           <a href="{{ path('client_services') }}" class="dropdown-item">Services Client</a>
-                                            <a href="{{ path('app_client_reservation_index') }}" class="dropdown-item">Abonnement</a>
-                                            <a href="{{ path('app_cours_liste_participant', {'user_id': app.user.id}) }}" class="dropdown-item">Participation</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </nav>
-            </div>
+    {{ form_start(form, {'attr': {'id': 'address-form', 'novalidate': 'novalidate'}}) }}
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            {{ form_row(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Nom de l\'adresse'}}) }}
+        </div>
+        <div class="col-md-4 mb-3">
+            {{ form_row(form.company, {'attr': {'class': 'form-control', 'placeholder': 'Entreprise'}}) }}
+        </div>
+        <div class="col-md-2 mb-3">
+            {{ form_row(form.phone, {'attr': {'class': 'form-control', 'placeholder': 'Téléphone'}}) }}
         </div>
     </div>
-    <!-- Header End -->
 
-    <!-- Content Start -->
-    {% block content %}
-    <div class="container mt-5">
-        <h1 class="mb-5 text-center">Gérer mes adresses</h1>
-
-        {{ form_start(form, {'attr': {'id': 'address-form', 'novalidate': 'novalidate'}}) }}
-
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                {{ form_row(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Nom de l\'adresse'}}) }}
-            </div>
-            <div class="col-md-4 mb-3">
-                {{ form_row(form.company, {'attr': {'class': 'form-control', 'placeholder': 'Entreprise'}}) }}
-            </div>
-            <div class="col-md-2 mb-3">
-                {{ form_row(form.phone, {'attr': {'class': 'form-control', 'placeholder': 'Téléphone'}}) }}
-            </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            {{ form_row(form.firstname, {'attr': {'class': 'form-control', 'placeholder': 'Prénom'}}) }}
         </div>
-
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                {{ form_row(form.firstname, {'attr': {'class': 'form-control', 'placeholder': 'Prénom'}}) }}
-            </div>
-            <div class="col-md-6 mb-3">
-                {{ form_row(form.lastname, {'attr': {'class': 'form-control', 'placeholder': 'Nom'}}) }}
-            </div>
-        </div>
-
-        <div class="mb-3">
-            {{ form_row(form.adress, {'attr': {'class': 'form-control', 'placeholder': 'Adresse'}}) }}
-        </div>
-
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                {{ form_row(form.city, {'attr': {'class': 'form-control', 'placeholder': 'Ville'}}) }}
-            </div>
-            <div class="col-md-4 mb-3">
-                {{ form_row(form.country, {'attr': {'class': 'form-control', 'placeholder': 'Pays'}}) }}
-            </div>
-            <div class="col-md-2 mb-3">
-                {{ form_row(form.postal, {'attr': {'class': 'form-control', 'placeholder': 'Code postal'}}) }}
-            </div>
-        </div>
-
-        {{ form_end(form) }}
-    </div>
-    {% endblock %}
-    <!-- Content End -->
-
-    <!-- Footer Start -->
-    <div class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6 text-center text-lg-start mb-4 mb-lg-0">
-                    <h5>Contactez-nous</h5>
-                    <p><i class="fa fa-envelope me-2"></i>info@hivebybeeu.com</p>
-                    <p><i class="fa fa-phone-alt me-2"></i>+21622820210</p>
-                </div>
-                <div class="col-lg-6 text-center text-lg-end">
-                    <h5>Suivez-nous</h5>
-                    <div class="d-inline-flex">
-                        <a class="btn btn-square rounded-circle me-2 animate__animated animate__pulse animate__infinite" href="#">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a class="btn btn-square rounded-circle me-2 animate__animated animate__pulse animate__infinite" href="#">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a class="btn btn-square rounded-circle me-2 animate__animated animate__pulse animate__infinite" href="#">
-                            <i class="fab fa-linkedin-in"></i>
-                        </a>
-                        <a class="btn btn-square rounded-circle me-2 animate__animated animate__pulse animate__infinite" href="#">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a class="btn btn-square rounded-circle animate__animated animate__pulse animate__infinite" href="#">
-                            <i class="fab fa-youtube"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
+        <div class="col-md-6 mb-3">
+            {{ form_row(form.lastname, {'attr': {'class': 'form-control', 'placeholder': 'Nom'}}) }}
         </div>
     </div>
-    <!-- Footer End -->
 
-    <!-- JS Libraries -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ asset('lib/owlcarousel/owl.carousel.min.js') }}"></script>
-    <script src="{{ asset('js/main.js') }}"></script>
+    <div class="mb-3">
+        {{ form_row(form.adress, {'attr': {'class': 'form-control', 'placeholder': 'Adresse'}}) }}
+    </div>
 
-    <!-- Custom JavaScript for Header -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    if (this.getAttribute('href').startsWith('#')) {
-                        e.preventDefault();
-                        const target = document.querySelector(this.getAttribute('href'));
-                        target.scrollIntoView({ behavior: 'smooth' });
-                    }
-                });
-            });
-        });
-    </script>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            {{ form_row(form.city, {'attr': {'class': 'form-control', 'placeholder': 'Ville'}}) }}
+        </div>
+        <div class="col-md-4 mb-3">
+            {{ form_row(form.country, {'attr': {'class': 'form-control', 'placeholder': 'Pays'}}) }}
+        </div>
+        <div class="col-md-2 mb-3">
+            {{ form_row(form.postal, {'attr': {'class': 'form-control', 'placeholder': 'Code postal'}}) }}
+        </div>
+    </div>
 
-    <!-- Form Validation Script -->
-    {% block javascripts %}
-    <script>
-        $(document).ready(function() {
-            $('#address-form').validate({
-                rules: {
-                    'form[name]': {
-                        required: true,
-                        minlength: 2
-                    },
-                    'form[company]': {
-                        required: true
-                    },
-                    'form[phone]': {
-                        required: true,
-                        pattern: /^[0-9]{10}$/
-                    },
-                    'form[firstname]': {
-                        required: true,
-                        minlength: 2
-                    },
-                    'form[lastname]': {
-                        required: true,
-                        minlength: 2
-                    },
-                    'form[adress]': {
-                        required: true
-                    },
-                    'form[city]': {
-                        required: true
-                    },
-                    'form[country]': {
-                        required: true
-                    },
-                    'form[postal]': {
-                        required: true,
-                        pattern: /^[0-9]{5}$/
-                    }
+  
+
+    {{ form_end(form) }}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    $(document).ready(function() {
+        $('#address-form').validate({
+            rules: {
+                'form[name]': {
+                    required: true,
+                    minlength: 2
                 },
-                errorPlacement: function(error, element) {
-                    // Ne fait rien, donc aucun message d'erreur ne sera affiché
+                'form[company]': {
+                    required: true
+                },
+                'form[phone]': {
+                    required: true,
+                    pattern: /^[0-9]{10}$/
+                },
+                'form[firstname]': {
+                    required: true,
+                    minlength: 2
+                },
+                'form[lastname]': {
+                    required: true,
+                    minlength: 2
+                },
+                'form[adress]': {
+                    required: true
+                },
+                'form[city]': {
+                    required: true
+                },
+                'form[country]': {
+                    required: true
+                },
+                'form[postal]': {
+                    required: true,
+                    pattern: /^[0-9]{5}$/
                 }
-            });
+            },
+            errorPlacement: function(error, element) {
+                // Ne fait rien, donc aucun message d'erreur ne sera affiché
+            }
         });
-    </script>
-    {% endblock %}
-</body>
-</html>
+    });
+</script>
+{% endblock %}
