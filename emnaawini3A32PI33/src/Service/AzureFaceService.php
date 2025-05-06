@@ -15,8 +15,8 @@ class AzureFaceService
     {
         $this->httpClient = $httpClient;
         $this->logger = $logger;
-        //$this->apiKey = $apiKey;
-        $this->apiKey = 'bara barka';
+        $this->apiKey = $apiKey;
+       
         $this->endpoint = rtrim($endpoint, '/') . '/face/v1.0/detect';
     }
 
