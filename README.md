@@ -1,93 +1,106 @@
-🏋️‍♂️ Projet de Gestion d’un Complexe Sportif
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+ 
+ 
+</head>
+<body>
 
-🎯 Objectif du projet
-Notre projet vise à développer une solution innovante de gestion d’un complexe sportif via une plateforme web et une application desktop.
-Cette plateforme est conçue pour trois types d’utilisateurs : Client, Coach, et Administrateur.
+  <h1>🏋️‍♂️ Projet de Gestion d’un Complexe Sportif</h1>
 
+  <h2>🎯 Objectif du projet</h2>
+  <p>Notre projet vise à développer une <strong>solution innovante de gestion d’un complexe sportif</strong> via une plateforme web et une application desktop.<br>
+  Cette plateforme est conçue pour trois types d’utilisateurs : <strong>Client</strong>, <strong>Coach</strong>, et <strong>Administrateur</strong>.</p>
 
+  <h2>🧩 Modules et Fonctionnalités Principales</h2>
 
-🧩 Modules et Fonctionnalités Principales
-🔐 Authentification complète
-Chaque utilisateur doit créer un compte ou se connecter pour accéder aux différents services :
+  <h3>🔐 Authentification complète</h3>
+  <p>Chaque utilisateur doit créer un compte ou se connecter pour accéder aux différents services :</p>
+  <ul>
+    <li>👤 Client</li>
+    <li>🧑‍🏫 Coach</li>
+    <li>🛠️ Administrateur</li>
+  </ul>
 
-👤 Client
+  <h3>📅 Gestion des cours et du planning</h3>
+  <ul>
+    <li>🧑‍🏫 Le <strong>coach</strong> peut :
+      <ul>
+        <li>Créer des cours</li>
+        <li>Organiser son planning</li>
+        <li>Gérer les réservations associées</li>
+      </ul>
+    </li>
+    <li>👤 Le <strong>client</strong> peut :
+      <ul>
+        <li>Consulter les cours disponibles</li>
+        <li>S’inscrire pour y participer</li>
+      </ul>
+    </li>
+  </ul>
 
-🧑‍🏫 Coach
+  <h3>📝 Gestion des abonnements et des réservations</h3>
+  <ul>
+    <li>👤 Le <strong>client</strong> peut :
+      <ul>
+        <li>Réserver un service</li>
+        <li>Souscrire à un abonnement</li>
+        <li>Recevoir un badge numérique pour accéder aux services</li>
+      </ul>
+    </li>
+    <li>🧑‍🏫 Le <strong>coach</strong> peut :
+      <ul>
+        <li>Consulter les réservations qui lui sont attribuées</li>
+      </ul>
+    </li>
+    <li>🛠️ L’<strong>administrateur</strong> peut :
+      <ul>
+        <li>Créer et classifier les services et abonnements</li>
+        <li>Valider les réservations</li>
+      </ul>
+    </li>
+  </ul>
 
-🛠️ Administrateur
+  <h3>🛍️ Gestion des produits et des catégories</h3>
+  <ul>
+    <li>👤 Le <strong>client</strong> peut :
+      <ul>
+        <li>Parcourir les produits</li>
+        <li>Ajouter au panier</li>
+        <li>Finaliser l’achat avec un paiement intégré</li>
+      </ul>
+    </li>
+    <li>🛠️ L’<strong>administrateur</strong> peut :
+      <ul>
+        <li>Ajouter ou modifier des produits</li>
+        <li>Gérer les catégories</li>
+      </ul>
+    </li>
+  </ul>
 
+  <h3>⚽ Gestion des terrains et des joueurs</h3>
+  <ul>
+    <li>🛠️ L’<strong>administrateur</strong> peut :
+      <ul>
+        <li>Organiser les terrains</li>
+        <li>Créer des matchs</li>
+      </ul>
+    </li>
+    <li>👤 Les <strong>clients/joueurs</strong> peuvent :
+      <ul>
+        <li>Participer à des matchs créés via l’interface</li>
+      </ul>
+    </li>
+  </ul>
 
+  <h2>⚙️ Aspects techniques</h2>
+  <p>Le projet utilise plusieurs <strong>APIs</strong> et <strong>services métiers</strong> pour :</p>
+  <ul>
+    <li>Améliorer l’expérience utilisateur</li>
+    <li>Rendre l’interface fluide et intuitive</li>
+    <li>Optimiser les performances</li>
+  </ul>
 
-📅 Gestion des cours et du planning
-🧑‍🏫 Le coach peut :
-
-Créer des cours
-
-Organiser son planning
-
-Gérer les réservations associées
-
-👤 Le client peut :
-
-Consulter les cours disponibles
-
-S’inscrire pour y participer
-
-
-📝 Gestion des abonnements et des réservations
-👤 Le client peut :
-
-Réserver un service
-
-Souscrire à un abonnement
-
-Recevoir un badge numérique pour accéder aux services
-
-🧑‍🏫 Le coach peut :
-
-Consulter les réservations qui lui sont attribuées
-
-🛠️ L’administrateur peut :
-
-Créer et classifier les services et abonnements
-
-Valider les réservations
-
-
-🛍️ Gestion des produits et des catégories
-👤 Le client peut :
-
-Parcourir les produits
-
-Ajouter au panier
-
-Finaliser l’achat avec un paiement intégré
-
-🛠️ L’administrateur peut :
-
-Ajouter ou modifier des produits
-
-Gérer les catégories
-
-
-⚽ Gestion des terrains et des joueurs
-🛠️ L’administrateur peut :
-
-Organiser les terrains
-
-Créer des matchs
-
-👤 Les clients/joueurs peuvent :
-
-Participer à des matchs créés via l’interface
-
-
-
-⚙️ Aspects techniques
-Le projet utilise plusieurs APIs et services métiers pour :
-
-Améliorer l’expérience utilisateur
-
-Rendre l’interface fluide et intuitive
-
-Optimiser les performances
+</body>
+</html>
