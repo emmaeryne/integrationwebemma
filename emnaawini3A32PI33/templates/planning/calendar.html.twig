@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Planning Calendar{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="mb-5 text-primary display-5 fw-bold d-flex align-items-center gap-3">
+            <i class="fas fa-calendar-alt"></i>
+            Planning Calendar
+        </h1>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div id="calendar" style="min-height: 600px;"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales-all.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const calendarEl = document.getElementById('calendar');
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: '{{ path('app_planning_get_events') }}',
+
+                eventClick: function(info) {
+                    info.jsEvent.preventDefault();
+                    if (info.event.url) {
+                        window.open(info.event.url, '_blank');
+                    }
+                },
+                locale: '{{ app.request.locale }}',
+                editable: false,
+                selectable: false,
+                eventDisplay: 'block',
+                eventColor: '#378006',
+                eventTextColor: '#ffffff'
+            });
+            calendar.render();
+        });
+    </script>
+{% endblock %}

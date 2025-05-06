@@ -1,0 +1,233 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Transporteurs{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+        }
+        .table thead th {
+            font-weight: 500;
+            border: none;
+            letter-spacing: 0.5px;
+        }
+        .table tbody tr {
+            transition: all 0.2s;
+        }
+        .table tbody tr:hover {
+            background-color: rgba(52, 152, 219, 0.08);
+            transform: translateY(-1px);
+        }
+        .rounded-circle {
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 0.25rem 1.5rem rgba(0, 0, 0, 0.08);
+        }
+        .search-container {
+            position: relative;
+            width: 300px;
+        }
+        #searchResults {
+            position: absolute;
+            width: 100%;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            display: none;
+        }
+        #searchResults .list-group-item {
+            border-left: none;
+            border-right: none;
+            padding: 0.75rem 1.25rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        #searchResults .list-group-item:hover {
+            background-color: #f8f9fa;
+        }
+        #carrierSearch:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+        }
+        .btn-new {
+            white-space: nowrap;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 py-3">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">
+                <i class="bi bi-truck me-2"></i>Gestion des Transporteurs
+            </h1>
+            <p class="mb-0 text-muted">Administrez vos solutions de livraison</p>
+        </div>
+        <div class="d-flex gap-3">
+            <div class="search-container">
+                <div class="input-group">
+                    <span class="input-group-text">🔎</span>
+                    <input type="text" 
+                           class="form-control" 
+                           id="carrierSearch" 
+                           placeholder="Rechercher un transporteur..."
+                           autocomplete="off">
+                </div>
+                <div id="searchResults">
+                    <div class="list-group"></div>
+                </div>
+            </div>
+            <a href="{{ path('admin_carrier_new') }}" class="btn btn-primary shadow-sm btn-new">
+                <i class="bi bi-plus-lg me-1"></i> ➕ Nouveau
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-lg overflow-hidden">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-gradient-primary text-white">
+                        <tr>
+                            <th class="ps-4 py-3">Nom</th>
+                            <th class="py-3">Description</th>
+                            <th class="py-3 text-end">Prix</th>
+                            <th class="pe-4 py-3 text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for carrier in carriers %}
+                            <tr class="border-bottom border-light">
+                                <td class="ps-4 py-3 fw-semibold">{{ carrier.name }}</td>
+                                <td class="py-3 text-muted">{{ carrier.description|u.truncate(60, '...') }}</td>
+                                <td class="py-3 text-end fw-bold text-primary">
+                                    {{ (carrier.price / 100)|format_currency('TND') }}
+                                </td>
+                                <td class="pe-4 py-3 text-end">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <a href="{{ path('admin_carrier_show', {'id': carrier.id}) }}" 
+                                           class="btn btn-sm btn-outline-info rounded-circle"
+                                           data-bs-toggle="tooltip" data-bs-title="Voir détails">
+                                            <i class="bi bi-eye-fill me-1"></i> 👀
+                                        </a>
+                                        <a href="{{ path('admin_carrier_edit', {'id': carrier.id}) }}" 
+                                           class="btn btn-sm btn-outline-primary rounded-circle"
+                                           data-bs-toggle="tooltip" data-bs-title="Modifier">
+                                            <i class="bi bi-pencil-fill me-1"></i> ✏️
+                                        </a>
+                                        <form method="post" action="{{ path('admin_carrier_delete', {'id': carrier.id}) }}" 
+                                              onsubmit="return confirm('Confirmez la suppression de ce transporteur?');"
+                                              class="d-inline">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ carrier.id) }}">
+                                            <button class="btn btn-sm btn-outline-danger rounded-circle"
+                                                    data-bs-toggle="tooltip" data-bs-title="Supprimer">
+                                                <i class="bi bi-trash-fill me-1"></i> 🗑️
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center py-5 text-muted">
+                                    <i class="bi bi-truck display-6 d-block mb-3"></i>
+                                    <h5 class="fw-normal">Aucun transporteur enregistré</h5>
+                                    <p class="small">Commencez par ajouter un transporteur</p>
+                                    <a href="{{ path('admin_carrier_new') }}" class="btn btn-primary mt-2">
+                                        <i class="bi bi-plus-lg me-1"></i> ➕ Ajouter
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Activation des tooltips
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
+    // Recherche dynamique
+    const searchInput = document.getElementById('carrierSearch');
+    const resultsContainer = document.getElementById('searchResults');
+    const resultsList = resultsContainer.querySelector('.list-group');
+
+    const debounce = (func, delay) => {
+        let timeoutId;
+        return (...args) => {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                func.apply(null, args);
+            }, delay);
+        };
+    };
+
+    const searchCarriers = (term) => {
+        if (term.length < 2) {
+            resultsContainer.style.display = 'none';
+            return;
+        }
+
+        fetch(`{{ path('admin_carrier_search') }}?q=${encodeURIComponent(term)}`)
+            .then(response => response.json())
+            .then(data => {
+                resultsList.innerHTML = '';
+                
+                if (data.length === 0) {
+                    resultsList.innerHTML = '<div class="list-group-item text-muted">Aucun résultat trouvé</div>';
+                } else {
+                    data.forEach(carrier => {
+                        const item = document.createElement('a');
+                        item.href = carrier.url;
+                        item.className = 'list-group-item list-group-item-action';
+                        item.innerHTML = carrier.text;
+                        resultsList.appendChild(item);
+                    });
+                }
+                
+                resultsContainer.style.display = 'block';
+            });
+    };
+
+    const debouncedSearch = debounce(searchCarriers, 300);
+
+    searchInput.addEventListener('input', (e) => {
+        debouncedSearch(e.target.value);
+    });
+
+    // Fermer les résultats quand on clique ailleurs
+    document.addEventListener('click', (e) => {
+        if (!resultsContainer.contains(e.target) && e.target !== searchInput) {
+            resultsContainer.style.display = 'none';
+        }
+    });
+
+    // Navigation clavier
+    searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            resultsContainer.style.display = 'none';
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,680 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des commandes{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        .badge-paid {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+        .badge-unpaid {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+        .stats-btn {
+            background-color: #696cff;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .stats-btn:hover {
+            background-color: #5a5fe0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .table-hover tbody tr {
+            transition: all 0.2s ease;
+        }
+        .table-hover tbody tr:hover {
+            transform: scale(1.01);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-group .btn {
+            transition: all 0.2s ease;
+        }
+        .btn-group .btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .badge-paid, .badge-unpaid {
+            transition: all 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+        .badge-paid:hover, .badge-unpaid:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .modal-content {
+            animation: fadeInUp 0.4s ease;
+        }
+        
+        @keyframes cardEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .card {
+            animation: cardEntrance 0.6s ease forwards;
+        }
+        
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        
+        canvas {
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+        canvas.show {
+            opacity: 1;
+        }
+
+        /* Styles pour la recherche */
+        #searchResults {
+            z-index: 1000;
+        }
+
+        #searchResults .list-group-item {
+            border-left: none;
+            border-right: none;
+            padding: 0.75rem 1.25rem;
+        }
+
+        #searchResults .list-group-item:first-child {
+            border-top: none;
+        }
+
+        #searchResults .list-group-item:last-child {
+            border-bottom: none;
+        }
+
+        #searchResults .list-group-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        #orderSearch:focus {
+            border-color: #696cff;
+            box-shadow: 0 0 0 0.25rem rgba(105, 108, 255, 0.25);
+        }
+        
+        .search-container {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+}
+
+#searchResults {
+    position: absolute;
+    width: 100%;
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 1000;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    display: none;
+}
+
+#searchResults .list-group-item {
+    border-left: none;
+    border-right: none;
+    padding: 0.75rem 1.25rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#searchResults .list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+#searchResults .list-group-item:first-child {
+    border-top: none;
+}
+
+#searchResults .list-group-item:last-child {
+    border-bottom: none;
+}
+
+.infinite-loader {
+    background-color: #f8f9fa;
+    font-style: italic;
+}
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="d-flex justify-content-between align-items-center mb-4 animate__animated animate__fadeInDown">
+        <h4 class="fw-bold py-3 mb-0">Gestion des commandes</h4>
+        <button type="button" 
+                class="btn stats-btn animate__animated animate__pulse animate__infinite animate__slower"
+                data-bs-toggle="modal" 
+                data-bs-target="#statsModal">
+            <i class="fas fa-chart-bar me-2"></i> Statistiques
+        </button>
+    </div>
+
+    <div class="card animate__animated animate__fadeIn">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <h5 class="mb-0 me-3">Liste des commandes</h5>
+                <div class="search-container position-relative">
+                    <input type="text" 
+                           class="form-control form-control-sm" 
+                           id="orderSearch" 
+                           placeholder="Rechercher une commande..."
+                           autocomplete="off">
+                    <div class="position-absolute top-100 start-0 end-0 z-10 mt-1 d-none" 
+                         id="searchResults" 
+                         style="max-height: 300px; overflow-y: auto; border: 1px solid rgba(0,0,0,.125); border-radius: 0.25rem; background-color: #fff; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);">
+                        <div class="list-group"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="btn-group">
+                <a href="{{ path('admin_order_pdf', {'status': 'paid'}) }}" class="btn btn-success btn-sm animate__animated animate__bounceIn">
+                    <i class="fas fa-file-pdf me-1"></i> PDF Payées
+                </a>
+                <a href="{{ path('admin_order_pdf', {'status': 'unpaid'}) }}" class="btn btn-danger btn-sm animate__animated animate__bounceIn" style="animation-delay: 0.1s">
+                    <i class="fas fa-file-pdf me-1"></i> PDF Non Payées
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr class="animate__animated animate__fadeIn">
+                            <th>ID</th>
+                            <th>Référence</th>
+                            <th>Date</th>
+                            <th>Client</th>
+                            <th>Total</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                            <tr class="animate__animated animate__fadeIn" style="animation-delay: {{ loop.index * 0.05 }}s">
+                                <td>{{ order.id }}</td>
+                                <td>{{ order.reference }}</td>
+                                <td>{{ order.createdAt|date('d/m/Y H:i') }}</td>
+                                <td>{{ order.user.firstname }} {{ order.user.lastname }}</td>
+                                <td>{{ (order.total / 100)|number_format(2, ',', ' ') }} TND</td>
+                                <td>
+                                    {% if order.isPaid %}
+                                        <span class="badge badge-paid animate__animated animate__bounceIn" style="animation-delay: {{ loop.index * 0.1 }}s">Payée</span>
+                                    {% else %}
+                                        <span class="badge badge-unpaid animate__animated animate__bounceIn" style="animation-delay: {{ loop.index * 0.1 }}s">Non payée</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ path('admin_order_show', {'id': order.id}) }}" class="btn btn-info animate__animated animate__zoomIn" style="animation-delay: {{ loop.index * 0.1 }}s">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ path('admin_order_edit', {'id': order.id}) }}" class="btn btn-primary animate__animated animate__zoomIn" style="animation-delay: {{ loop.index * 0.15 }}s">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr class="animate__animated animate__fadeIn">
+                                <td colspan="7" class="text-center">Aucune commande trouvée</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% if totalPages > 1 %}
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center mt-4 animate__animated animate__fadeInUp">
+                        {% if currentPage > 1 %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ path('admin_order_index', {'page': currentPage - 1}) }}">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% for i in 1..totalPages %}
+                            <li class="page-item {% if i == currentPage %}active{% endif %} animate__animated animate__bounceIn" style="animation-delay: {{ loop.index * 0.05 }}s">
+                                <a class="page-link" href="{{ path('admin_order_index', {'page': i}) }}">{{ i }}</a>
+                            </li>
+                        {% endfor %}
+
+                        {% if currentPage < totalPages %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ path('admin_order_index', {'page': currentPage + 1}) }}">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Modal Statistiques -->
+<div class="modal fade" id="statsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Statistiques des commandes</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5>Statut de paiement</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="paymentChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5>Commandes par jour (30 derniers jours)</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="dailyChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5>Commandes par semaine</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="weeklyChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animation d'entrée des éléments
+    const animateElements = () => {
+        const elements = document.querySelectorAll('.animate__animated');
+        elements.forEach(el => {
+            el.style.opacity = '0';
+            const animation = el.getAttribute('class').match(/animate__(\w+)/)[1];
+            el.classList.add('animate__' + animation);
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            observer.observe(el);
+        });
+    };
+    
+    // Recherche dynamique
+const setupSearch = () => {
+    const searchInput = document.getElementById('orderSearch');
+    const resultsContainer = document.getElementById('searchResults');
+    const resultsList = resultsContainer.querySelector('.list-group');
+    
+    let currentPage = 1;
+    let isLoading = false;
+    let searchTerm = '';
+    
+    const debounce = (func, delay) => {
+        let timeoutId;
+        return (...args) => {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                func.apply(null, args);
+            }, delay);
+        };
+    };
+    
+    const displayNoResults = () => {
+        resultsList.innerHTML = '<div class="list-group-item text-muted">Aucun résultat trouvé</div>';
+        resultsContainer.classList.remove('d-none');
+    };
+    
+    const searchOrders = (term, page = 1) => {
+        if (isLoading) return;
+        
+        isLoading = true;
+        searchTerm = term.trim();
+        currentPage = page;
+        
+        if (searchTerm.length < 2) {
+            resultsContainer.classList.add('d-none');
+            isLoading = false;
+            return;
+        }
+        
+        // Afficher un indicateur de chargement
+        if (page === 1) {
+            resultsList.innerHTML = '<div class="list-group-item text-muted">Recherche en cours...</div>';
+            resultsContainer.classList.remove('d-none');
+        }
+        
+        fetch(`/admin/order/search/ajax?term=${encodeURIComponent(searchTerm)}&page=${page}`)
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(data => {
+                if (page === 1) {
+                    resultsList.innerHTML = '';
+                }
+                
+                if (data.results.length === 0 && page === 1) {
+                    displayNoResults();
+                } else {
+                    data.results.forEach(order => {
+                        const item = document.createElement('a');
+                        item.href = `/admin/order/${order.id}`;
+                        item.className = 'list-group-item list-group-item-action';
+                        item.innerHTML = `
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>${order.text}</span>
+                                <span class="badge ${order.isPaid ? 'badge-paid' : 'badge-unpaid'}">
+                                    ${order.isPaid ? 'Payée' : 'Non payée'}
+                                </span>
+                            </div>
+                        `;
+                        resultsList.appendChild(item);
+                    });
+                }
+                
+                // Chargement infini
+                if (data.pagination.more) {
+                    const loader = document.createElement('div');
+                    loader.className = 'list-group-item text-center text-muted infinite-loader';
+                    loader.innerHTML = 'Chargement...';
+                    resultsList.appendChild(loader);
+                    
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting && !isLoading) {
+                                observer.unobserve(entry.target);
+                                searchOrders(searchTerm, currentPage + 1);
+                            }
+                        });
+                    }, { threshold: 0.1 });
+                    
+                    observer.observe(resultsList.lastElementChild);
+                }
+                
+                resultsContainer.classList.remove('d-none');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                resultsList.innerHTML = '<div class="list-group-item text-danger">Erreur lors de la recherche</div>';
+            })
+            .finally(() => {
+                isLoading = false;
+            });
+    };
+    
+    const debouncedSearch = debounce(searchOrders, 300);
+    
+    searchInput.addEventListener('input', (e) => {
+        const term = e.target.value.trim();
+        if (term !== searchTerm) {
+            currentPage = 1;
+            debouncedSearch(term);
+        }
+    });
+    
+    // Gestion des événements de focus et de clic
+    searchInput.addEventListener('focus', () => {
+        if (searchTerm.length >= 2 && resultsList.children.length > 0) {
+            resultsContainer.classList.remove('d-none');
+        }
+    });
+    
+    document.addEventListener('click', (e) => {
+        if (!resultsContainer.contains(e.target) && e.target !== searchInput) {
+            resultsContainer.classList.add('d-none');
+        }
+    });
+    
+    // Gestion des touches pour la navigation
+    searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            resultsContainer.classList.add('d-none');
+        }
+    });
+};
+    // Données des graphiques
+    const paymentData = {
+        paid: {{ paidCount }},
+        unpaid: {{ unpaidCount }}
+    };
+
+    const dailyStats = {{ dailyStats|json_encode|raw }};
+    const dailyDates = Object.keys(dailyStats);
+    const dailyCounts = Object.values(dailyStats);
+
+    const weeklyStats = {{ weeklyStats|json_encode|raw }};
+    const weeklyLabels = Object.keys(weeklyStats);
+    const weeklyCounts = Object.values(weeklyStats);
+
+    // Animation pour afficher les graphiques lorsqu'ils sont visibles
+    const animateCharts = () => {
+        const options = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, options);
+
+        document.querySelectorAll('canvas').forEach(canvas => {
+            observer.observe(canvas);
+        });
+    };
+
+    // Graphique des statuts de paiement
+    const renderPaymentChart = () => {
+        const paymentCtx = document.getElementById('paymentChart').getContext('2d');
+        new Chart(paymentCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Payées', 'Non payées'],
+                datasets: [{
+                    data: [paymentData.paid, paymentData.unpaid],
+                    backgroundColor: ['#28a745', '#dc3545'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = Math.round((context.raw / total) * 100);
+                                return `${context.label}: ${context.raw} (${percentage}%)`;
+                            }
+                        }
+                    }
+                },
+                animation: {
+                    duration: 1500,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
+    };
+
+    // Graphique des commandes quotidiennes
+    const renderDailyChart = () => {
+        const dailyCtx = document.getElementById('dailyChart').getContext('2d');
+        new Chart(dailyCtx, {
+            type: 'line',
+            data: {
+                labels: dailyDates,
+                datasets: [{
+                    label: 'Commandes par jour',
+                    data: dailyCounts,
+                    backgroundColor: 'rgba(105, 108, 255, 0.2)',
+                    borderColor: '#696cff',
+                    borderWidth: 2,
+                    tension: 0.1,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 45
+                        }
+                    }
+                },
+                animation: {
+                    duration: 1500,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
+    };
+
+    // Graphique des commandes hebdomadaires
+    const renderWeeklyChart = () => {
+        const weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
+        new Chart(weeklyCtx, {
+            type: 'bar',
+            data: {
+                labels: weeklyLabels,
+                datasets: [{
+                    label: 'Commandes par semaine',
+                    data: weeklyCounts,
+                    backgroundColor: '#696cff',
+                    borderColor: '#696cff',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 45
+                        }
+                    }
+                },
+                animation: {
+                    duration: 1500,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
+    };
+
+    // Initialiser les graphiques lorsque le modal est ouvert
+    const statsModal = document.getElementById('statsModal');
+    if (statsModal) {
+        statsModal.addEventListener('shown.bs.modal', function() {
+            animateCharts();
+            renderPaymentChart();
+            renderDailyChart();
+            renderWeeklyChart();
+        });
+    }
+
+    // Initialisation
+    animateElements();
+    setupSearch();
+    
+    // Animation au survol des boutons
+    const buttons = document.querySelectorAll('.btn');
+    buttons.forEach(button => {
+        button.addEventListener('mouseenter', () => {
+            button.style.transform = 'translateY(-2px)';
+            button.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
+        });
+        button.addEventListener('mouseleave', () => {
+            button.style.transform = '';
+            button.style.boxShadow = '';
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends 'base-front.html.twig' %}
+
+{% block title %}Détails de la commande {{ reference }}{% endblock %}
+
+{% block content %}
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow">
+                    <div class="card-header bg-white">
+                        <h2 class="h4 mb-0">Détails de votre commande</h2>
+                        <small class="text-muted">Référence : {{ reference }}</small>
+                    </div>
+                    <div class="card-body">
+                        <!-- Info Livraison -->
+                        <div class="mb-4 p-3 bg-light rounded">
+                            <h3 class="h5">Livraison</h3>
+                            <div class="mt-2">
+                                {{ delivery_content|raw }}
+                            </div>
+                        </div>
+
+                        <!-- Liste Produits -->
+                        <h3 class="h5 mb-3">Articles commandés</h3>
+                        <div class="list-group mb-4">
+                            {% set total = null %}
+                            {% for cart in fullCarts %}
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <strong>{{ cart.product }}</strong>
+                                            <div class="text-muted small">Quantité : {{ cart.quantity }}</div>
+                                        </div>
+                                        <div class="text-end">
+                                            <div>{{ (cart.price / 100)|number_format(2, ',', '.') }} TND</div>
+                                            <div class="small text-muted">{{ (cart.price * cart.quantity / 100)|number_format(2, ',', '.') }} TND</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% set total = total + (cart.price * cart.quantity) %}
+                            {% endfor %}
+                        </div>
+
+                        <!-- Total -->
+                        <div class="border-top pt-3">
+                            <div class="d-flex justify-content-between">
+                                <div>Sous-total :</div>
+                                <div>{{ (total / 100)|number_format(2, ',', '.') }} TND</div>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <div>Livraison ({{ carrier.name }}) :</div>
+                                <div>{{ (carrier.price / 100)|number_format(2, ',', '.') }} TND</div>
+                            </div>
+                            <div class="d-flex justify-content-between fw-bold mt-2 pt-2 border-top">
+                                <div>Total :</div>
+                                <div>{{ ((total / 100) + (carrier.price / 100))|number_format(2, ',', '.') }} TND</div>
+                            </div>
+                        </div>
+
+                        <!-- Statut Paiement -->
+                        <div class="mt-4 p-3 rounded {{ order.isPaid ? 'bg-success text-white' : 'bg-warning' }}">
+                            <div class="d-flex align-items-center">
+                                <i class="fas {{ order.isPaid ? 'fa-check-circle' : 'fa-exclamation-circle' }} me-2"></i>
+                                <div>
+                                    <strong>Statut :</strong> 
+                                    {{ order.isPaid ? 'Paiement confirmé' : 'En attente de paiement' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

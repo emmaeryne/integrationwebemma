@@ -1,0 +1,48 @@
+{# templates/participant/index.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Participant index{% endblock %}
+
+{% block body %}
+    <h1>Participant index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>Age</th>
+                <th>Adresse</th>
+                <th>Numéro de téléphone</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for participant in participants %}
+            <tr>
+                <td>{{ participant.id }}</td>
+                <td>{{ participant.Nom }}</td>
+                <td>{{ participant.Prenom }}</td>
+                <td>{{ participant.Age }}</td>
+                <td>{{ participant.adresse }}</td>
+                <td>{{ participant.num_telephone }}</td>
+                <td>
+                    
+                    <form action="{{ path('app_participant_delete', {'userId': userId, 'id': participant.id}) }}" method="post" style="display:inline;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ participant.id) }}">
+                        <button type="submit" class="btn btn-danger">delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">No participants found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_participant_new', {'userId': userId}) }}">Create new</a>
+{% endblock %}

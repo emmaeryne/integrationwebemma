@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Carrier Details{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 py-3">
+        <div>
+            <h1 class="h3 mb-0">
+                <i class="bi bi-truck me-2"></i>Carrier Details
+            </h1>
+            <p class="mb-0 text-muted">Detailed information about this carrier</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{{ path('admin_carrier_index') }}" class="btn btn-outline-secondary rounded-pill">
+                <i class="bi bi-arrow-left me-1"></i> Back to list
+            </a>
+            <a href="{{ path('admin_carrier_edit', {'id': carrier.id}) }}" class="btn btn-primary rounded-pill">
+                <i class="bi bi-pencil me-1"></i> Edit
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 rounded-lg overflow-hidden mb-4">
+                <div class="card-header bg-gradient-primary text-white py-3">
+                    <h5 class="mb-0">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Carrier Information
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-striped mb-0">
+                            <tbody>
+                                <tr>
+                                    <th class="bg-light px-4 py-3" style="width: 30%">ID</th>
+                                    <td class="px-4 py-3">{{ carrier.id }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light px-4 py-3">Name</th>
+                                    <td class="px-4 py-3 fw-semibold">{{ carrier.name }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light px-4 py-3">Description</th>
+                                    <td class="px-4 py-3">{{ carrier.description }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light px-4 py-3">Price</th>
+                                    <td class="px-4 py-3 fw-bold text-primary">
+                                        {{ (carrier.price / 100)|format_currency('TND') }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 rounded-lg overflow-hidden">
+                <div class="card-header bg-gradient-primary text-white py-3">
+                    <h5 class="mb-0">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        Danger Zone
+                    </h5>
+                </div>
+                <div class="card-body p-4 text-center">
+                    <div class="alert alert-warning border-warning mb-4">
+                        <i class="bi bi-exclamation-octagon-fill me-2"></i>
+                        Deleting this carrier is permanent and cannot be undone.
+                    </div>
+                    {{ include('admin/carrier/_delete_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: rgba(0, 0, 0, 0.02);
+    }
+    .table-striped tbody tr:last-child td {
+        border-bottom: none;
+    }
+    .bg-light {
+        background-color: #f8f9fa !important;
+    }
+    .alert-warning {
+        background-color: rgba(255, 193, 7, 0.1);
+    }
+    .rounded-lg {
+        border-radius: 0.75rem !important;
+    }
+</style>
+{% endblock %}

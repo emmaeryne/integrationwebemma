@@ -1,0 +1,48 @@
+{# templates/order/qr_summary.html.twig #}
+
+{% extends 'base-front.html.twig' %}
+
+{% block title %}Récapitulatif de commande #{{ reference }}{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header">
+                <h3>Récapitulatif de commande #{{ reference }}</h3>
+            </div>
+            <div class="card-body">
+                <h5>Informations de livraison</h5>
+                <div class="mb-4">
+                    {{ delivery|raw }}
+                </div>
+                
+                <h5>Détails de la commande</h5>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Produit</th>
+                            <th>Quantité</th>
+                            <th>Prix unitaire</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for detail in order.orderDetails %}
+                        <tr>
+                            <td>{{ detail.product }}</td>
+                            <td>{{ detail.quantity }}</td>
+                            <td>{{ (detail.price/100)|number_format(2, ',', ' ') }} €</td>
+                            <td>{{ (detail.total/100)|number_format(2, ',', ' ') }} €</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+                <div class="text-end mt-4">
+                    <h5>Total: {{ ((order.carrierPrice + order.getTotal())/100)|number_format(2, ',', ' ') }} €</h5>
+                    <p class="text-muted">Inclut {{ (order.carrierPrice/100)|number_format(2, ',', ' ') }} € de frais de livraison</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en" class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default" data-assets-path="{{ asset('sneat-1.0.0/') }}" data-template="vertical-menu-template-free">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <title>Liste des Produits - Gestion | Hive</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ asset('sneat-1.0.0/assets/img/favicon/favicon.ico') }}" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="{{ asset('sneat-1.0.0/assets/vendor/fonts/boxicons.css') }}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="{{ asset('sneat-1.0.0/assets/vendor/css/core.css') }}" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="{{ asset('sneat-1.0.0/assets/vendor/css/theme-default.css') }}" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="{{ asset('sneat-1.0.0/assets/css/demo.css') }}" />
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="{{ asset('sneat-1.0.0/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
+    <link rel="stylesheet" href="{{ asset('sneat-1.0.0/assets/vendor/libs/apex-charts/apex-charts.css') }}" />
+
+    <!-- Custom CSS -->
+    <style>
+        .products-wrapper {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+        }
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+            border-bottom: 4px solid #3498db;
+            padding-bottom: 15px;
+        }
+        .header-section h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            font-family: 'Public Sans', sans-serif;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            background: #f8f9fa;
+            margin-bottom: 1.5rem;
+            font-family: 'Poppins', sans-serif;
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+        .card-header {
+            background-color: #3498db;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 10px 10px 0 0;
+        }
+        .card-header h6 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        .card-body {
+            padding: 1.5rem;
+            background: #fff;
+            border-radius: 0 0 10px 10px;
+        }
+        .btn-primary {
+            background-color: #28a745;
+            border-color: #28a745;
+            padding: 8px 16px;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #218838;
+            border-color: #218838;
+            transform: translateY(-2px);
+        }
+        .btn-edit {
+            background-color: #FF9800;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 6px 12px;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+        .btn-edit:hover {
+            background-color: #e68a00;
+            transform: translateY(-2px);
+        }
+        .btn-delete {
+            background-color: #f44336;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 6px 12px;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+        .btn-delete:hover {
+            background-color: #d32f2f;
+            transform: translateY(-2px);
+        }
+        .table-responsive {
+            margin-top: 1rem;
+        }
+        .table thead th {
+            background-color: #343a40;
+            color: #fff;
+            font-weight: 600;
+            vertical-align: middle;
+        }
+        .table tbody tr:hover {
+            background-color: #f1f3f5;
+        }
+        .table img {
+            border-radius: 5px;
+            object-fit: cover;
+        }
+        .no-results {
+            font-size: 1.2rem;
+            padding: 20px;
+            background: #e9ecef;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .qrcode-img {
+            width: 80px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="layout-wrapper layout-content-navbar">
+        <div class="layout-container">
+            <!-- Menu -->
+            <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+                <div class="app-brand demo">
+                    <a href="{{ path('app_dashboard') }}" class="app-brand-link">
+                        <span class="app-brand-logo demo">
+                            <img src="{{ asset('images/logo.png') }}" alt="Hive Logo" style="height: 80px; width: auto;" />
+                        </span>
+                        <span class="app-brand-text demo menu-text fw-bolder ms-2">HIVE</span>
+                    </a>
+                    <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+                        <i class="bx bx-chevron-left bx-sm align-middle"></i>
+                    </a>
+                </div>
+                
+                <!-- Menu content would be the same as in your categories template -->
+                <!-- ... -->
+                 <ul class="menu-inner py-1">
+                    <!-- Dashboard -->
+                    <li class="menu-item">
+                        <a href="{{ path('app_dashboard') }}" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                            <div data-i18n="Analytics">Dashboard</div>
+                        </a>
+                    </li>
+                    <li class="menu-item active">
+                        <a href="https://127.0.0.1:8000/service/" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-cog"></i>
+                            <div data-i18n="Services">Services</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="https://127.0.0.1:8000/abonnement/" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-cog"></i>
+                            <div data-i18n="Abonnements">Abonnements</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="https://127.0.0.1:8000/type-abonnement/" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-cog"></i>
+                            <div data-i18n="Association">Association</div>
+                        </a>
+                        <li class="menu-item">
+                        <a href="https://127.0.0.1:8000/reservation/" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-cog"></i>
+                            <div data-i18n="Reservation">Reservation</div>
+                        </a>
+                    </li>
+
+
+                     <li class="menu-item">
+                        <a href="https://127.0.0.1:8000/cours/4" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-cog"></i>
+                            <div data-i18n="Cours">Cours</div>
+                        </a>
+                    </li>
+                    <!-- Layouts -->
+                    <li class="menu-item">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon tf-icons bx bx-layout"></i>
+                            <div data-i18n="Layouts">Layouts</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Without menu">Without menu</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Without navbar">Without navbar</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Container">Container</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Fluid">Fluid</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Blank">Blank</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- Pages -->
+                    <li class="menu-header small text-uppercase">
+                        <span class="menu-header-text">Pages</span>
+                    </li>
+                    <li class="menu-item">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon tf-icons bx bx-dock-top"></i>
+                            <div data-i18n="Account Settings">Account Settings</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Account">Account</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Notifications">Notifications</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Connections">Connections</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="menu-item">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
+                            <div data-i18n="Authentications">Authentications</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="#" class="menu-link" target="_blank">
+                                    <div data-i18n="Basic">Login</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="#" class="menu-link" target="_blank">
+                                    <div data-i18n="Basic">Register</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="#" class="menu-link" target="_blank">
+                                    <div data-i18n="Basic">Forgot Password</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="menu-item">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon tf-icons bx bx-cube-alt"></i>
+                            <div data-i18n="Misc">Misc</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Error">Error</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Under Maintenance">Under Maintenance</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- Components -->
+                    <li class="menu-header small text-uppercase"><span class="menu-header-text">Components</span></li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-collection"></i>
+                            <div data-i18n="Basic">Cards</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="javascript:void(0)" class="menu-link menu-toggle">
+                            <i class="menu-icon tf-icons bx bx-box"></i>
+                            <div data-i18n="User interface">User interface</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Accordion">Accordion</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Alerts">Alerts</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="menu-item">
+                        <a href="javascript:void(0)" class="menu-link menu-toggle">
+                            <i class="menu-icon tf-icons bx bx-copy"></i>
+                            <div data-i18n="Extended UI">Extended UI</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Perfect Scrollbar">Perfect scrollbar</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Text Divider">Text Divider</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-crown"></i>
+                            <div data-i18n="Boxicons">Boxicons</div>
+                        </a>
+                    </li>
+                    <!-- Forms & Tables -->
+                    <li class="menu-header small text-uppercase"><span class="menu-header-text">Forms & Tables</span></li>
+                    <li class="menu-item">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon tf-icons bx bx-detail"></i>
+                            <div data-i18n="Form Elements">Form Elements</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Basic Inputs">Basic Inputs</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Input groups">Input groups</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="menu-item">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon tf-icons bx bx-detail"></i>
+                            <div data-i18n="Form Layouts">Form Layouts</div>
+                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Vertical Form">Vertical Form</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="#" class="menu-link">
+                                    <div data-i18n="Horizontal Form">Horizontal Form</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-table"></i>
+                            <div data-i18n="Tables">Tables</div>
+                        </a>
+                    </li>
+                </ul>
+            
+                
+            </aside>
+            <!-- / Menu -->
+
+            <!-- Layout container -->
+            <div class="layout-page">
+                <!-- Navbar -->
+                <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" id="layout-navbar">
+                    <!-- Navbar content would be the same as in your categories template -->
+                    <!-- ... -->
+                </nav>
+                <!-- / Navbar -->
+
+                <!-- Content wrapper -->
+                <div class="content-wrapper">
+                    <div class="container-xxl flex-grow-1 container-p-y">
+                        <div class="products-wrapper">
+                            <!-- En-tête -->
+                            <div class="header-section">
+                                <h1><i class="bi bi-box-seam me-2"></i> Liste des Produits</h1>
+                                <div>
+                                    <a href="{{ path('app2_produit_new') }}" class="btn btn-primary me-2">
+                                        <i class="bi bi-plus-circle me-2"></i> Nouveau Produit
+                                    </a>
+                                    <a href="{{ path('admin_stats') }}" class="btn btn-primary me-2">
+                                        <i class="bi bi-graph-up me-2"></i> Statistiques
+                                    </a>
+                                    <a href="{{ path('pdf') }}" class="btn btn-primary">
+                                        <i class="bi bi-file-earmark-pdf me-2"></i> PDF
+                                        
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Messages flash -->
+                            {% for message in app.flashes('success') %}
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <i class="bi bi-check-circle me-2"></i> {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                            {% for message in app.flashes('error') %}
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <i class="bi bi-exclamation-triangle me-2"></i> {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+
+                            <!-- Tableau des produits -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6>Produits</h6>
+                                    <a href="{{ path('app2_produit_new') }}" class="btn btn-primary btn-sm">Ajouter</a>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nom du produit</th>
+                                                    <th>Catégorie</th>
+                                                    <th>Prix (€)</th>
+                                                    <th>Stock</th>
+                                                    <th>Date</th>
+                                                    <th>Fournisseur</th>
+                                                    <th>QR Code</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for produit in produits %}
+                                                    <tr>
+                                                        <td>{{ produit.NomProduit }}</td>
+                                                        <td>{{ produit.categorie ? produit.categorie.nomcategorie : 'Non défini' }}</td>
+                                                        <td>{{ produit.Prix|number_format(2, '.', ' ') }}</td>
+                                                        <td>{{ produit.StockDispo }}</td>
+                                                        <td>{{ produit.Date|date('d/m/Y') }}</td>
+                                                        <td>{{ produit.Fournisseur }}</td>
+                                                        <td>
+                                                            <img src="{{ qrCodes[produit.id] }}" alt="QR Code" class="qrcode-img">
+                                                        </td>
+                                                        <td>
+                                                            <a href="{{ path('app2_produit_edit', {'id': produit.id}) }}" class="btn-edit btn-sm">Éditer</a>
+                                                            <form method="post"
+                                                                  action="{{ path('app2_produit_delete', {'id': produit.id}) }}"
+                                                                  style="display:inline;"
+                                                                  onsubmit="return confirmDeleteProduct(event)">
+                                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ produit.id) }}">
+                                                                <button type="submit" class="btn-delete btn-sm">Supprimer</button>
+                                                            </form>
+                                                        </td>
+                                                    </tr>
+                                                {% else %}
+                                                    <tr>
+                                                        <td colspan="8" class="no-results">
+                                                            <i class="bi bi-info-circle me-2"></i> Aucun produit trouvé.
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <footer class="content-footer footer bg-footer-theme">
+                        <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+                            <div class="mb-2 mb-md-0">
+                                © {{ "now"|date("Y") }}, made with ❤️ by
+                                beeu
+                            </div>
+                        </div>
+                    </footer>
+                    <!-- / Footer -->
+                </div>
+                <!-- / Content wrapper -->
+            </div>
+            <!-- / Layout page -->
+        </div>
+        <div class="layout-overlay layout-menu-toggle"></div>
+    </div>
+
+    <!-- Core JS -->
+    <script src="{{ asset('sneat-1.0.0/assets/vendor/libs/jquery/jquery.js') }}"></script>
+    <script src="{{ asset('sneat-1.0.0/assets/vendor/libs/popper/popper.js') }}"></script>
+    <script src="{{ asset('sneat-1.0.0/assets/vendor/js/bootstrap.js') }}"></script>
+    <script src="{{ asset('sneat-1.0.0/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
+    <script src="{{ asset('sneat-1.0.0/assets/vendor/js/menu.js') }}"></script>
+    <script src="{{ asset('sneat-1.0.0/assets/vendor/libs/apex-charts/apexcharts.js') }}"></script>
+    <script src="{{ asset('sneat-1.0.0/assets/js/main.js') }}"></script>
+    <script src="{{ asset('sneat-1.0.0/assets/js/dashboards-analytics.js') }}"></script>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Custom JS -->
+    <script>
+        function confirmDeleteProduct(event) {
+            event.preventDefault();
+
+            Swal.fire({
+                title: "Supprimer ce produit ?",
+                text: "Voulez-vous vraiment supprimer ce produit ?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Supprimer",
+                cancelButtonText: "Annuler",
+                confirmButtonColor: "#f44336",
+                cancelButtonColor: "#6c757d"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    event.target.submit();
+                }
+            });
+        }
+    </script>
+</body>
+</html>

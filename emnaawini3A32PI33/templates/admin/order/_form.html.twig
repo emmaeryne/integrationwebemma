@@ -1,0 +1,31 @@
+{{ form_start(form) }}
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      {{ form_label(form.carrierName, null, {'label_attr': {'class': 'form-label'}}) }}
+      {{ form_widget(form.carrierName, {'attr': {'class': 'form-control'}}) }}
+      {{ form_errors(form.carrierName) }}
+    </div>
+    <div class="col-md-6 mb-3">
+      {{ form_label(form.carrierPrice, null, {'label_attr': {'class': 'form-label'}}) }}
+      <div class="input-group">
+        <span class="input-group-text">TND</span>
+        {{ form_widget(form.carrierPrice, {'attr': {'class': 'form-control'}}) }}
+      </div>
+      {{ form_errors(form.carrierPrice) }}
+    </div>
+  </div>
+  <div class="mb-3">
+    <div class="form-check form-switch">
+      {{ form_widget(form.isPaid, {'attr': {'class': 'form-check-input'}}) }}
+      {{ form_label(form.isPaid, null, {'label_attr': {'class': 'form-check-label'}}) }}
+    </div>
+  </div>
+  <div class="mt-2">
+    <button type="submit" class="btn btn-primary me-2">
+      <i class="bx bx-save me-1"></i> {{ button_label|default('Enregistrer') }}
+    </button>
+    <a href="{{ path('admin_order_index') }}" class="btn btn-outline-secondary">
+      <i class="bx bx-arrow-back me-1"></i> Annuler
+    </a>
+  </div>
+{{ form_end(form) }}

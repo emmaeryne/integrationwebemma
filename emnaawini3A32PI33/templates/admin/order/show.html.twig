@@ -1,0 +1,103 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la commande #{{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-8">
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Commande #{{ order.id }}</h5>
+        <div>
+          <a href="{{ path('admin_order_index') }}" class="btn btn-secondary">
+            <i class="bx bx-arrow-back me-1"></i> Retour
+          </a>
+          <a href="{{ path('admin_order_edit', {'id': order.id}) }}" class="btn btn-primary">
+            <i class="bx bx-edit me-1"></i> Modifier
+          </a>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Date</label>
+              <div class="form-control-plaintext">{{ order.createdAt|date('d/m/Y H:i') }}</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Statut de paiement</label>
+              <div class="form-control-plaintext">
+                {% if order.isPaid %}
+                  <span class="badge bg-label-success">Payée</span>
+                {% else %}
+                  <span class="badge bg-label-danger">Non payée</span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Client</label>
+              <div class="form-control-plaintext">{{ order.user.fullname }}</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Transporteur</label>
+              <div class="form-control-plaintext">{{ order.carrierName }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Frais de port</label>
+              <div class="form-control-plaintext">{{ (order.carrierPrice / 100)|format_currency('TND') }}</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Total produits</label>
+              <div class="form-control-plaintext">{{ (order.total / 100)|format_currency('TND') }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0">Produits commandés</h5>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-borderless">
+            <thead>
+              <tr>
+                <th>Produit</th>
+                <th>Quantité</th>
+                <th>Prix</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for detail in order.orderDetails %}
+              <tr>
+                <td>{{ detail.product }}</td>
+                <td>{{ detail.quantity }}</td>
+                <td>{{ (detail.price / 100)|format_currency('TND') }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
