@@ -417,6 +417,10 @@
                                                 <th scope="row">ID User</th>
                                                 <td>{{ joueur.idUser ?: 'N/A' }}</td>
                                             </tr>
+                                            <tr>
+                                                <th scope="row">Team</th>
+                                                <td>{{ joueur.equipe ? joueur.equipe.nomEquipe : 'No team assigned' }}</td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>

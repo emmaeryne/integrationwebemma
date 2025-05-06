@@ -1,13 +1,213 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Joueur{% endblock %}
+{% block title %}Edit Joueur #{{ joueur.idJoueur }} - Gestion | Hive{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .matches-wrapper {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+        }
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+            border-bottom: 4px solid #3498db;
+            padding-bottom: 15px;
+        }
+        .header-section h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .breadcrumb {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+        .breadcrumb-item a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        .breadcrumb-item a:hover {
+            text-decoration: underline;
+        }
+        .btn-back {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            padding: 10px 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-back:hover {
+            background-color: #5c636a;
+            border-color: #5c636a;
+            transform: translateY(-2px);
+        }
+        .btn-save {
+            background-color: #007bff;
+            border-color: #007bff;
+            padding: 10px 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-save:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        .card {
+            background: #f8f9fa;
+            border: none;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        .table th {
+            background-color: #343a40;
+            color: #fff;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+        .table td {
+            vertical-align: middle;
+            font-size: 1rem;
+            color: #2c3e50;
+        }
+        .actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        .section-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin: 20px 0 10px;
+            font-weight: 600;
+        }
+        .player-photo {
+            max-width: 150px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .no-photo {
+            font-style: italic;
+            color: #6c757d;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <h1>Edit Joueur</h1>
+    <div class="layout-wrapper layout-content-navbar">
+        <div class="layout-container">
+            <div class="layout-page">
+                <div class="content-wrapper">
+                    <div class="container-xxl flex-grow-1 container-p-y">
+                        <div class="matches-wrapper">
+                            <!-- Breadcrumb -->
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">Dashboard</a></li>
+                                    <li class="breadcrumb-item"><a href="{{ path('app_joueur_index') }}">Players</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Edit Joueur #{{ joueur.idJoueur }}</li>
+                                </ol>
+                            </nav>
 
-    {{ include('joueur/_form.html.twig', {'button_label': 'Update'}) }}
+                            <!-- Header -->
+                            <div class="header-section">
+                                <h1>Edit Joueur #{{ joueur.idJoueur }}</h1>
+                                <a href="{{ path('app_joueur_index') }}" class="btn btn-back text-white" aria-label="Back to players list">
+                                    <i class="bi bi-arrow-left-circle me-2"></i> Back to List
+                                </a>
+                            </div>
 
-    <a href="{{ path('app_joueur_index') }}">back to list</a>
+                            <!-- Edit Form -->
+                            <div class="card">
+                                <div class="card-body">
+                                    <h2 class="section-title">Edit Player Details</h2>
+                                    {{ form_start(form) }}
+                                    <table class="table table-borderless">
+                                        <tbody>
+                                            <tr>
+                                                <th scope="row">ID User</th>
+                                                <td>{{ form_widget(form.id_user) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">Nom Joueur</th>
+                                                <td>{{ form_widget(form.nom_joueur) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">CIN</th>
+                                                <td>{{ form_widget(form.cin) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">Photo</th>
+                                                <td>
+                                                    {% if joueur.urlPhoto %}
+                                                        <img src="{{ joueur.urlPhoto }}" alt="Photo of {{ joueur.nomJoueur }}" class="player-photo">
+                                                    {% else %}
+                                                        <span class="no-photo">No photo available</span>
+                                                    {% endif %}
+                                                    <div class="mt-2">
+                                                        {{ form_widget(form.url_photo, { 'attr': { 'onchange': 'previewPhoto(this)' } }) }}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">Team</th>
+                                                <td>{{ form_widget(form.equipe) }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="actions">
+                                        <button type="submit" class="btn btn-save text-white" aria-label="Save changes">
+                                            <i class="bi bi-save me-2"></i> Save Changes
+                                        </button>
+                                    </div>
+                                    {{ form_end(form) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-    {{ include('joueur/_delete_form.html.twig') }}
+                    <!-- Footer -->
+                    <footer class="content-footer footer bg-footer-theme">
+                        <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+                            <div class="mb-2 mb-md-0">
+                                © {{ "now"|date("Y") }}, made with ❤️ by beeu
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript to preview the photo when a new file is selected
+        function previewPhoto(input) {
+            const preview = document.querySelector('.player-photo');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
 {% endblock %}

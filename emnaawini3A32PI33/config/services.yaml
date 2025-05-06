@@ -47,7 +47,13 @@ services:
             $logger: '@logger'
             $postmarkApiKey: '%env(POSTMARK_API_KEY)%'
         public: true
+          google_recaptcha_site_key: "%env(GOOGLE_RECAPTCHA_SITE_KEY)%"
 
+ # Azure Face Service configuration
+    App\Service\AzureFaceService:
+        arguments:
+            $apiKey: "%env(AZURE_FACE_KEY)%"
+            $endpoint: "%env(AZURE_FACE_ENDPOINT)%"
 
     # Add more service definitions when explicit configuration is needed
     # Please note that last definitions always *replace* previous ones
