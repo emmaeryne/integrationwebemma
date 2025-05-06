@@ -1,5 +1,0 @@
-<form method="post" action="{{ path('app2_produit_delete', {'id': produit.id}) }}" onsubmit="confirmDelete(event)">
-  <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ produit.id) }}">
-  <button class="btn btn-danger btn-sm btn-action">Delete</button>
-</form>
-
