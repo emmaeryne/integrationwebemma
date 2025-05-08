@@ -331,16 +331,53 @@
                             <!-- Breadcrumb -->
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">Dashboard</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Tournaments</li>
+                                    <li class="breadcrumb-item">
+                                        <a href="{{ path('app_dashboard') }}">
+                                            {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                                Tableau de Bord
+                                            {% else %}
+                                                Dashboard
+                                            {% endif %}
+                                        </a>
+                                    </li>
+                                    <li class="breadcrumb-item active" aria-current="page">
+                                        {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                            Tournois
+                                        {% else %}
+                                            Tournaments
+                                        {% endif %}
+                                    </li>
                                 </ol>
                             </nav>
 
                             <!-- Header -->
                             <div class="header-section">
-                                <h1>Tournoi Index</h1>
+                                <h1>
+                                    {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                        Index des Tournois
+                                    {% else %}
+                                        Tournament Index
+                                    {% endif %}
+                                </h1>
                                 <a href="{{ path('app_tournoi_new') }}" class="btn btn-add-tournoi text-white" aria-label="Create new tournament">
-                                    <i class="bi bi-plus-circle me-2"></i> Create New Tournoi
+                                    <i class="bi bi-plus-circle me-2"></i>
+                                    {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                        Créer un Nouveau Tournoi
+                                    {% else %}
+                                        Create New Tournament
+                                    {% endif %}
+                                </a>
+                            </div>
+
+                            <!-- Language Switcher -->
+                            <div class="language-switcher mb-3">
+                                <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all | merge({'lang': 'en'})) }}"
+                                   class="btn {% if app.request.query.get('lang', 'en') == 'en' %}btn-primary{% else %}btn-secondary{% endif %}">
+                                    🇬🇧
+                                </a>
+                                <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all | merge({'lang': 'fr'})) }}"
+                                   class="btn {% if app.request.query.get('lang', 'en') == 'fr' %}btn-primary{% else %}btn-secondary{% endif %}">
+                                    🇫🇷
                                 </a>
                             </div>
 
@@ -364,12 +401,48 @@
                                     <table class="table table-striped table-hover">
                                         <thead class="table-dark">
                                             <tr>
-                                                <th scope="col">ID Tournoi</th>
-                                                <th scope="col">Nom Tournoi</th>
-                                                <th scope="col">Type Tournoi</th>
-                                                <th scope="col">Date Tournoi</th>
-                                                <th scope="col">Description</th>
-                                                <th scope="col">Actions</th>
+                                                <th scope="col">
+                                                    {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                                        ID Tournoi
+                                                    {% else %}
+                                                        Tournament ID
+                                                    {% endif %}
+                                                </th>
+                                                <th scope="col">
+                                                    {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                                        Nom Tournoi
+                                                    {% else %}
+                                                        Tournament Name
+                                                    {% endif %}
+                                                </th>
+                                                <th scope="col">
+                                                    {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                                        Type Tournoi
+                                                    {% else %}
+                                                        Tournament Type
+                                                    {% endif %}
+                                                </th>
+                                                <th scope="col">
+                                                    {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                                        Date Tournoi
+                                                    {% else %}
+                                                        Tournament Date
+                                                    {% endif %}
+                                                </th>
+                                                <th scope="col">
+                                                    {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                                        Description
+                                                    {% else %}
+                                                        Description
+                                                    {% endif %}
+                                                </th>
+                                                <th scope="col">
+                                                    {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                                        Actions
+                                                    {% else %}
+                                                        Actions
+                                                    {% endif %}
+                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -386,15 +459,15 @@
                                                     <td>{{ tournoi.descriptionTournoi|length > 50 ? tournoi.descriptionTournoi|slice(0, 50) ~ '...' : tournoi.descriptionTournoi }}</td>
                                                     <td>
                                                         <div class="d-flex gap-1">
-                                                            <a href="{{ path('app_tournoi_show', {'id_tournoi': tournoi.idTournoi}) }}" class="btn btn-action btn-show text-white" title="Show" aria-label="Show tournament">
+                                                            <a href="{{ path('app_tournoi_show', {'idTournoi': tournoi.idTournoi}) }}" class="btn btn-action btn-show text-white" title="{% if app.request.query.get('lang', 'en') == 'fr' %}Afficher{% else %}Show{% endif %}" aria-label="{% if app.request.query.get('lang', 'en') == 'fr' %}Afficher le tournoi{% else %}Show tournament{% endif %}">
                                                                 <i class="bi bi-eye"></i>
                                                             </a>
-                                                            <a href="{{ path('app_tournoi_edit', {'id_tournoi': tournoi.idTournoi}) }}" class="btn btn-action btn-edit text-white" title="Edit" aria-label="Edit tournament">
+                                                            <a href="{{ path('app_tournoi_edit', {'id_tournoi': tournoi.idTournoi}) }}" class="btn btn-action btn-edit text-white" title="{% if app.request.query.get('lang', 'en') == 'fr' %}Modifier{% else %}Edit{% endif %}" aria-label="{% if app.request.query.get('lang', 'en') == 'fr' %}Modifier le tournoi{% else %}Edit tournament{% endif %}">
                                                                 <i class="bi bi-pencil"></i>
                                                             </a>
-                                                            <form method="post" action="{{ path('app_tournoi_delete', {'id_tournoi': tournoi.idTournoi}) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete Tournoi #{{ tournoi.idTournoi }}?');">
+                                                            <form method="post" action="{{ path('app_tournoi_delete', {'id_tournoi': tournoi.idTournoi}) }}" style="display:inline;" onsubmit="return confirm('{% if app.request.query.get('lang', 'en') == 'fr' %}Êtes-vous sûr de vouloir supprimer le tournoi #{{ tournoi.idTournoi }} ?{% else %}Are you sure you want to delete Tournament #{{ tournoi.idTournoi }}?{% endif %}');">
                                                                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ tournoi.idTournoi) }}">
-                                                                <button type="submit" class="btn btn-action btn-delete text-white" title="Delete" aria-label="Delete tournament">
+                                                                <button type="submit" class="btn btn-action btn-delete text-white" title="{% if app.request.query.get('lang', 'en') == 'fr' %}Supprimer{% else %}Delete{% endif %}" aria-label="{% if app.request.query.get('lang', 'en') == 'fr' %}Supprimer le tournoi{% else %}Delete tournament{% endif %}">
                                                                     <i class="bi bi-trash"></i>
                                                                 </button>
                                                             </form>
@@ -407,9 +480,31 @@
                                 </div>
                             {% else %}
                                 <div class="no-results">
-                                    <i class="bi bi-info-circle me-2"></i> No tournaments found.
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                        Aucun tournoi trouvé.
+                                    {% else %}
+                                        No tournaments found.
+                                    {% endif %}
                                 </div>
                             {% endif %}
+                        </div>
+                        <div class="navigation-buttons text-center mt-4">
+                            <a href="{{ path('app_game_match_index') }}" class="btn btn-secondary me-2">
+                                Game Matches
+                            </a>
+                            <a href="{{ path('app_tournoi_index') }}" class="btn btn-secondary me-2">
+                                Tournaments
+                            </a>
+                            <a href="{{ path('app_equipe_index') }}" class="btn btn-secondary me-2">
+                                Teams
+                            </a>
+                            <a href="{{ path('app_joueur_index') }}" class="btn btn-secondary me-2">
+                                Players
+                            </a>
+                            <a href="{{ path('app_terrain_index') }}" class="btn btn-secondary">
+                                Terrains
+                            </a>
                         </div>
                     </div>
 
