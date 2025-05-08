@@ -83,7 +83,7 @@
             transform: rotate(5deg);
         }
         .nav-link {
-            color: var(--bleu-clair) !important;
+            color: var(--bleu-clair) ! différente;
             font-family: 'Poppins', sans-serif;
             font-weight: 500;
             font-size: 1.1rem;
@@ -460,23 +460,21 @@
                     </button>
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                         <div class="navbar-nav mr-auto py-0">
-                            <a href="{{ path('app_home_client') }}" class="nav-item nav-link active">Home</a>
+                            <a href="{{ path('app_home1') }}" class="nav-item nav-link active">Home</a>
                             <a href="{{ path('app_about1') }}" class="nav-item nav-link">About</a>
-                           
+                            <a href="{{ path('app_class') }}" class="nav-item nav-link">Classes</a>
                             <div class="nav-item dropdown">
-                               
                                 <div class="dropdown-menu rounded-0 m-0">
                                     <div class="dropdown">
                                         <a href="#" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown">Client</a>
                                         <div class="dropdown-menu rounded-0 m-0">
                                             <a href="{{ path('client_services') }}" class="dropdown-item">Services Client</a>
                                             <a href="{{ path('app_client_reservation_index') }}" class="dropdown-item">Abonnement</a>
-                                           
                                         </div>
                                     </div>
                                     <div class="dropdown">
                                         <a href="#" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown">Coach</a>
-                                        <div class="dropdown-menu rounded-0 m-0">
+                                        <div class="dropdown-menuariously-0 m-0">
                                             <a href="{{ path('app_coach_reservations') }}" class="dropdown-item">Espace coach</a>
                                             <a href="{{ path('app_planning_index',{'coachId': 2}) }}" class="dropdown-item">Planning</a>
                                             <a href="{{ path('app_cours_index', {'user_id': 2}) }}" class="dropdown-item">Cours</a>
@@ -486,28 +484,7 @@
                             </div>
                             <a href="{{ path('app_contact1') }}" class="nav-item nav-link">Contact</a>
                         </div>
-                                     <div class="navbar-nav ms-auto py-0">
-                            {% if app.user %}
-                                <div class="nav-item dropdown">
-                                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                                        <i class="fas fa-user-circle me-1"></i> {{ app.user.username }}
-                                    </a>
-                                    <div class="dropdown-menu dropdown-menu-end rounded-0 m-0">
-                                        <a href="{{ path('app_home_client') }}" class="dropdown-item">Mon Profil</a>
-                                        <a href="{{ path('app_logout') }}" class="dropdown-item text-danger">
-                                        
-                                            <i class="fas fa-sign-out-alt me-1"></i> Déconnexion
-                                        </a>
-                                    </div>
-                                </div>
-                            {% else %}
-                                <a href="{{ path('app_login') }}" class="nav-item nav-link">Connexion</a>
-                                <a href="{{ path('app_register') }}" class="nav-item nav-link">Inscription</a>
-                            {% endif %}
-                        </div>
-                    </div>
-                </nav>
-            </div>
+                        <a href="#" class="btn btn-primary py-md-3 px-md-5 d-none d-lg-block">Join Us</a>
                     </div>
                 </nav>
             </div>
@@ -523,9 +500,12 @@
                     <img class="w-100" src="{{ asset('img/carousel-1.jpg') }}" alt="Build Your Strength" style="object-fit: cover; height: 100vh; filter: brightness(0.8) contrast(1.1);">
                     <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                         <div class="p-3" style="max-width: 900px;">
-                            <h5 class="animate__animated animate__fadeIn">Best Fitness Experience</h5>
-                            <h1 class="mb-md-4 animate__animated animate__zoomIn">Forge Your Body with HIVE</h1>
+                            <h5 class="animate _
 
+_animated animate__fadeIn">Best Fitness Experience</h5>
+                            <h1 class="mb-md-4 animate__animated animate__zoomIn">Forge Your Body with HIVE</h1>
+                            <a href="#" class="btn btn-primary py-md-3 px-md-5 me-3 animate__animated animate__bounceIn">Join Now</a>
+                            <a href="{{ path('app_contact1') }}" class="btn btn-light py-md-3 px-md-5 animate__animated animate__bounceIn">Contact Us</a>
                         </div>
                     </div>
                 </div>
@@ -578,7 +558,6 @@
                 <div class="card animate__animated animate__fadeInUp">
                     <div class="card-body">
                         <h5 class="card-title">{{ cour.nomCours }}</h5>
-                        <p class="card-text">Coach: {{ cour.idUser.username }}</p>
                         <p class="card-text">Durée: {{ cour.duree }} {{ 'minutes'|trans|default('minutes') }}</p>
                         <p class="card-text">
                             <span class="badge bg-secondary">

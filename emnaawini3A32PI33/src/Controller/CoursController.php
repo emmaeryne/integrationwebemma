@@ -48,23 +48,19 @@ class CoursController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        if ($user->getRole() !== 'COACH' && $user->getRole() !== 'ADMIN') {
-            $this->addFlash('error', 'Accès non autorisé.');
-            return $this->redirectToRoute('app_home1');
-        }
+        // Fetch all courses with their participants
+        $queryBuilder = $entityManager->getRepository(Cours::class)->createQueryBuilder('c')
+            ->leftJoin('c.cours_participants', 'cp')
+            ->addSelect('cp');
 
-        $queryBuilder = $entityManager->getRepository(Cours::class)->createQueryBuilder('c');
-
-        if ($user->getRole() === 'COACH') {
-            $queryBuilder->where('c.id_user = :user_id')->setParameter('user_id', $user->getId());
-        }
-
+        // Handle search functionality
         $search = $request->query->get('search');
         if ($search) {
             $queryBuilder->andWhere('c.Nom_Cours LIKE :search')
                 ->setParameter('search', '%' . $search . '%');
         }
 
+        // Handle sorting
         $sort = $request->query->get('sort');
         $direction = $request->query->get('direction', 'asc');
         if ($sort) {
@@ -196,12 +192,11 @@ class CoursController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
+        // Fetch all courses with their participants
         $cours = $entityManager->getRepository(Cours::class)->createQueryBuilder('c')
             ->leftJoin('c.cours_participants', 'cp')
             ->leftJoin('cp.id_participant', 'p')
             ->addSelect('cp', 'p')
-            ->where('c.id_user = :user_id')
-            ->setParameter('user_id', $user->getId())
             ->getQuery()
             ->getResult();
 
@@ -375,4 +370,3 @@ class CoursController extends AbstractController
         return $this->redirectToRoute('app_cours_liste_participant');
     }
 }
-
