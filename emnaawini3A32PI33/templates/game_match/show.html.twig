@@ -322,57 +322,17 @@
                             <!-- Breadcrumb -->
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb">
-                                    <li class="breadcrumb-item">
-                                        <a href="{{ path('app_dashboard') }}">
-                                            {% if app.request.query.get('lang', 'en') == 'fr' %}
-                                                Tableau de Bord
-                                            {% else %}
-                                                Dashboard
-                                            {% endif %}
-                                        </a>
-                                    </li>
-                                    <li class="breadcrumb-item">
-                                        <a href="{{ path('app_game_match_index') }}">
-                                            {% if app.request.query.get('lang', 'en') == 'fr' %}
-                                                Matchs de Jeu
-                                            {% else %}
-                                                Game Matches
-                                            {% endif %}
-                                        </a>
-                                    </li>
-                                    <li class="breadcrumb-item active" aria-current="page">
-                                        {% if app.request.query.get('lang', 'en') == 'fr' %}
-                                            Match de Jeu #{{ game_match.idMatch }}
-                                        {% else %}
-                                            GameMatch #{{ game_match.idMatch }}
-                                        {% endif %}
-                                    </li>
+                                    <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">Dashboard</a></li>
+                                    <li class="breadcrumb-item"><a href="{{ path('app_game_match_index') }}">Game Matches</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">GameMatch #{{ game_match.idMatch }}</li>
                                 </ol>
                             </nav>
 
                             <!-- Header -->
                             <div class="header-section">
                                 <h1>GameMatch #{{ game_match.idMatch }}</h1>
-                                <a href="{{ path('app_game_match_index', app.request.query.all | merge({'lang': app.request.query.get('lang', 'en')})) }}" 
-                                   class="btn btn-back text-white" aria-label="Back to game matches list">
-                                    <i class="bi bi-arrow-left-circle me-2"></i>
-                                    {% if app.request.query.get('lang', 'en') == 'fr' %}
-                                        Retour à la Liste
-                                    {% else %}
-                                        Back to List
-                                    {% endif %}
-                                </a>
-                            </div>
-
-                            <!-- Language Switcher -->
-                            <div class="language-switcher mb-3">
-                                <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all | merge({'lang': 'en', 'id': game_match.id})) }}"
-                                   class="btn {% if app.request.query.get('lang', 'en') == 'en' %}btn-primary{% else %}btn-secondary{% endif %}">
-                                    🇬🇧
-                                </a>
-                                <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all | merge({'lang': 'fr', 'id': game_match.id})) }}"
-                                   class="btn {% if app.request.query.get('lang', 'en') == 'fr' %}btn-primary{% else %}btn-secondary{% endif %}">
-                                    🇫🇷
+                                <a href="{{ path('app_game_match_index') }}" class="btn btn-back text-white" aria-label="Back to game matches list">
+                                    <i class="bi bi-arrow-left-circle me-2"></i> Back to List
                                 </a>
                             </div>
 
@@ -396,69 +356,27 @@
                                     <table class="table table-striped">
                                         <tbody>
                                             <tr>
-                                                <th scope="row">
-                                                    {% if app.request.query.get('lang', 'en') == 'fr' %}
-                                                        ID du Match
-                                                    {% else %}
-                                                        Match ID
-                                                    {% endif %}
-                                                </th>
+                                                <th scope="row">ID Match</th>
                                                 <td>{{ game_match.idMatch }}</td>
                                             </tr>
                                             <tr>
-                                                <th scope="row">
-                                                    {% if app.request.query.get('lang', 'en') == 'fr' %}
-                                                        Date du Match
-                                                    {% else %}
-                                                        Match Date
-                                                    {% endif %}
-                                                </th>
+                                                <th scope="row">Date Match</th>
                                                 <td>{{ game_match.dateMatch ? game_match.dateMatch|date('Y-m-d') : 'N/A' }}</td>
                                             </tr>
                                             <tr>
-                                                <th scope="row">
-                                                    {% if app.request.query.get('lang', 'en') == 'fr' %}
-                                                        Score Équipe 1
-                                                    {% else %}
-                                                        Team 1 Score
-                                                    {% endif %}
-                                                </th>
+                                                <th scope="row">Score Equipe 1</th>
                                                 <td>{{ game_match.scoreEquipe1 ?? 'N/A' }}</td>
                                             </tr>
                                             <tr>
-                                                <th scope="row">
-                                                    {% if app.request.query.get('lang', 'en') == 'fr' %}
-                                                        Score Équipe 2
-                                                    {% else %}
-                                                        Team 2 Score
-                                                    {% endif %}
-                                                </th>
+                                                <th scope="row">Score Equipe 2</th>
                                                 <td>{{ game_match.scoreEquipe2 ?? 'N/A' }}</td>
                                             </tr>
                                             <tr>
-                                                <th scope="row">
-                                                    {% if app.request.query.get('lang', 'en') == 'fr' %}
-                                                        Statut du Match
-                                                    {% else %}
-                                                        Match Status
-                                                    {% endif %}
-                                                </th>
+                                                <th scope="row">Statut Match</th>
                                                 <td>
                                                     {% if game_match.statutMatch %}
                                                         <span class="badge bg-{{ game_match.statutMatch == 'Completed' ? 'success' : (game_match.statutMatch == 'Pending' ? 'warning' : 'info') }}">
-                                                            {% if app.request.query.get('lang', 'en') == 'fr' %}
-                                                                {% if game_match.statutMatch == 'Completed' %}
-                                                                    Terminé
-                                                                {% elseif game_match.statutMatch == 'Pending' %}
-                                                                    En Attente
-                                                                {% elseif game_match.statutMatch == 'Ongoing' %}
-                                                                    En Cours
-                                                                {% else %}
-                                                                    {{ game_match.statutMatch }}
-                                                                {% endif %}
-                                                            {% else %}
-                                                                {{ game_match.statutMatch }}
-                                                            {% endif %}
+                                                            {{ game_match.statutMatch }}
                                                         </span>
                                                     {% else %}
                                                         N/A
@@ -468,32 +386,13 @@
                                         </tbody>
                                     </table>
                                     <div class="actions">
-                                        <a href="{{ path('app_game_match_index', app.request.query.all | merge({'lang': app.request.query.get('lang', 'en')})) }}" 
-                                           class="btn btn-back text-white" aria-label="Back to game matches list">
-                                            <i class="bi bi-arrow-left-circle me-2"></i>
-                                            {% if app.request.query.get('lang', 'en') == 'fr' %}
-                                                Retour à la Liste
-                                            {% else %}
-                                                Back to List
-                                            {% endif %}
-                                        </a>
                                         <a href="{{ path('app_game_match_edit', {'id': game_match.id}) }}" class="btn btn-edit text-white" aria-label="Edit game match">
-                                            <i class="bi bi-pencil me-2"></i>
-                                            {% if app.request.query.get('lang', 'en') == 'fr' %}
-                                                Modifier
-                                            {% else %}
-                                                Edit
-                                            {% endif %}
+                                            <i class="bi bi-pencil me-2"></i> Edit
                                         </a>
-                                        <form method="post" action="{{ path('app_game_match_delete', {'id': game_match.id}) }}" onsubmit="return confirm('{% if app.request.query.get('lang', 'en') == 'fr' %}Êtes-vous sûr de vouloir supprimer le Match de Jeu #{{ game_match.idMatch }} ?{% else %}Are you sure you want to delete GameMatch #{{ game_match.idMatch }}?{% endif %}');" style="display:inline;">
+                                        <form method="post" action="{{ path('app_game_match_delete', {'id': game_match.id}) }}" onsubmit="return confirm('Are you sure you want to delete GameMatch #{{ game_match.idMatch }}?');" style="display:inline;">
                                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ game_match.id) }}">
                                             <button type="submit" class="btn btn-delete text-white" aria-label="Delete game match">
-                                                <i class="bi bi-trash me-2"></i>
-                                                {% if app.request.query.get('lang', 'en') == 'fr' %}
-                                                    Supprimer
-                                                {% else %}
-                                                    Delete
-                                                {% endif %}
+                                                <i class="bi bi-trash me-2"></i> Delete
                                             </button>
                                         </form>
                                     </div>

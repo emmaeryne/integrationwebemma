@@ -421,68 +421,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <div class="card mt-4">
-    <div class="card-body">
-        <h2 class="section-title">Players in this Team</h2>
-        {% if joueurs|length > 0 %}
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">CIN</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for joueur in joueurs %}
-                        <tr>
-                            <td>{{ joueur.idJoueur }}</td>
-                            <td>{{ joueur.nomJoueur }}</td>
-                            <td>{{ joueur.cin }}</td>
-                            <td>
-                                <a href="{{ path('app_joueur_show', { id_joueur: joueur.idJoueur }) }}" class="btn btn-primary btn-sm" aria-label="Show player">
-                                    <i class="bi bi-eye me-2"></i> Show
-                                </a>
-                                <form method="post" action="{{ path('app_equipe_remove_joueur', { id_equipe: equipe.idEquipe, id_joueur: joueur.idJoueur }) }}" onsubmit="return confirm('Are you sure you want to remove {{ joueur.nomJoueur }} from this team?');" style="display:inline;">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('remove_joueur' ~ joueur.idJoueur) }}">
-                                    <button type="submit" class="btn btn-danger btn-sm" aria-label="Remove player">
-                                        <i class="bi bi-x-circle me-2"></i> Remove
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p>No players are assigned to this team.</p>
-        {% endif %}
-    </div>
-</div>
-
-<div class="card mt-4">
-    <div class="card-body">
-        <h2 class="section-title">Add Players to this Team</h2>
-        <form method="post" action="{{ path('app_equipe_add_joueur', { id_equipe: equipe.idEquipe }) }}">
-            <div class="form-group">
-                <label for="joueur-select" class="form-label">Select Player</label>
-                <select id="joueur-select" name="id_joueur" class="form-select" required>
-                    <option value="" disabled selected>Select a player</option>
-                    {% for joueur in available_joueurs %}
-                        <option value="{{ joueur.idJoueur }}">{{ joueur.nomJoueur }} (CIN: {{ joueur.cin }})</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="form-actions mt-3">
-                <button type="submit" class="btn btn-success" aria-label="Add player to team">
-                    <i class="bi bi-plus-circle me-2"></i> Add Player
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
                     </div>
 
                     <!-- Footer -->

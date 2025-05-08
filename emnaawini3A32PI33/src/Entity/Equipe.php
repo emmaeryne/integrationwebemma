@@ -43,11 +43,6 @@ class Equipe
         return $this;
     }
 
-    public function getName(): ?string
-    {
-        return $this->nom_equipe;
-    }
-
     #[ORM\Column(type: 'string', nullable: false)]
     private ?string $type_equipe = null;
 
@@ -126,11 +121,6 @@ class Equipe
     }
 
     public function getIdEquipe(): ?int
-    {
-        return $this->id_equipe;
-    }
-
-    public function getId(): ?int
     {
         return $this->id_equipe;
     }

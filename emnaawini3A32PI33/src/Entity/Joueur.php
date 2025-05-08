@@ -43,7 +43,7 @@ class Joueur
     }
 
     #[ORM\ManyToOne(targetEntity: Equipe::class, inversedBy: 'joueurs')]
-    #[ORM\JoinColumn(name: 'id_equipe', referencedColumnName: 'id_equipe', nullable: false)]
+    #[ORM\JoinColumn(name: 'id_equipe', referencedColumnName: 'id_equipe')]
     private ?Equipe $equipe = null;
 
     public function getEquipe(): ?Equipe

@@ -100,9 +100,6 @@ class GameMatch
     #[ORM\Column(type: 'integer', nullable: false)]
     private ?int $score_equipe1 = null;
 
-    #[ORM\Column(type: 'integer', nullable: false)]
-    private ?int $score_equipe2 = null;
-
     public function getScore_equipe1(): ?int
     {
         return $this->score_equipe1;
@@ -113,6 +110,9 @@ class GameMatch
         $this->score_equipe1 = $score_equipe1;
         return $this;
     }
+
+    #[ORM\Column(type: 'integer', nullable: false)]
+    private ?int $score_equipe2 = null;
 
     public function getScore_equipe2(): ?int
     {

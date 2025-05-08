@@ -25,63 +25,41 @@ final class TerrainController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_terrain_new', methods: ['POST'])]
+    #[Route('/new', name: 'app_terrain_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        if (!$this->isCsrfTokenValid('create_terrain', $request->request->get('_token'))) {
-            $this->addFlash('error', 'Invalid CSRF token.');
-            return $this->redirectToRoute('app_terrain_index');
+        $terrain = new Terrain();
+        $form = $this->createForm(TerrainType::class, $terrain);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($terrain);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_terrain_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        $terrain = new Terrain();
-        $entityManager->persist($terrain);
-        $entityManager->flush();
-
-        $this->addFlash('success', 'Terrain created successfully!');
-
-        return $this->redirectToRoute('app_terrain_index');
+        return $this->render('terrain/new.html.twig', [
+            'terrain' => $terrain,
+            'form' => $form,
+        ]);
     }
 
     #[Route('/{id_terrain}', name: 'app_terrain_show', methods: ['GET'])]
-    public function show(int $id_terrain, TerrainRepository $terrainRepository): Response
+    public function show(int $id_terrain): Response
     {
-        $terrain = $terrainRepository->find($id_terrain);
-
-        if (!$terrain) {
-            throw $this->createNotFoundException('Terrain not found.');
-        }
-
-        $matches = $terrain->getMatches(); 
-        return $this->render('terrain/show.html.twig', [
-            'terrain' => $terrain,
-            'matches' => $matches,
-        ]);
+        // Fetch the terrain by id_terrain and render the show page
     }
 
     #[Route('/{id_terrain}/edit', name: 'app_terrain_edit', methods: ['GET', 'POST'])]
     public function edit(int $id_terrain): Response
     {
+        // Fetch the terrain by id_terrain and render the edit page
     }
 
     #[Route('/{id_terrain}', name: 'app_terrain_delete', methods: ['POST'])]
-    public function delete(Request $request, TerrainRepository $terrainRepository, EntityManagerInterface $entityManager, int $id_terrain): Response
+    public function delete(int $id_terrain): Response
     {
-        $terrain = $terrainRepository->find($id_terrain);
-
-        if (!$terrain) {
-            $this->addFlash('error', 'Terrain not found.');
-            return $this->redirectToRoute('app_terrain_index');
-        }
-
-        if ($this->isCsrfTokenValid('delete' . $terrain->getIdTerrain(), $request->request->get('_token'))) {
-            $entityManager->remove($terrain);
-            $entityManager->flush();
-
-            $this->addFlash('success', 'Terrain deleted successfully.');
-        } else {
-            $this->addFlash('error', 'Invalid CSRF token.');
-        }
-
-        return $this->redirectToRoute('app_terrain_index');
+        // Handle deletion of the terrain by id_terrain
     }
 }
