@@ -430,9 +430,9 @@
                     </button>
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                         <div class="navbar-nav mr-auto py-0">
-                            <a href="{{ path('app_home1') }}" class="nav-item nav-link active">Home</a>
+                            <a href="{{ path('app_home_client') }}" class="nav-item nav-link active">Home</a>
                             <a href="{{ path('app_about1') }}" class="nav-item nav-link">About</a>
-                            <a href="{{ path('app_class') }}" class="nav-item nav-link">Classes</a>
+                                <a href="{{ path('app_produit_index') }}" class="nav-item nav-link">Liste Produits</a>
                             
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Reserver</a>
@@ -441,20 +441,47 @@
                                         <a href="#" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown">Client</a>
                                         <div class="dropdown-menu rounded-0 m-0">
                                             <a href="{{ path('client_services') }}" class="dropdown-item">Services Client</a>
-                                            
+                                            <a href="{{ path('app_client_reservation_index') }}" class="dropdown-item">Abonnement</a>
+                                            <a href="{{ path('app_cours_liste_participant', {'user_id': app.user.id}) }}" class="dropdown-item">Participation</a>
                                         </div>
+                                        
                                     </div>
                                    
                                 </div>
+                                
                             </div>
-                            <a href="{{ path('app_contact1') }}" class="nav-item nav-link">Contact</a>
+
                         </div>
-                        <a href="#" class="btn btn-primary py-md-3 px-md-5 d-none d-lg-block">Join Us</a>
+                        
                     </div>
+                      <div class="navbar-nav ms-auto py-0">
+                            {% if app.user %}
+                                <div class="nav-item dropdown">
+                                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                                        <i class="fas fa-user-circle me-1"></i> {{ app.user.username }}
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-end rounded-0 m-0">
+                                        <a href="{{ path('app_home_client') }}" class="dropdown-item">Mon Profil</a>
+                                        <a href="{{ path('app_logout') }}" class="dropdown-item text-danger">
+                                        
+                                            <i class="fas fa-sign-out-alt me-1"></i> Déconnexion
+                                        </a>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <a href="{{ path('app_login') }}" class="nav-item nav-link">Connexion</a>
+                                <a href="{{ path('app_register') }}" class="nav-item nav-link">Inscription</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </nav>
+            </div>
                 </nav>
             </div>
         </div>
     </div>
+              
+                      
     <!-- Header End -->
 
     <!-- Carousel Start -->
@@ -467,8 +494,7 @@
                         <div class="p-3" style="max-width: 900px;">
                             <h5 class="animate__animated animate__fadeIn">Best Fitness Experience</h5>
                             <h1 class="mb-md-4 animate__animated animate__zoomIn">Forge Your Body with HIVE</h1>
-                            <a href="#" class="btn btn-primary py-md-3 px-md-5 me-3 animate__animated animate__bounceIn">Join Now</a>
-                            <a href="{{ path('app_contact1') }}" class="btn btn-light py-md-3 px-md-5 animate__animated animate__bounceIn">Contact Us</a>
+   
                         </div>
                     </div>
                 </div>
@@ -512,6 +538,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         {% endfor %}
+        
 
         <div class="table-responsive card shadow-sm">
             <div class="card-body">

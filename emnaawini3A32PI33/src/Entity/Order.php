@@ -6,6 +6,7 @@ use App\Repository\OrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Users; // ✅ IMPORTANT: Use Users here
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: '`order`')]
@@ -16,7 +17,7 @@ class Order
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'orders')]
+    #[ORM\ManyToOne(targetEntity: Users::class, inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
     private $user;
 
@@ -54,12 +55,12 @@ class Order
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function getUser(): ?Users
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    public function setUser(?Users $user): self
     {
         $this->user = $user;
 
@@ -135,7 +136,6 @@ class Order
     public function removeOrderDetail(OrderDetail $orderDetail): self
     {
         if ($this->orderDetails->removeElement($orderDetail)) {
-            // set the owning side to null (unless already changed)
             if ($orderDetail->getMyOrder() === $this) {
                 $orderDetail->setMyOrder(null);
             }
@@ -156,16 +156,15 @@ class Order
         return $this;
     }
 
-    public function getTotal()
+    public function getTotal(): ?float
     {
-        $total = null;
+        $total = 0;
 
-        foreach ($this->getOrderDetails()->getValues() as $product) {
-            $total = $total + ($product->getPrice() * $product->getQuantity());
+        foreach ($this->getOrderDetails() as $product) {
+            $total += $product->getPrice() * $product->getQuantity();
         }
 
         return $total;
-
     }
 
     public function getReference(): ?string

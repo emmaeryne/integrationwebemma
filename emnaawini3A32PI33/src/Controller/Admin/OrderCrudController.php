@@ -8,20 +8,9 @@ use App\Repository\OrderRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use Knp\Snappy\Pdf;
 
 #[Route('/admin/order')]
@@ -33,67 +22,43 @@ class OrderCrudController extends AbstractController
     public function __construct(Pdf $knpSnappyPdf)
     {
         $this->knpSnappyPdf = $knpSnappyPdf;
-        $this->knpSnappyPdf->setBinary('"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"');
+        $this->knpSnappyPdf->setBinary('"C:\Users\MSI\Desktop\wkhtmltopdf\bin\wkhtmltopdf.exe"');
     }
-    #[Route('/search/ajax', name: 'admin_order_search_ajax', methods: ['GET'])]
-    public function searchAjax(Request $request, OrderRepository $orderRepository): JsonResponse
-    {
-        $searchTerm = trim($request->query->get('term', ''));
-        $page = $request->query->getInt('page', 1);
-        $limit = 10;
-        
-        if (empty($searchTerm)) {
-            return $this->json([
-                'results' => [],
-                'pagination' => ['more' => false]
-            ]);
-        }
-        
-        $orders = $orderRepository->findBySearch($searchTerm, ($page - 1) * $limit, $limit);
-        $total = $orderRepository->countSearchResults($searchTerm);
-        
-        $results = array_map(function($order) {
-            return [
-                'id' => $order->getId(),
-                'text' => sprintf(
-                    "#%d - %s %s (%s) - %s - %s TND",
-                    $order->getId(),
-                    $order->getUser()->getFirstname(),
-                    $order->getUser()->getLastname(),
-                    $order->getReference(),
-                    $order->getCreatedAt()->format('d/m/Y'),
-                    number_format(($order->getTotal() / 100), 2, ',', ' ')
-                ),
-                'isPaid' => $order->isPaid()
-            ];
-        }, $orders);
-        
-        return $this->json([
-            'results' => $results,
-            'pagination' => [
-                'more' => ($page * $limit) < $total
-            ]
-        ]);
-    }
+
     #[Route('/', name: 'admin_order_index', methods: ['GET'])]
     public function index(OrderRepository $orderRepository, Request $request): Response
     {
         $currentPage = $request->query->getInt('page', 1);
-        $totalOrders = $orderRepository->count([]);
-        $totalPages = ceil($totalOrders / self::ITEMS_PER_PAGE);
         
-        $orders = $orderRepository->findBy(
-            [],
-            ['id' => 'DESC'],
-            self::ITEMS_PER_PAGE,
-            ($currentPage - 1) * self::ITEMS_PER_PAGE
+        // Récupérer les paramètres de filtrage et de tri
+        $filters = [
+            'status' => $request->query->get('status'),
+            'date' => $request->query->get('date'),
+        ];
+        $sortBy = $request->query->get('sortBy', 'id');
+        $sortOrder = $request->query->get('sortOrder', 'DESC');
+
+        // Nettoyer les filtres vides
+        $filters = array_filter($filters, fn($value) => !empty($value));
+
+        // Récupérer les commandes filtrées et triées
+        $orders = $orderRepository->findByFilters(
+            $filters,
+            $sortBy,
+            $sortOrder,
+            ($currentPage - 1) * self::ITEMS_PER_PAGE,
+            self::ITEMS_PER_PAGE
         );
-    
+
+        // Compter le nombre total de commandes pour la pagination
+        $totalOrders = $orderRepository->countByFilters($filters);
+        $totalPages = ceil($totalOrders / self::ITEMS_PER_PAGE);
+
         // Statistiques
         $paidCount = $orderRepository->count(['isPaid' => true]);
         $unpaidCount = $orderRepository->count(['isPaid' => false]);
         $timeStats = $orderRepository->getDailyAndWeeklyOrderStats(30);
-    
+
         return $this->render('admin/order/index.html.twig', [
             'orders' => $orders,
             'currentPage' => $currentPage,
@@ -137,17 +102,39 @@ class OrderCrudController extends AbstractController
     #[Route('/{id}/edit', name: 'admin_order_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Order $order, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(OrderType1::class, $order);
-        $form->handleRequest($request);
+        if ($request->isMethod('POST')) {
+            // Validate CSRF token
+            if (!$this->isCsrfTokenValid('edit' . $order->getId(), $request->request->get('_token'))) {
+                throw $this->createAccessDeniedException('Invalid CSRF token.');
+            }
 
-        if ($form->isSubmitted() && $form->isValid()) {
+            // Get form data
+            $carrierName = $request->request->get('carrierName');
+            $carrierPrice = $request->request->get('carrierPrice');
+            $isPaid = $request->request->has('isPaid');
+
+            // Basic validation
+            if (empty($carrierName) || !is_numeric($carrierPrice) || $carrierPrice < 0) {
+                $this->addFlash('error', 'Veuillez remplir tous les champs correctement.');
+                return $this->render('admin/order/edit.html.twig', [
+                    'order' => $order,
+                ]);
+            }
+
+            // Update the order entity
+            $order->setCarrierName($carrierName);
+            $order->setCarrierPrice((float) $carrierPrice);
+            $order->setIsPaid($isPaid);
+
+            // Persist changes
             $entityManager->flush();
+
+            $this->addFlash('success', 'Commande mise à jour avec succès.');
             return $this->redirectToRoute('admin_order_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('admin/order/edit.html.twig', [
             'order' => $order,
-            'form' => $form->createView(),
         ]);
     }
 
@@ -160,30 +147,5 @@ class OrderCrudController extends AbstractController
         }
 
         return $this->redirectToRoute('admin_order_index', [], Response::HTTP_SEE_OTHER);
-    }
-
-    #[Route('/search', name: 'admin_order_search', methods: ['GET'])]
-    public function search(Request $request, OrderRepository $orderRepository): JsonResponse
-    {
-        $query = $request->query->get('q', '');
-        $orders = $orderRepository->searchOrders($query);
-        
-        $results = [];
-        foreach ($orders as $order) {
-            $results[] = [
-                'id' => $order->getId(),
-                'text' => sprintf(
-                    "#%d - %s %s (%s) - %s",
-                    $order->getId(),
-                    $order->getUser()->getFirstname(),
-                    $order->getUser()->getLastname(),
-                    $order->getReference(),
-                    $order->getCreatedAt()->format('d/m/Y')
-                ),
-                'url' => $this->generateUrl('admin_order_show', ['id' => $order->getId()])
-            ];
-        }
-        
-        return $this->json($results);
     }
 }
