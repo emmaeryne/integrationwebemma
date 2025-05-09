@@ -3,17 +3,17 @@
 namespace App\Controller;
 
 use App\Entity\GameMatch;
+use App\Entity\StatistiquesEquipe;
+use App\Form\GameMatchType;
+use App\Repository\EquipeRepository;
 use App\Repository\GameMatchRepository;
 use App\Service\StatistiquesEquipeUpdater;
-use App\Form\GameMatchType;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Repository\EquipeRepository;
-use Knp\Component\Pager\PaginatorInterface;
-use App\Entity\StatistiquesEquipe;
 
 #[Route('/match')]
 final class GameMatchController extends AbstractController
@@ -53,11 +53,11 @@ final class GameMatchController extends AbstractController
         $pagination = $paginator->paginate(
             $queryBuilder->getQuery(),
             $request->query->getInt('page', 1),
-            10 
+            10
         );
 
         return $this->render('game_match/index.html.twig', [
-            'game_matches' => $pagination, 
+            'game_matches' => $pagination,
         ]);
     }
 
@@ -71,11 +71,11 @@ final class GameMatchController extends AbstractController
             $csvContent .= sprintf(
                 "%s,%s,%s,%s,%s,%s,%s\n",
                 $match->getIdMatch(),
-                $match->getDateMatch()->format('Y-m-d'),
+                $match->getDateMatch() ? $match->getDateMatch()->format('Y-m-d') : 'N/A',
                 $match->getEquipe1()->getNomEquipe(),
-                $match->getScoreEquipe1(),
+                $match->getScoreEquipe1() ?? 'N/A',
                 $match->getEquipe2()->getNomEquipe(),
-                $match->getScoreEquipe2(),
+                $match->getScoreEquipe2() ?? 'N/A',
                 $match->getStatutMatch()
             );
         }
@@ -106,7 +106,7 @@ final class GameMatchController extends AbstractController
         }
 
         return $this->render('game_match/new.html.twig', [
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -135,7 +135,7 @@ final class GameMatchController extends AbstractController
 
         $pagination = $paginator->paginate(
             $queryBuilder->getQuery(),
-            $request->query->getInt('page', 1), 
+            $request->query->getInt('page', 1),
             10
         );
 
@@ -198,7 +198,7 @@ final class GameMatchController extends AbstractController
 
         return $this->render('game_match/edit.html.twig', [
             'game_match' => $gameMatch,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -235,7 +235,7 @@ final class GameMatchController extends AbstractController
             $probEquipe1 = ($strengthEquipe1 / $totalStrength) * 100;
             $probEquipe2 = ($strengthEquipe2 / $totalStrength) * 100;
         } else {
-            $probEquipe1 = $probEquipe2 = 50; 
+            $probEquipe1 = $probEquipe2 = 50;
         }
 
         return [
