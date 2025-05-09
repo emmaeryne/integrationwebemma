@@ -49,7 +49,7 @@ class TournoiController extends AbstractController
         ]);
     }
 
-    #[Route('/{idTournoi}', name: 'app_tournoi_show', methods: ['GET'])]
+    #[Route('/{idTournoi<\d+>}', name: 'app_tournoi_show', methods: ['GET'])]
     public function show(int $idTournoi, TournoiRepository $tournoiRepository): Response
     {
         $tournoi = $tournoiRepository->find($idTournoi);
