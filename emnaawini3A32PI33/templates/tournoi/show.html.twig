@@ -365,12 +365,14 @@
 
                             <!-- Language Switcher -->
                             <div class="language-switcher mb-3">
-                                <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all | merge({'lang': 'en', 'idTournoi': tournoi.idTournoi})) }}"
-                                   class="btn {% if app.request.query.get('lang', 'en') == 'en' %}btn-primary{% else %}btn-secondary{% endif %}">
+                                <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all | merge({'lang': 'en', 'id_tournoi': tournoi.idTournoi})) }}"
+                                   class="btn {% if app.request.query.get('lang', 'en') == 'en' %}btn-primary{% else %}btn-secondary{% endif %}"
+                                   aria-label="Switch to English">
                                     🇬🇧
                                 </a>
-                                <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all | merge({'lang': 'fr', 'idTournoi': tournoi.idTournoi})) }}"
-                                   class="btn {% if app.request.query.get('lang', 'en') == 'fr' %}btn-primary{% else %}btn-secondary{% endif %}">
+                                <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all | merge({'lang': 'fr', 'id_tournoi': tournoi.idTournoi})) }}"
+                                   class="btn {% if app.request.query.get('lang', 'en') == 'fr' %}btn-primary{% else %}btn-secondary{% endif %}"
+                                   aria-label="Switch to French">
                                     🇫🇷
                                 </a>
                             </div>
@@ -453,6 +455,7 @@
                                 </div>
                             </div>
 
+                            <!-- Matches Section -->
                             <h2>
                                 {% if app.request.query.get('lang', 'en') == 'fr' %}
                                     Matchs dans ce Tournoi
@@ -518,7 +521,9 @@
                                                     <td>{{ match.dateMatch|date('Y-m-d H:i') }}</td>
                                                     <td>{{ match.statutMatch }}</td>
                                                     <td>
-                                                        <a href="{{ path('app_game_match_show', {'id': match.id}) }}" class="btn btn-sm btn-primary" aria-label="Show match">
+                                                        <a href="{{ path('app_game_match_show', {'id': match.id}) }}"
+                                                           class="btn btn-sm btn-primary"
+                                                           aria-label="Show match">
                                                             <i class="bi bi-eye"></i> Show
                                                         </a>
                                                     </td>
@@ -529,14 +534,20 @@
                                 </div>
                             {% else %}
                                 <div class="alert alert-info">
-                                    <i class="bi bi-info-circle me-2"></i> No matches found for this tournoi.
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                        Aucun match trouvé pour ce tournoi.
+                                    {% else %}
+                                        No matches found for this tournament.
+                                    {% endif %}
                                 </div>
                             {% endif %}
 
                             <!-- Actions -->
                             <div class="actions">
-                                <a href="{{ path('app_tournoi_index', app.request.query.all | merge({'lang': app.request.query.get('lang', 'en')})) }}" 
-                                   class="btn btn-back text-white" aria-label="Back to tournaments list">
+                                <a href="{{ path('app_tournoi_index', app.request.query.all | merge({'lang': app.request.query.get('lang', 'en')})) }}"
+                                   class="btn btn-back text-white"
+                                   aria-label="Back to tournaments list">
                                     <i class="bi bi-arrow-left-circle me-2"></i>
                                     {% if app.request.query.get('lang', 'en') == 'fr' %}
                                         Retour à la Liste
@@ -544,7 +555,9 @@
                                         Back to List
                                     {% endif %}
                                 </a>
-                                <a href="{{ path('app_tournoi_edit', {'id_tournoi': tournoi.idTournoi}) }}" class="btn btn-edit text-white" aria-label="Edit tournament">
+                                <a href="{{ path('app_tournoi_edit', {'id_tournoi': tournoi.idTournoi}) }}"
+                                   class="btn btn-edit text-white"
+                                   aria-label="Edit tournament">
                                     <i class="bi bi-pencil me-2"></i>
                                     {% if app.request.query.get('lang', 'en') == 'fr' %}
                                         Modifier
@@ -552,8 +565,8 @@
                                         Edit
                                     {% endif %}
                                 </a>
-                                <form method="post" action="{{ path('app_tournoi_delete', {'id_tournoi': tournoi.idTournoi}) }}" 
-                                      onsubmit="return confirm('{% if app.request.query.get('lang', 'en') == 'fr' %}Êtes-vous sûr de vouloir supprimer le tournoi #{{ tournoi.idTournoi }} ?{% else %}Are you sure you want to delete Tournament #{{ tournoi.idTournoi }}?{% endif %}');" 
+                                <form method="post" action="{{ path('app_tournoi_delete', {'id_tournoi': tournoi.idTournoi}) }}"
+                                      onsubmit="return confirm('{% if app.request.query.get('lang', 'en') == 'fr' %}Êtes-vous sûr de vouloir supprimer le tournoi #{{ tournoi.idTournoi }} ?{% else %}Are you sure you want to delete Tournament #{{ tournoi.idTournoi }}?{% endif %}');"
                                       style="display:inline;">
                                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ tournoi.idTournoi) }}">
                                     <button type="submit" class="btn btn-delete text-white" aria-label="Delete tournament">
@@ -589,7 +602,10 @@
 
     <!-- Buy Now Button -->
     <div class="buy-now">
-        <a href="https://themeselection.com/products/sneat-bootstrap-html-admin-template/" target="_blank" class="btn btn-danger btn-buy-now" aria-label="Upgrade to Pro">Upgrade to Pro</a>
+        <a href="https://themeselection.com/products/sneat-bootstrap-html-admin-template/"
+           target="_blank"
+           class="btn btn-danger btn-buy-now"
+           aria-label="Upgrade to Pro">Upgrade to Pro</a>
     </div>
 {% endblock %}
 

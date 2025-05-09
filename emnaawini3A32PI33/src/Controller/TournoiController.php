@@ -49,17 +49,17 @@ class TournoiController extends AbstractController
         ]);
     }
 
-    #[Route('/{idTournoi<\d+>}', name: 'app_tournoi_show', methods: ['GET'])]
-    public function show(int $idTournoi, TournoiRepository $tournoiRepository): Response
+    #[Route('/{id_tournoi<\d+>}', name: 'app_tournoi_show', methods: ['GET'])]
+    public function show(int $id_tournoi, TournoiRepository $tournoiRepository): Response
     {
-        $tournoi = $tournoiRepository->find($idTournoi);
-
+        $tournoi = $tournoiRepository->find($id_tournoi);
+    
         if (!$tournoi) {
             throw $this->createNotFoundException('Tournoi not found.');
         }
-
+    
         $matches = $tournoi->getMatchs();
-
+    
         return $this->render('tournoi/show.html.twig', [
             'tournoi' => $tournoi,
             'matches' => $matches,

@@ -372,11 +372,13 @@
                             <!-- Language Switcher -->
                             <div class="language-switcher mb-3">
                                 <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all | merge({'lang': 'en'})) }}"
-                                   class="btn {% if app.request.query.get('lang', 'en') == 'en' %}btn-primary{% else %}btn-secondary{% endif %}">
+                                   class="btn {% if app.request.query.get('lang', 'en') == 'en' %}btn-primary{% else %}btn-secondary{% endif %}"
+                                   aria-label="Switch to English">
                                     🇬🇧
                                 </a>
                                 <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all | merge({'lang': 'fr'})) }}"
-                                   class="btn {% if app.request.query.get('lang', 'en') == 'fr' %}btn-primary{% else %}btn-secondary{% endif %}">
+                                   class="btn {% if app.request.query.get('lang', 'en') == 'fr' %}btn-primary{% else %}btn-secondary{% endif %}"
+                                   aria-label="Switch to French">
                                     🇫🇷
                                 </a>
                             </div>
@@ -459,15 +461,26 @@
                                                     <td>{{ tournoi.descriptionTournoi|length > 50 ? tournoi.descriptionTournoi|slice(0, 50) ~ '...' : tournoi.descriptionTournoi }}</td>
                                                     <td>
                                                         <div class="d-flex gap-1">
-                                                            <a href="{{ path('app_tournoi_show', {'idTournoi': tournoi.idTournoi}) }}" class="btn btn-action btn-show text-white" title="{% if app.request.query.get('lang', 'en') == 'fr' %}Afficher{% else %}Show{% endif %}" aria-label="{% if app.request.query.get('lang', 'en') == 'fr' %}Afficher le tournoi{% else %}Show tournament{% endif %}">
+                                                            <a href="{{ path('app_tournoi_show', {'id_tournoi': tournoi.idTournoi}) }}"
+                                                               class="btn btn-action btn-show text-white"
+                                                               title="{% if app.request.query.get('lang', 'en') == 'fr' %}Afficher{% else %}Show{% endif %}"
+                                                               aria-label="{% if app.request.query.get('lang', 'en') == 'fr' %}Afficher le tournoi{% else %}Show tournament{% endif %}">
                                                                 <i class="bi bi-eye"></i>
                                                             </a>
-                                                            <a href="{{ path('app_tournoi_edit', {'id_tournoi': tournoi.idTournoi}) }}" class="btn btn-action btn-edit text-white" title="{% if app.request.query.get('lang', 'en') == 'fr' %}Modifier{% else %}Edit{% endif %}" aria-label="{% if app.request.query.get('lang', 'en') == 'fr' %}Modifier le tournoi{% else %}Edit tournament{% endif %}">
+                                                            <a href="{{ path('app_tournoi_edit', {'id_tournoi': tournoi.idTournoi}) }}"
+                                                               class="btn btn-action btn-edit text-white"
+                                                               title="{% if app.request.query.get('lang', 'en') == 'fr' %}Modifier{% else %}Edit{% endif %}"
+                                                               aria-label="{% if app.request.query.get('lang', 'en') == 'fr' %}Modifier le tournoi{% else %}Edit tournament{% endif %}">
                                                                 <i class="bi bi-pencil"></i>
                                                             </a>
-                                                            <form method="post" action="{{ path('app_tournoi_delete', {'id_tournoi': tournoi.idTournoi}) }}" style="display:inline;" onsubmit="return confirm('{% if app.request.query.get('lang', 'en') == 'fr' %}Êtes-vous sûr de vouloir supprimer le tournoi #{{ tournoi.idTournoi }} ?{% else %}Are you sure you want to delete Tournament #{{ tournoi.idTournoi }}?{% endif %}');">
+                                                            <form method="post" action="{{ path('app_tournoi_delete', {'id_tournoi': tournoi.idTournoi}) }}"
+                                                                  style="display:inline;"
+                                                                  onsubmit="return confirm('{% if app.request.query.get('lang', 'en') == 'fr' %}Êtes-vous sûr de vouloir supprimer le tournoi #{{ tournoi.idTournoi }} ?{% else %}Are you sure you want to delete Tournament #{{ tournoi.idTournoi }}?{% endif %}');">
                                                                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ tournoi.idTournoi) }}">
-                                                                <button type="submit" class="btn btn-action btn-delete text-white" title="{% if app.request.query.get('lang', 'en') == 'fr' %}Supprimer{% else %}Delete{% endif %}" aria-label="{% if app.request.query.get('lang', 'en') == 'fr' %}Supprimer le tournoi{% else %}Delete tournament{% endif %}">
+                                                                <button type="submit"
+                                                                        class="btn btn-action btn-delete text-white"
+                                                                        title="{% if app.request.query.get('lang', 'en') == 'fr' %}Supprimer{% else %}Delete{% endif %}"
+                                                                        aria-label="{% if app.request.query.get('lang', 'en') == 'fr' %}Supprimer le tournoi{% else %}Delete tournament{% endif %}">
                                                                     <i class="bi bi-trash"></i>
                                                                 </button>
                                                             </form>
@@ -528,7 +541,10 @@
 
     <!-- Buy Now Button -->
     <div class="buy-now">
-        <a href="https://themeselection.com/products/sneat-bootstrap-html-admin-template/" target="_blank" class="btn btn-danger btn-buy-now" aria-label="Upgrade to Pro">Upgrade to Pro</a>
+        <a href="https://themeselection.com/products/sneat-bootstrap-html-admin-template/"
+           target="_blank"
+           class="btn btn-danger btn-buy-now"
+           aria-label="Upgrade to Pro">Upgrade to Pro</a>
     </div>
 {% endblock %}
 
