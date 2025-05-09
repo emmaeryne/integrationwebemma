@@ -435,26 +435,10 @@
                                                 <tr>
                                                     <td>{{ equipe.idEquipe }}</td>
                                                     <td>{{ equipe.nomEquipe }}</td>
+                                                    <td>{{ equipe.typeEquipe }}</td>
                                                     <td>
-                                                        <span class="badge bg-{{ equipe.typeEquipe == 'Pro' ? 'primary' : (equipe.typeEquipe == 'Amateur' ? 'success' : 'info') }}">
-                                                            {{ equipe.typeEquipe }}
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        <div class="d-flex gap-1">
-                                                            <a href="{{ path('app_equipe_show', {'id_equipe': equipe.idEquipe}) }}" class="btn btn-action btn-show text-white" title="Show" aria-label="Show team">
-                                                                <i class="bi bi-eye"></i>
-                                                            </a>
-                                                            <a href="{{ path('app_equipe_edit', {'id_equipe': equipe.idEquipe}) }}" class="btn btn-action btn-edit text-white" title="Edit" aria-label="Edit team">
-                                                                <i class="bi bi-pencil"></i>
-                                                            </a>
-                                                            <form method="post" action="{{ path('app_equipe_delete', {'id_equipe': equipe.idEquipe}) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete Equipe #{{ equipe.idEquipe }}?');">
-                                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ equipe.idEquipe) }}">
-                                                                <button type="submit" class="btn btn-action btn-delete text-white" title="Delete" aria-label="Delete team">
-                                                                    <i class="bi bi-trash"></i>
-                                                                </button>
-                                                            </form>
-                                                        </div>
+                                                        <a href="{{ path('app_equipe_show', {'id_equipe': equipe.idEquipe}) }}" class="btn btn-primary btn-sm">View</a>
+                                                        <a href="{{ path('app_equipe_edit', {'id_equipe': equipe.idEquipe}) }}" class="btn btn-secondary btn-sm">Edit</a>
                                                     </td>
                                                 </tr>
                                             {% endfor %}
