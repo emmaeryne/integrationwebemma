@@ -426,102 +426,235 @@
     <!-- Carousel End -->
 
     <!-- Register Section -->
-    <div class="container mt-5">
-        <h1 class="mb-5 text-primary display-5 fw-bold d-flex align-items-center gap-3 animate__animated animate__fadeIn">
-            <i class="fas fa-user-plus fa-beat"></i>
-            {{ 'Inscription'|trans|default('Inscription') }}
-        </h1>
-
-        <!-- Flash Messages -->
-        {% for flash_message in app.flashes('success') %}
-            <div class="alert alert-success alert-dismissible fade show animate__animated animate__fadeInUp" role="alert">
-                <i class="fas fa-check-circle me-2"></i>
-                {{ flash_message|trans }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'Fermer'|trans|default('Fermer') }}"></button>
-            </div>
-        {% endfor %}
-
-        <!-- Formulaire d'inscription -->
-        {{ form_start(registrationForm, {'attr': {'id': 'registration-form'}}) }}
-            <div class="mb-4 animate__animated animate__fadeInUp">
-                {{ form_label(registrationForm.username, null, {'label_attr': {'class': 'form-label'}}) }}
-                {{ form_widget(registrationForm.username, {'attr': {'class': 'form-control'}}) }}
-                {{ form_errors(registrationForm.username) }}
+    <div class="register-container">
+        <div class="register-box animate__animated animate__fadeIn">
+            <div class="register-header">
+                <img src="{{ asset('images/logo.png') }}" alt="HIVE Logo" class="register-logo">
+                <h2><i class="fas fa-user-plus"></i> Inscription</h2>
             </div>
 
-            <div class="mb-4 animate__animated animate__fadeInUp">
-                {{ form_label(registrationForm.email, null, {'label_attr': {'class': 'form-label'}}) }}
-                {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
-                {{ form_errors(registrationForm.email) }}
+            {% for flash_message in app.flashes('success') %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    {{ flash_message|trans }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+
+            {{ form_start(registrationForm, {'attr': {'id': 'registration-form', 'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                <div class="form-floating mb-4">
+                    {{ form_widget(registrationForm.username, {
+                        'attr': {
+                            'class': 'form-control',
+                            'placeholder': 'Username',
+                            'required': 'required'
+                        }
+                    }) }}
+                    <label for="{{ registrationForm.username.vars.id }}">
+                        <i class="fas fa-user me-2"></i>Nom d'utilisateur
+                    </label>
+                    <div class="invalid-feedback">
+                        Veuillez entrer un nom d'utilisateur
+                    </div>
+                </div>
+
+                <div class="form-floating mb-4">
+                    {{ form_widget(registrationForm.email, {
+                        'attr': {
+                            'class': 'form-control',
+                            'placeholder': 'Email',
+                            'required': 'required'
+                        }
+                    }) }}
+                    <label for="{{ registrationForm.email.vars.id }}">
+                        <i class="fas fa-envelope me-2"></i>Email
+                    </label>
+                    <div class="invalid-feedback">
+                        Veuillez entrer une adresse email valide
+                    </div>
+                </div>
+
+                <div class="form-floating mb-4">
+                    {{ form_widget(registrationForm.plainPassword.first, {
+                        'attr': {
+                            'class': 'form-control',
+                            'placeholder': 'Password',
+                            'required': 'required'
+                        }
+                    }) }}
+                    <label for="{{ registrationForm.plainPassword.first.vars.id }}">
+                        <i class="fas fa-lock me-2"></i>Mot de passe
+                    </label>
+                    <div class="invalid-feedback">
+                        Le mot de passe est requis
+                    </div>
+                </div>
+
+                <div class="form-floating mb-4">
+                    {{ form_widget(registrationForm.plainPassword.second, {
+                        'attr': {
+                            'class': 'form-control',
+                            'placeholder': 'Confirm Password',
+                            'required': 'required'
+                        }
+                    }) }}
+                    <label for="{{ registrationForm.plainPassword.second.vars.id }}">
+                        <i class="fas fa-lock me-2"></i>Confirmer le mot de passe
+                    </label>
+                    <div class="invalid-feedback">
+                        Les mots de passe doivent correspondre
+                    </div>
+                </div>
+
+                <div class="image-upload-section mb-4">
+                    <label class="form-label">
+                        <i class="fas fa-image me-2"></i>Photo de profil
+                    </label>
+                    {{ form_widget(registrationForm.image, {
+                        'attr': {
+                            'class': 'form-control',
+                            'required': 'required'
+                        }
+                    }) }}
+                    <div class="invalid-feedback">
+                        Veuillez sélectionner une image
+                    </div>
+                </div>
+
+                <div class="recaptcha-section mb-4">
+                    {{ form_widget(registrationForm.recaptcha) }}
+                    {{ form_errors(registrationForm.recaptcha) }}
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-user-plus me-2"></i>S'inscrire
+                </button>
+            {{ form_end(registrationForm) }}
+
+            <div class="register-footer">
+                <p>Vous avez déjà un compte ?</p>
+                <a href="{{ path('app_login') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-sign-in-alt me-2"></i>Se connecter
+                </a>
             </div>
-
-            <div class="mb-4 animate__animated animate__fadeInUp">
-                {{ form_label(registrationForm.role, null, {'label_attr': {'class': 'form-label'}}) }}
-                {{ form_widget(registrationForm.role, {'attr': {'class': 'form-select'}}) }}
-                {{ form_errors(registrationForm.role) }}
-            </div>
-
-            <div class="mb-4 animate__animated animate__fadeInUp">
-                {{ form_label(registrationForm.plainPassword.first, null, {'label_attr': {'class': 'form-label'}}) }}
-                {{ form_widget(registrationForm.plainPassword.first, {'attr': {'class': 'form-control'}}) }}
-                {{ form_errors(registrationForm.plainPassword.first) }}
-            </div>
-
-            <div class="mb-4 animate__animated animate__fadeInUp">
-                {{ form_label(registrationForm.plainPassword.second, null, {'label_attr': {'class': 'form-label'}}) }}
-                {{ form_widget(registrationForm.plainPassword.second, {'attr': {'class': 'form-control'}}) }}
-                {{ form_errors(registrationForm.plainPassword.second) }}
-            </div>
-
-            <button type="submit" class="btn btn-primary shadow-sm animate__animated animate__fadeInUp">
-                <i class="fas fa-user-plus me-2"></i> {{ 'S\'inscrire'|trans|default('S\'inscrire') }}
-            </button>
-        {{ form_end(registrationForm) }}
-
-        <!-- Lien vers la connexion -->
-        <p class="login-link mt-4 animate__animated animate__fadeInUp">
-            {{ 'Vous avez déjà un compte ?'|trans|default('Vous avez déjà un compte ?') }} 
-            <a href="{{ path('app_login') }}">{{ 'Se connecter'|trans|default('Se connecter') }}</a>
-        </p>
+        </div>
     </div>
 
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ asset('lib/easing/easing.min.js') }}"></script>
-    <script src="{{ asset('lib/waypoints/waypoints.min.js') }}"></script>
-    <script src="{{ asset('lib/counterup/counterup.min.js') }}"></script>
-    <script src="{{ asset('lib/owlcarousel/owl.carousel.min.js') }}"></script>
+<style>
+    .register-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, var(--bleu-clair), #ffffff);
+        padding: 20px;
+    }
 
-    <!-- Template JavaScript -->
-    <script src="{{ asset('js/main.js') }}"></script>
+    .register-box {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        width: 100%;
+        max-width: 600px;
+    }
 
-    <!-- Custom JavaScript -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Smooth scroll for nav links
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    if (this.getAttribute('href').startsWith('#')) {
-                        e.preventDefault();
-                        const target = document.querySelector(this.getAttribute('href'));
-                        target.scrollIntoView({ behavior: 'smooth' });
-                    }
-                });
-            });
+    .register-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
 
-            // Enable Bootstrap tooltips
-            $('[data-bs-toggle="tooltip"]').tooltip();
+    .register-logo {
+        width: 100px;
+        margin-bottom: 20px;
+        animation: pulse 2s infinite;
+    }
 
-            // Add focus animation for form inputs
-            const inputs = document.querySelectorAll('.form-control, .form-select');
-            inputs.forEach(input => {
-                input.addEventListener('focus', () => {
-                    input.style.transition = 'all 0.3s ease';
-                });
-            });
-        });
-    </script>
+    .form-floating {
+        position: relative;
+        margin-bottom: 20px;
+    }
+
+    .form-floating input {
+        height: 60px !important;
+        padding-left: 40px !important;
+    }
+
+    .form-floating label {
+        padding-left: 40px;
+    }
+
+    .form-floating i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 2;
+        color: var(--bleu-vif);
+    }
+
+    .btn-primary {
+        background: var(--bleu-vif);
+        border: none;
+        padding: 15px;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background: var(--bleu-fonce);
+        transform: translateY(-2px);
+    }
+
+    .register-footer {
+        text-align: center;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid var(--bleu-clair);
+    }
+
+    .invalid-feedback {
+        font-size: 0.875rem;
+        color: #dc3545;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+</style>
+
+<script>
+(() => {
+    'use strict';
+
+    const form = document.getElementById('registration-form');
+   
+    form.addEventListener('submit', function(event) {
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+    });
+
+    // Real-time password match validation
+    const password = document.getElementById('{{ registrationForm.plainPassword.first.vars.id }}');
+    const confirmPassword = document.getElementById('{{ registrationForm.plainPassword.second.vars.id }}');
+
+    function validatePassword() {
+        if (password.value !== confirmPassword.value) {
+            confirmPassword.setCustomValidity('Les mots de passe ne correspondent pas');
+        } else {
+            confirmPassword.setCustomValidity('');
+        }
+    }
+
+    password.addEventListener('change', validatePassword);
+    confirmPassword.addEventListener('keyup', validatePassword);
+})();
+</script>
 </body>
 </html>
 {% endblock %}

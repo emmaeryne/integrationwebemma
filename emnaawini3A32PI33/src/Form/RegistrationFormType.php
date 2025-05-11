@@ -13,7 +13,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Email;
-
+use VictorPrdh\RecaptchaBundle\Form\ReCaptchaType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\File;
 class RegistrationFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -42,17 +44,18 @@ class RegistrationFormType extends AbstractType
                     new Length(['min' => 6]),
                 ],
             ])
-            ->add('role', ChoiceType::class, [
-                'choices' => [
-                    'Client' => 'CLIENT',
-                    'Coach' => 'COACH',
-                    'Admin' => 'ADMIN',
-                ],
-                'label' => 'Role',
+            ->add("recaptcha", ReCaptchaType::class)
+            ->add('image', FileType::class, [
+                'label' => 'Image de profil',
+                'mapped' => false,
                 'constraints' => [
-                    new NotBlank(),
+                    new File([
+                        'maxSize' => '8M',
+                    ])
                 ],
-            ]);
+                'required' => false,
+            ])
+            ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -62,4 +65,3 @@ class RegistrationFormType extends AbstractType
         ]);
     }
 }
-

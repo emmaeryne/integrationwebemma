@@ -1,0 +1,180 @@
+
+{% extends 'registration/base.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        :root {
+            --primary: #0066cc;
+            --primary-light: #3385d6;
+            --secondary: #00aaff;
+        }
+
+        .verification-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, rgba(0, 25, 51, 0.9), rgba(0, 102, 204, 0.7)),
+                        url('{{ asset('img/carousel-1.jpg') }}') center/cover fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .verification-card {
+            background: rgba(17, 25, 40, 0.75);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .verification-title {
+            color: #ffffff;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .verification-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .otp-inputs {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .otp-inputs input {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            font-size: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .otp-inputs input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 102, 204, 0.3);
+            transform: translateY(-2px);
+            outline: none;
+        }
+
+        .verify-button {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .verify-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 102, 204, 0.4);
+        }
+
+        .resend-link {
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .resend-link a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .resend-link a:hover {
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(0, 170, 255, 0.5);
+        }
+
+        @media (max-width: 576px) {
+            .verification-card {
+                padding: 2rem;
+                margin: 1rem;
+            }
+
+            .otp-inputs {
+                gap: 0.5rem;
+            }
+
+            .otp-inputs input {
+                width: 50px;
+                height: 50px;
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="verification-container">
+        <div class="verification-card">
+            <h2 class="verification-title">Verification Required</h2>
+            <p class="verification-subtitle">Please enter the 4-digit code sent to your device</p>
+
+            <form id="formVerifier" action="{{ path('app_user_verifier') }}" method="post">
+                <div class="otp-inputs">
+                    <input type="text" name="otp1" maxLength="1" min="0" max="9" pattern="[0-9]{1}" required />
+                    <input type="text" name="otp2" maxLength="1" min="0" max="9" pattern="[0-9]{1}" required />
+                    <input type="text" name="otp3" maxLength="1" min="0" max="9" pattern="[0-9]{1}" required />
+                    <input type="text" name="otp4" maxLength="1" min="0" max="9" pattern="[0-9]{1}" required />
+                </div>
+                <button type="submit" class="verify-button">Verify Code</button>
+            </form>
+
+            <div class="resend-link">
+                Didn't receive the code? <a href="#">Resend Code</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('.otp-inputs input');
+            
+            inputs.forEach((input, index) => {
+                input.addEventListener('keyup', (e) => {
+                    if (e.key >= 0 && e.key <= 9) {
+                        if (index < inputs.length - 1) {
+                            inputs[index + 1].focus();
+                        }
+                    } else if (e.key === 'Backspace') {
+                        if (index > 0) {
+                            inputs[index - 1].focus();
+                        }
+                    }
+                });
+
+                input.addEventListener('focus', (e) => {
+                    e.target.select();
+                });
+            });
+        });
+    </script>
+{% endblock %}
+
+

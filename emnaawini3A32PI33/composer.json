@@ -8,6 +8,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "chillerlan/php-qrcode": "^5.0",
+        "cloudinary/cloudinary_php": "^3.1",
         "doctrine/dbal": "^3",
         "doctrine/doctrine-bundle": "^2.13",
         "doctrine/doctrine-migrations-bundle": "^3.4",
@@ -19,6 +20,7 @@
         "knplabs/knp-paginator-bundle": "^6.7",
         "knplabs/knp-snappy-bundle": "^1.9",
         "phpdocumentor/reflection-docblock": "^5.6",
+        "phpmailer/phpmailer": "^6.10",
         "phpoffice/phpspreadsheet": "^4.1",
         "phpstan/phpdoc-parser": "^2.1",
         "picqer/php-barcode-generator": "^3.2",
@@ -60,6 +62,7 @@
         "twig/string-extra": "*",
         "twig/twig": "^2.12|^3.0",
         "twilio/sdk": "*",
+        "victor-prdh/recaptcha-bundle": "^2.0",
         "wildbit/postmark-php": "^6.0"
     },
     "config": {

@@ -31,8 +31,7 @@ security:
                 # always_remember_me: true # Optional: enable if you want always remember me
 
     access_control:
-        - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/profile, roles: ROLE_USER }
+      
         # You can add more rules here if needed
 
 when@test:

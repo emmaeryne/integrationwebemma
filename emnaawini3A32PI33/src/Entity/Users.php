@@ -26,12 +26,14 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(name: 'password_hash', type: 'string', length: 255, nullable: true)]
     private ?string $password = null;
+    #[ORM\Column(type: 'string', length: 150, nullable: true)]
+    private ?string $image = null;
 
     #[ORM\Column(name: 'is_active', type: 'boolean', nullable: true)]
-    private ?bool $isActive = true;
+    private ?bool $isActive = false;
 
     #[ORM\Column(name: 'role', type: 'string', length: 255, nullable: true)]
-    private ?string $role = 'CLIENT';
+    private ?string $role = 'USER';
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Adresse::class, cascade: ['persist', 'remove'])]
     private Collection $adresses;
@@ -50,7 +52,16 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->username;
     }
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
 
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
+        return $this;
+    }
     public function setUsername(?string $username): self
     {
         $this->username = $username;

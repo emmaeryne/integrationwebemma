@@ -353,22 +353,22 @@
     <a href="{{ path('app_produit_index') }}" class="nav-item nav-link">Liste Produits</a>
     <a href="{{ path('app_account_add_adress') }}" class="nav-item nav-link">Adresse</a>
 
-    
+   
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Réserver</a>
                                 <div class="dropdown-menu rounded-0 m-0">
                                     <a href="{{ path('client_services') }}" class="dropdown-item">Services Client</a>
                                     <a href="{{ path('app_client_reservation_index') }}" class="dropdown-item">Abonnement</a>
-                                    
+                                   
                                     <a href="{{ path('app_cours_liste_participant', {'user_id': app.user.id}) }}" class="dropdown-item">Participation</a>
                                     <div class="dropdown">
                                        
                                         <div class="dropdown-menu rounded-0 m-0">
                                             <a href="{{ path('app_coach_reservations') }}" class="dropdown-item">Espace coach</a>
-                                            <a href="{{ path('app_planning_index', {'coachId': 2}) }}" class="dropdown-item">Planning</a>
-                                            <a href="{{ path('app_cours_index', {'user_id': 2}) }}" class="dropdown-item">Cours</a>
-                                        </div> 
-                                        
+                                            <a href="{{ path('app_planning_index') }}" class="dropdown-item">Planning</a>
+                                            <a href="{{ path('app_cours_index') }}" class="dropdown-item">Cours</a>
+                                        </div>
+                                       
                                     </div>
                                 </div>
                             </div>
@@ -378,20 +378,29 @@
                             {% if app.user %}
                                 <div class="nav-item dropdown">
                                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                                        <i class="fas fa-user-circle me-1"></i> {{ app.user.username }}
+                                        {% if app.user.image %}
+                                            <img src="{{ app.session.get('image')}}" alt="Profile" class="rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover;">
+                                        {% else %}
+                                            <i class="fas fa-user-circle me-1"></i>
+                                        {% endif %}
+                                        {{ app.user.username }}
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-end rounded-0 m-0">
-                                        <a href="{{ path('app_home_client') }}" class="dropdown-item">Mon Profil</a>
+                                     
+                                        <a href="{{ path('app_user_profile') }}" class="dropdown-item">
+                                            <i class="fas fa-cog me-2"></i> Paramètres
+                                        </a>
+                                        <div class="dropdown-divider"></div>
                                         <a href="{{ path('app_logout') }}" class="dropdown-item text-danger">
-                                        
-                                            <i class="fas fa-sign-out-alt me-1"></i> Déconnexion
+                                            <i class="fas fa-sign-out-alt me-2"></i> Déconnexion
                                         </a>
                                     </div>
                                 </div>
                             {% else %}
+                     
                                 <a href="{{ path('app_login') }}" class="nav-item nav-link">Connexion</a>
                                 <a href="{{ path('app_register') }}" class="nav-item nav-link">Inscription</a>
-                                
+                               
                             {% endif %}
                         </div>
                     </div>
