@@ -400,7 +400,10 @@ nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="
                             </div>
 
                             
-        
+                            <a href="{{ path('app_equipe_upload_stats', {'id_equipe': equipe.idEquipe}) }}" class="btn btn-success mb-3">
+                                <i class="bi bi-file-earmark-arrow-up"></i> Upload Team Stats
+                            </a>
+
                             <!-- Actions -->
                             <div class="actions">
                                 <a href="{{ path('app_equipe_edit', {'id_equipe': equipe.idEquipe}) }}" class="btn btn-edit text-white" aria-label="Edit team">
@@ -457,7 +460,7 @@ nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="
     <table class="table table-bordered">
         <tr>
             <th>Matchs joués</th>
-            <td>{{ statistiques.matchs_joues }}</td>
+            <td>{{ statistiques.matchsJoues }}</td>
         </tr>
         <tr>
             <th>Victoires</th>
@@ -473,16 +476,69 @@ nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="
         </tr>
         <tr>
             <th>Buts marqués</th>
-            <td>{{ statistiques.buts_marques }}</td>
+            <td>{{ statistiques.butsMarques }}</td>
         </tr>
         <tr>
             <th>Buts encaissés</th>
-            <td>{{ statistiques.buts_encaisses }}</td>
+            <td>{{ statistiques.butsEncaisses }}</td>
         </tr>
     </table>
 {% else %}
     <p>Aucune statistique disponible pour cette équipe.</p>
 {% endif %}
+
+<h2>Team Performance</h2>
+<div class="chart-container" style="position: relative; height:40vh; width:80vw">
+    <canvas id="teamPerformanceChart"></canvas>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const ctx = document.getElementById('teamPerformanceChart').getContext('2d');
+        const teamPerformanceChart = new Chart(ctx, {
+            type: 'pie', // You can use 'bar', 'line', or other chart types
+            data: {
+                labels: ['Wins', 'Losses', 'Draws'],
+                datasets: [{
+                    label: 'Team Performance',
+                    data: [
+                        {{ statistiques.victoires|default(0) }},
+                        {{ statistiques.defaites|default(0) }},
+                        {{ statistiques.nuls|default(0) }}
+                    ],
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.2)', // Green for wins
+                        'rgba(255, 99, 132, 0.2)', // Red for losses
+                        'rgba(255, 206, 86, 0.2)'  // Yellow for draws
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(255, 206, 86, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                return `${label}: ${value}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
                     </div>
 
                     <!-- Footer -->
@@ -503,37 +559,61 @@ nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="
         <div class="layout-overlay layout-menu-toggle"></div>
     </div>
 
-    <!-- Buy Now Button -->
-    <div class="buy-now">
-        <a href="https://themeselection.com/products/sneat-bootstrap-html-admin-template/" target="_blank" class="btn btn-danger btn-buy-now" aria-label="Upgrade to Pro">Upgrade to Pro</a>
-    </div>
+
 {% endblock %}
 
 {% block javascripts %}
-    <!-- Helpers -->
-    <script src="{{ asset('sneat-1.0.0/assets/vendor/js/helpers.js') }}"></script>
-    <script src="{{ asset('sneat-1.0.0/assets/js/config.js') }}"></script>
+    <!-- Load Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Core JS -->
-    <script src="{{ asset('sneat-1.0.0/assets/vendor/libs/jquery/jquery.js') }}"></script>
-    <script src="{{ asset('sneat-1.0.0/assets/vendor/libs/popper/popper.js') }}"></script>
-    <script src="{{ asset('sneat-1.0.0/assets/vendor/js/bootstrap.js') }}"></script>
-    <script src="{{ asset('sneat-1.0.0/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
-    <script src="{{ asset('sneat-1.0.0/assets/vendor/js/menu.js') }}"></script>
-    <script src="{{ asset('sneat-1.0.0/assets/vendor/libs/apex-charts/apexcharts.js') }}"></script>
-    <script src="{{ asset('sneat-1.0.0/assets/js/main.js') }}"></script>
-    <script src="{{ asset('sneat-1.0.0/assets/js/dashboards-analytics.js') }}"></script>
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
-
-    <!-- Custom JS -->
+    <!-- Chart Initialization -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Enhance button interactions
-            const buttons = document.querySelectorAll('.btn-back, .btn-edit, .btn-delete');
-            buttons.forEach(button => {
-                button.addEventListener('focus', () => {
-                    button.style.transition = 'transform 0.3s ease, background-color 0.3s ease';
-                });
+        document.addEventListener('DOMContentLoaded', function () {
+            let chartInstance;
+
+            const ctx = document.getElementById('teamPerformanceChart').getContext('2d');
+
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Wins', 'Losses', 'Draws'],
+                    datasets: [{
+                        label: 'Team Performance',
+                        data: [{{ statistiques.victoires|default(0) }}, {{ statistiques.defaites|default(0) }}, {{ statistiques.nuls|default(0) }}],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(255, 206, 86, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(255, 206, 86, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    return `${label}: ${value}`;
+                                }
+                            }
+                        }
+                    }
+                }
             });
         });
     </script>

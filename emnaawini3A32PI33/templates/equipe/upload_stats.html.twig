@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Upload Team Statistics - Gestion | Hive{% endblock %}
+
+{% block body %}
+<div class="layout-wrapper layout-content-navbar">
+    <div class="layout-container">
+        <div class="layout-page">
+            <div class="content-wrapper">
+                <div class="container-xxl flex-grow-1 container-p-y">
+                    <div class="matches-wrapper">
+                        <div class="header-section">
+                            <h1>Upload Team Statistics</h1>
+                        </div>
+
+                        <!-- Back Button -->
+                        <a href="{{ path('app_equipe_index') }}" class="btn btn-secondary mb-3">
+                            <i class="bi bi-arrow-left"></i>
+                            Back
+                        </a>
+
+                        <!-- Flash Messages -->
+                        {% for message in app.flashes('success') %}
+                            <div class="alert alert-success">{{ message }}</div>
+                        {% endfor %}
+                        {% for message in app.flashes('error') %}
+                            <div class="alert alert-danger">{{ message }}</div>
+                        {% endfor %}
+
+                        <!-- CSV Upload Form -->
+                        <form method="post" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="csv_file" class="form-label">CSV File</label>
+                                <input type="file" name="csv_file" id="csv_file" class="form-control" required>
+                                <small class="form-text text-muted">
+                                    The CSV file should have the following columns: <code>id_equipe, matchs_joues, victoires, defaites, nuls, buts_marques, buts_encaisses</code>.
+                                </small>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Upload</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

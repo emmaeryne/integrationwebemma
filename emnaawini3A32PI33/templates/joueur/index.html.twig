@@ -364,6 +364,14 @@
                                 </a>
                             </div>
 
+                            <a href="{{ path('app_joueur_upload_csv') }}" class="btn btn-primary mb-3">
+                                {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                    Importer des Joueurs via CSV
+                                {% else %}
+                                    Upload Players CSV
+                                {% endif %}
+                            </a>
+
                             <!-- Flash Messages -->
                             {% for message in app.flashes('success') %}
                                 <div class="alert alert-success alert-dismissible fade show" role="alert">

@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Upload Teams CSV - Gestion | Hive{% endblock %}
+{% block title %}Upload Players CSV - Gestion | Hive{% endblock %}
 
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('sneat-1.0.0/assets/vendor/css/core.css') }}" class="template-customizer-core-css" />
@@ -74,30 +74,20 @@
                         <div class="header-section">
                             <h1>
                                 {% if app.request.query.get('lang', 'en') == 'fr' %}
-                                    Importer des Équipes via CSV
+                                    Importer des Joueurs via CSV
                                 {% else %}
-                                    Upload Teams CSV
+                                    Upload Players CSV
                                 {% endif %}
                             </h1>
                         </div>
 
                         <!-- Back Button -->
-                        <a href="{{ path('app_equipe_index') }}" class="btn btn-secondary mb-3">
-                            <i class="bi bi-arrow-left"></i> Back
+                        <a href="{{ path('app_joueur_index') }}" class="btn btn-secondary mb-3">
+                            <i class="bi bi-arrow-left"></i>
+                            Back
                         </a>
 
-                        <!-- Language Switcher -->
-                        <div class="language-switcher">
-                            <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all | merge({'lang': 'en'})) }}"
-                               class="btn {% if app.request.query.get('lang', 'en') == 'en' %}btn-primary{% else %}btn-secondary{% endif %}">
-                                🇬🇧
-                            </a>
-                            <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all | merge({'lang': 'fr'})) }}"
-                               class="btn {% if app.request.query.get('lang', 'en') == 'fr' %}btn-primary{% else %}btn-secondary{% endif %}">
-                                🇫🇷
-                            </a>
-                        </div>
-
+                        <!-- Flash Messages -->
                         {% for message in app.flashes('success') %}
                             <div class="alert alert-success">{{ message }}</div>
                         {% endfor %}
@@ -105,6 +95,7 @@
                             <div class="alert alert-danger">{{ message }}</div>
                         {% endfor %}
 
+                        <!-- CSV Upload Form -->
                         <form method="post" enctype="multipart/form-data">
                             <div class="mb-3">
                                 <label for="csv_file" class="form-label">

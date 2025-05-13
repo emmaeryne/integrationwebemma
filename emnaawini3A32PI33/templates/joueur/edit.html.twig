@@ -148,7 +148,13 @@
                                             </tr>
                                             <tr>
                                                 <th scope="row">Nom Joueur</th>
-                                                <td>{{ form_widget(form.nom_joueur) }}</td>
+                                                <td>
+                                                    <div class="form-group">
+                                                        {{ form_label(form.nom_joueur) }}
+                                                        {{ form_widget(form.nom_joueur, {'attr': {'class': 'form-control'}}) }}
+                                                        {{ form_errors(form.nom_joueur) }}
+                                                    </div>
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <th scope="row">CIN</th>

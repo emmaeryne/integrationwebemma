@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Equipe;
 use App\Entity\StatistiquesEquipe;
+use App\Entity\GameMatch;
 use App\Form\EquipeType;
 use App\Repository\EquipeRepository;
 use App\Repository\JoueurRepository;
@@ -128,13 +129,21 @@ final class EquipeController extends AbstractController
     #[Route('/{id_equipe}', name: 'app_equipe_delete', methods: ['POST'])]
     public function delete(Request $request, Equipe $equipe, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$equipe->getId_equipe(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $equipe->getIdEquipe(), $request->request->get('_token'))) {
+            // Remove related matches
+            $matches = $entityManager->getRepository(GameMatch::class)->findBy(['equipe1' => $equipe]);
+            foreach ($matches as $match) {
+                $entityManager->remove($match);
+            }
+
+            // Remove the team
             $entityManager->remove($equipe);
             $entityManager->flush();
         }
 
         return $this->redirectToRoute('app_equipe_index', [], Response::HTTP_SEE_OTHER);
     }
+
     #[Route('/{id_equipe}/remove-joueur/{id_joueur}', name: 'app_equipe_remove_joueur', methods: ['POST'])]
     public function removeJoueur(int $id_equipe, int $id_joueur, EntityManagerInterface $entityManager, JoueurRepository $joueurRepository, EquipeRepository $equipeRepository, Request $request): Response
     {
@@ -176,5 +185,48 @@ final class EquipeController extends AbstractController
         return $this->redirectToRoute('app_equipe_edit', ['id_equipe' => $id_equipe]);
     }
 
-    
+    #[Route('/{id_equipe}/upload-stats', name: 'app_equipe_upload_stats', methods: ['GET', 'POST'])]
+    public function uploadStats(Request $request, Equipe $equipe, EntityManagerInterface $entityManager): Response
+    {
+        if ($request->isMethod('POST')) {
+            $file = $request->files->get('csv_file');
+
+            if ($file && $file->isValid() && $file->getClientOriginalExtension() === 'csv') {
+                $handle = fopen($file->getPathname(), 'r');
+                $header = fgetcsv($handle);
+
+                while (($row = fgetcsv($handle)) !== false) {
+                    $data = array_combine($header, $row);
+
+                    // Find or create the statistics for the team
+                    $statistiques = $entityManager->getRepository(StatistiquesEquipe::class)->findOneBy(['equipe' => $equipe]);
+                    if (!$statistiques) {
+                        $statistiques = new StatistiquesEquipe();
+                        $statistiques->setEquipe($equipe);
+                        $entityManager->persist($statistiques);
+                    }
+
+                    // Update the statistics
+                    $statistiques->setMatchsJoues((int) $data['matchs_joues']);
+                    $statistiques->setVictoires((int) $data['victoires']);
+                    $statistiques->setDefaites((int) $data['defaites']);
+                    $statistiques->setNuls((int) $data['nuls']);
+                    $statistiques->setButsMarques((int) $data['buts_marques']);
+                    $statistiques->setButsEncaisses((int) $data['buts_encaisses']);
+                }
+
+                fclose($handle);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Team statistics updated successfully!');
+                return $this->redirectToRoute('app_equipe_index');
+            }
+
+            $this->addFlash('error', 'Invalid file. Please upload a valid CSV file.');
+        }
+
+        return $this->render('equipe/upload_stats.html.twig', [
+            'equipe' => $equipe,
+        ]);
+    }
 }

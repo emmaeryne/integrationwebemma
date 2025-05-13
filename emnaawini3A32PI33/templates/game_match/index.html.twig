@@ -412,6 +412,9 @@
                                     Export to CSV
                                 {% endif %}
                             </a>
+                            <a href="{{ path('app_game_match_upload_csv') }}" class="btn btn-success mb-3">
+                                <i class="bi bi-file-earmark-arrow-up"></i> Upload CSV
+                            </a>
                             <!-- Table -->
                             {% if game_matches|length > 0 %}
                                 <div class="table-responsive">
@@ -568,10 +571,7 @@
         <div class="layout-overlay layout-menu-toggle"></div>
     </div>
 
-    <!-- Buy Now Button -->
-    <div class="buy-now">
-        <a href="https://themeselection.com/products/sneat-bootstrap-html-admin-template/" target="_blank" class="btn btn-danger btn-buy-now">Upgrade to Pro</a>
-    </div>
+
 {% endblock %}
 
 {% block javascripts %}

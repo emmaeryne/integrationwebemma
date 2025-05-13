@@ -439,6 +439,11 @@
                                                     <td>
                                                         <a href="{{ path('app_equipe_show', {'id_equipe': equipe.idEquipe}) }}" class="btn btn-primary btn-sm">View</a>
                                                         <a href="{{ path('app_equipe_edit', {'id_equipe': equipe.idEquipe}) }}" class="btn btn-secondary btn-sm">Edit</a>
+                                                        <!-- Delete Button -->
+                                                        <form method="post" action="{{ path('app_equipe_delete', {'id_equipe': equipe.idEquipe}) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this team?');">
+                                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ equipe.idEquipe) }}">
+                                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                                        </form>
                                                     </td>
                                                 </tr>
                                             {% endfor %}
@@ -499,10 +504,7 @@
         <div class="layout-overlay layout-menu-toggle"></div>
     </div>
 
-    <!-- Buy Now Button -->
-    <div class="buy-now">
-        <a href="https://themeselection.com/products/sneat-bootstrap-html-admin-template/" target="_blank" class="btn btn-danger btn-buy-now" aria-label="Upgrade to Pro">Upgrade to Pro</a>
-    </div>
+
 {% endblock %}
 
 {% block javascripts %}
