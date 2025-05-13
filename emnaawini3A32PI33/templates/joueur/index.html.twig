@@ -180,115 +180,52 @@
                 </div>
                 <div class="menu-inner-shadow"></div>
                 <ul class="menu-inner py-1">
+                    <!-- Dashboard -->
                     <li class="menu-item">
                         <a href="{{ path('app_dashboard') }}" class="menu-link">
                             <i class="menu-icon tf-icons bx bx-home-circle"></i>
                             <div data-i18n="Analytics">Dashboard</div>
                         </a>
                     </li>
+
+                    <!-- Game Matches -->
                     <li class="menu-item">
                         <a href="{{ path('app_game_match_index') }}" class="menu-link">
                             <i class="menu-icon tf-icons bx bx-table"></i>
                             <div data-i18n="Game Matches">Game Matches</div>
                         </a>
                     </li>
+
+                    <!-- Tournaments -->
                     <li class="menu-item">
                         <a href="{{ path('app_tournoi_index') }}" class="menu-link">
                             <i class="menu-icon tf-icons bx bx-trophy"></i>
                             <div data-i18n="Tournaments">Tournaments</div>
                         </a>
                     </li>
+
+                    <!-- Teams -->
                     <li class="menu-item">
                         <a href="{{ path('app_equipe_index') }}" class="menu-link">
                             <i class="menu-icon tf-icons bx bx-group"></i>
                             <div data-i18n="Teams">Teams</div>
                         </a>
                     </li>
-                    <li class="menu-item active">
+
+                    <!-- Players -->
+                    <li class="menu-item">
                         <a href="{{ path('app_joueur_index') }}" class="menu-link">
                             <i class="menu-icon tf-icons bx bx-user"></i>
                             <div data-i18n="Players">Players</div>
                         </a>
                     </li>
+
+                    <!-- Terrains -->
                     <li class="menu-item">
-                        <a href="https://127.0.0.1:8000/service/" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-cog"></i>
-                            <div data-i18n="Services">Services</div>
+                        <a href="{{ path('app_terrain_index') }}" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-map"></i>
+                            <div data-i18n="Terrains">Terrains</div>
                         </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="https://127.0.0.1:8000/abonnement/" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-cog"></i>
-                            <div data-i18n="Abonnements">Abonnements</div>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="https://127.0.0.1:8000/type-abonnement/" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-cog"></i>
-                            <div data-i18n="Association">Association</div>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="https://127.0.0.1:8000/reservation/" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-cog"></i>
-                            <div data-i18n="Reservation">Reservation</div>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="https://127.0.0.1:8000/cours/4" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-cog"></i>
-                            <div data-i18n="Cours">Cours</div>
-                        </a>
-                    </li>
-                    <!-- Additional Menu Items -->
-                    <li class="menu-header small text-uppercase">
-                        <span class="menu-header-text">Pages</span>
-                    </li>
-                    <li class="menu-item">
-                        <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon tf-icons bx bx-dock-top"></i>
-                            <div data-i18n="Account Settings">Account Settings</div>
-                        </a>
-                        <ul class="menu-sub">
-                            <li class="menu-item">
-                                <a href="#" class="menu-link">
-                                    <div data-i18n="Account">Account</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="#" class="menu-link">
-                                    <div data-i18n="Notifications">Notifications</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="#" class="menu-link">
-                                    <div data-i18n="Connections">Connections</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="menu-item">
-                        <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
-                            <div data-i18n="Authentications">Authentications</div>
-                        </a>
-                        <ul class="menu-sub">
-                            <li class="menu-item">
-                                <a href="#" class="menu-link" target="_blank">
-                                    <div data-i18n="Basic">Login</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="#" class="menu-link" target="_blank">
-                                    <div data-i18n="Basic">Register</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="#" class="menu-link" target="_blank">
-                                    <div data-i18n="Basic">Forgot Password</div>
-                                </a>
-                            </li>
-                        </ul>
                     </li>
                 </ul>
             </aside>
@@ -480,10 +417,7 @@
         <div class="layout-overlay layout-menu-toggle"></div>
     </div>
 
-    <!-- Buy Now Button -->
-    <div class="buy-now">
-        <a href="https://themeselection.com/products/sneat-bootstrap-html-admin-template/" target="_blank" class="btn btn-danger btn-buy-now" aria-label="Upgrade to Pro">Upgrade to Pro</a>
-    </div>
+
 {% endblock %}
 
 {% block javascripts %}
