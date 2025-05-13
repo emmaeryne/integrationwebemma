@@ -11,6 +11,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class JoueurType extends AbstractType
 {
@@ -44,8 +45,18 @@ class JoueurType extends AbstractType
         $userChoices = array_map(fn($user) => $user['id'], $availableUsers);
 
         $builder
-            ->add('cin')
-            ->add('url_photo')
+            ->add('nom_joueur', TextType::class, [
+                'label' => 'Nom du Joueur',
+                'required' => true,
+            ])
+            ->add('cin', TextType::class, [
+                'label' => 'CIN',
+                'required' => true,
+            ])
+            ->add('url_photo', TextType::class, [
+                'label' => 'Photo URL',
+                'required' => false,
+            ])
             ->add('id_user', ChoiceType::class, [
                 'choices' => array_combine($userChoices, $userChoices), // Use IDs as both keys and values
                 'placeholder' => 'Select a user',

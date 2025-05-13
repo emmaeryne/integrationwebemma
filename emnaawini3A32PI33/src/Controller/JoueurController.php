@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Entity\Equipe;
 
 #[Route('/joueur')]
 final class JoueurController extends AbstractController
@@ -65,18 +66,21 @@ final class JoueurController extends AbstractController
     #[Route('/{id_joueur}/edit', name: 'app_joueur_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Joueur $joueur, EntityManagerInterface $entityManager): Response
     {
+        // Create the form and bind it to the Joueur entity
         $form = $this->createForm(JoueurType::class, $joueur);
         $form->handleRequest($request);
 
+        // Handle form submission
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
             return $this->redirectToRoute('app_joueur_index', [], Response::HTTP_SEE_OTHER);
         }
 
+        // Render the form in the template
         return $this->render('joueur/edit.html.twig', [
             'joueur' => $joueur,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -89,5 +93,54 @@ final class JoueurController extends AbstractController
         }
 
         return $this->redirectToRoute('app_joueur_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/joueur/upload-csv', name: 'app_joueur_upload_csv', methods: ['GET', 'POST'])]
+    public function uploadCsv(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        if ($request->isMethod('POST')) {
+            $file = $request->files->get('csv_file');
+
+            if ($file && $file->isValid()) {
+                $csvData = file_get_contents($file->getPathname());
+                $rows = array_map('str_getcsv', explode("\n", $csvData));
+                $header = array_shift($rows);
+
+                foreach ($rows as $row) {
+                    if (count($row) < 6) {
+                        continue; // Skip invalid rows
+                    }
+
+                    $data = array_combine($header, $row);
+
+                    $joueur = new Joueur();
+                    $joueur->setNomJoueur($data['nom_joueur']);
+                    $joueur->setCin($data['cin']);
+                    $joueur->setUrlPhoto($data['url_photo']);
+
+                    // Set related entities (Equipe)
+                    $equipe = $entityManager->getRepository(Equipe::class)->find($data['id_equipe']);
+                    if ($equipe) {
+                        $joueur->setEquipe($equipe);
+                    }
+
+                    // Directly set the user ID without loading the Users entity
+                    if (isset($data['id_user'])) {
+                        $joueur->setIdUser((int) $data['id_user']);
+                    }
+
+                    $entityManager->persist($joueur);
+                }
+
+                $entityManager->flush();
+
+                $this->addFlash('success', 'CSV file uploaded successfully!');
+                return $this->redirectToRoute('app_joueur_index');
+            }
+
+            $this->addFlash('error', 'Invalid file upload.');
+        }
+
+        return $this->render('joueur/upload_csv.html.twig');
     }
 }

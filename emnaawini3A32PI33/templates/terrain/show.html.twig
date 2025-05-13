@@ -47,6 +47,70 @@
 {% endblock %}
 
 {% block body %}
+    <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme" aria-label="Main navigation">
+        <div class="app-brand demo">
+            <a href="{{ path('app_dashboard') }}" class="app-brand-link">
+                <span class="app-brand-logo demo">
+                    <img src="{{ asset('images/logo.png') }}" alt="Hive Logo" style="height: 80px; width: auto;" />
+                </span>
+                <span class="app-brand-text demo menu-text fw-bolder ms-2">HIVE</span>
+            </a>
+            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none" aria-label="Toggle menu">
+                <i class="bx bx-chevron-left bx-sm align-middle"></i>
+            </a>
+        </div>
+        <div class="menu-inner-shadow"></div>
+        <ul class="menu-inner py-1">
+            <!-- Dashboard -->
+            <li class="menu-item">
+                <a href="{{ path('app_dashboard') }}" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                    <div data-i18n="Analytics">Dashboard</div>
+                </a>
+            </li>
+
+            <!-- Game Matches -->
+            <li class="menu-item">
+                <a href="{{ path('app_game_match_index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-table"></i>
+                    <div data-i18n="Game Matches">Game Matches</div>
+                </a>
+            </li>
+
+            <!-- Tournaments -->
+            <li class="menu-item">
+                <a href="{{ path('app_tournoi_index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-trophy"></i>
+                    <div data-i18n="Tournaments">Tournaments</div>
+                </a>
+            </li>
+
+            <!-- Teams -->
+            <li class="menu-item">
+                <a href="{{ path('app_equipe_index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-group"></i>
+                    <div data-i18n="Teams">Teams</div>
+                </a>
+            </li>
+
+            <!-- Players -->
+            <li class="menu-item">
+                <a href="{{ path('app_joueur_index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-user"></i>
+                    <div data-i18n="Players">Players</div>
+                </a>
+            </li>
+
+            <!-- Terrains -->
+            <li class="menu-item">
+                <a href="{{ path('app_terrain_index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-map"></i>
+                    <div data-i18n="Terrains">Terrains</div>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
     <div class="matches-wrapper">
         <div class="header-section">
             <h1>Terrain Details</h1>

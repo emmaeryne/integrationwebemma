@@ -290,8 +290,8 @@
                     <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
                         <div class="navbar-nav align-items-center">
                             <div class="nav-item d-flex align-items-center">
-                                <i class="bx bx-search fs-4 lh-0"></i>
-                                <input type="text" class="form-control border-0 shadow-none" placeholder="Search..." aria-label="Search input" />
+                                
+                                <input type="text" class="form-control border-0 shadow-none" placeholder="" aria-label="Search input" />
                             </div>
                         </div>
                         <ul class="navbar-nav flex-row align-items-center ms-auto">
@@ -332,20 +332,65 @@
                 <div class="content-wrapper">
                     <div class="container-xxl flex-grow-1 container-p-y">
                         <div class="matches-wrapper">
+                            <!-- Language Switcher -->
+                            <div class="language-switcher mb-3">
+                                <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all | merge({'lang': 'en'})) }}"
+                                   class="btn {% if app.request.query.get('lang', 'en') == 'en' %}btn-primary{% else %}btn-secondary{% endif %}">
+                                    🇬🇧
+                                </a>
+                                <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all | merge({'lang': 'fr'})) }}"
+                                   class="btn {% if app.request.query.get('lang', 'en') == 'fr' %}btn-primary{% else %}btn-secondary{% endif %}">
+                                    🇫🇷
+                                </a>
+                            </div>
+
                             <!-- Breadcrumb -->
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">Dashboard</a></li>
-                                    <li class="breadcrumb-item"><a href="{{ path('app_game_match_index') }}">Game Matches</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">New GameMatch</li>
+                                    <li class="breadcrumb-item">
+                                        <a href="{{ path('app_dashboard') }}">
+                                            {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                                Tableau de bord
+                                            {% else %}
+                                                Dashboard
+                                            {% endif %}
+                                        </a>
+                                    </li>
+                                    <li class="breadcrumb-item">
+                                        <a href="{{ path('app_game_match_index') }}">
+                                            {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                                Matchs de jeu
+                                            {% else %}
+                                                Game Matches
+                                            {% endif %}
+                                        </a>
+                                    </li>
+                                    <li class="breadcrumb-item active" aria-current="page">
+                                        {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                            Nouveau Match
+                                        {% else %}
+                                            New Match
+                                        {% endif %}
+                                    </li>
                                 </ol>
                             </nav>
 
                             <!-- Header -->
                             <div class="header-section">
-                                <h1>Create New GameMatch</h1>
+                                <h1>
+                                    {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                        Créer un Nouveau Match
+                                    {% else %}
+                                        Create New Match
+                                    {% endif %}
+                                </h1>
                                 <a href="{{ path('app_game_match_index') }}" class="btn btn-back text-white" aria-label="Back to game matches list">
-                                    <i class="bi bi-arrow-left-circle me-2"></i> Back to List
+                                    <i class="bi bi-arrow-left-circle me-2"></i>
+                                    {% if app.request.query.get('lang', 'en') == 'fr' %}
+                                        Retour à la liste
+                                    {% else %}
+                                        Back to List
+                                    {% endif %}
                                 </a>
                             </div>
 
@@ -367,12 +412,19 @@
                             <div class="card">
                                 <div class="card-body">
                                     {{ form_start(form, {'attr': {'id': 'game-match-form', 'novalidate': 'novalidate'}}) }}
-                                        <div class="form-row">
+                                        <div class="form-column">
                                             {% for field in form %}
                                                 {% if field.vars.name != '_token' %}
                                                     <div class="form-group">
                                                         {{ form_label(field, null, {'label_attr': {'class': 'form-label'}}) }}
-                                                        {{ form_widget(field, {'attr': {'class': 'form-control', 'aria-describedby': 'error-' ~ field.vars.id}}) }}
+                                                        {{ form_widget(field, {
+                                                            'attr': {
+                                                                'class': 'form-control',
+                                                                'aria-describedby': 'error-' ~ field.vars.id,
+                                                                'placeholder': field.vars.attr.placeholder | default('Enter ' ~ field.vars.label),
+                                                                'value': field.vars.name == '' ? '0' : (field.vars.name == 'statut' ? 'On Going' : '')
+                                                            }
+                                                        }) }}
                                                         {{ form_errors(field) }}
                                                         <div id="error-{{ field.vars.id }}" class="invalid-feedback"></div>
                                                     </div>
@@ -424,7 +476,7 @@
     <!-- Core JS -->
     <script src="{{ asset('sneat-1.0.0/assets/vendor/libs/jquery/jquery.js') }}"></script>
     <script src="{{ asset('sneat-1.0.0/assets/vendor/libs/popper/popper.js') }}"></script>
-    <script src="{{ asset('sneat-1.0.0/assets/vendor/js/bootstrap.js') }}"></script>
+    <script src="{{ asset('sneat-1.0.0/assets/js/bootstrap.js') }}"></script>
     <script src="{{ asset('sneat-1.0.0/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
     <script src="{{ asset('sneat-1.0.0/assets/vendor/js/menu.js') }}"></script>
     <script src="{{ asset('sneat-1.0.0/assets/vendor/libs/apex-charts/apexcharts.js') }}"></script>
@@ -435,29 +487,122 @@
     <!-- Custom JS -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Enhance form input focus and validation
             const form = document.getElementById('game-match-form');
             const submitBtn = document.getElementById('submit-btn');
             const inputs = form.querySelectorAll('.form-control, .form-select');
+            const equipe1Input = document.querySelector('[name="form[equipe1]"]');
+            const equipe2Input = document.querySelector('[name="form[equipe2]"]');
+            const tournoiInput = document.querySelector('[name="form[tournoi]"]');
+            const scoreEquipe1Input = document.querySelector('[name="form[score_equipe1]"]');
+            const scoreEquipe2Input = document.querySelector('[name="form[score_equipe2]"]');
 
-            inputs.forEach(input => {
-                input.addEventListener('focus', () => {
-                    input.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+            // Function to check if all required fields are filled and valid
+            function checkFormValidity() {
+                let allFilled = true;
+                let allValid = true;
+
+                inputs.forEach(input => {
+                    if (input.required && input.value.trim() === '') {
+                        allFilled = false;
+                    }
                 });
+
+                // Check equipe1 and equipe2 are different
+                if (equipe1Input.value === equipe2Input.value && equipe1Input.value !== '') {
+                    allValid = false;
+                }
+
+                // Check tournoi is selected
+                if (!tournoiInput.value || tournoiInput.value.trim() === '') {
+                    allValid = false;
+                }
+
+                // Check scores are not equal
+                if (scoreEquipe1Input.value === scoreEquipe2Input.value && scoreEquipe1Input.value !== '' && scoreEquipe2Input.value !== '') {
+                    allValid = false;
+                }
+
+                submitBtn.disabled = !(allFilled && allValid);
+                if (submitBtn.disabled) {
+                    submitBtn.classList.add('disabled');
+                } else {
+                    submitBtn.classList.remove('disabled');
+                }
+            }
+
+            // Initial check
+            checkFormValidity();
+
+            // Update validation on input change
+            inputs.forEach(input => {
                 input.addEventListener('input', () => {
+                    checkFormValidity();
                     if (input.value.trim() !== '') {
                         input.classList.add('is-valid');
                         input.classList.remove('is-invalid');
                         document.getElementById(`error-${input.id}`).textContent = '';
-                    } else {
+                    } else if (input.required) {
                         input.classList.remove('is-valid');
+                        input.classList.add('is-invalid');
+                        document.getElementById(`error-${input.id}`).textContent = 'This field is required.';
                     }
                 });
+
+                input.addEventListener('focus', () => {
+                    input.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+                });
+            });
+
+            // Specific validation for equipe1 and equipe2
+            equipe1Input.addEventListener('change', () => {
+                if (equipe1Input.value === equipe2Input.value && equipe1Input.value !== '') {
+                    equipe2Input.classList.add('is-invalid');
+                    document.getElementById(`error-${equipe2Input.id}`).textContent = 'Equipe 2 cannot be the same as Equipe 1.';
+                } else {
+                    equipe2Input.classList.remove('is-invalid');
+                    document.getElementById(`error-${equipe2Input.id}`).textContent = '';
+                }
+                checkFormValidity();
+            });
+
+            equipe2Input.addEventListener('change', () => {
+                if (equipe1Input.value === equipe2Input.value && equipe2Input.value !== '') {
+                    equipe2Input.classList.add('is-invalid');
+                    document.getElementById(`error-${equipe2Input.id}`).textContent = 'Equipe 2 cannot be the same as Equipe 1.';
+                } else {
+                    equipe2Input.classList.remove('is-invalid');
+                    document.getElementById(`error-${equipe2Input.id}`).textContent = '';
+                }
+                checkFormValidity();
+            });
+
+            // Specific validation for scores
+            scoreEquipe1Input.addEventListener('input', () => {
+                if (scoreEquipe1Input.value === scoreEquipe2Input.value && scoreEquipe1Input.value !== '' && scoreEquipe2Input.value !== '') {
+                    scoreEquipe2Input.classList.add('is-invalid');
+                    document.getElementById(`error-${scoreEquipe2Input.id}`).textContent = 'Scores cannot be the same.';
+                } else {
+                    scoreEquipe2Input.classList.remove('is-invalid');
+                    document.getElementById(`error-${scoreEquipe2Input.id}`).textContent = '';
+                }
+                checkFormValidity();
+            });
+
+            scoreEquipe2Input.addEventListener('input', () => {
+                if (scoreEquipe1Input.value === scoreEquipe2Input.value && scoreEquipe1Input.value !== '' && scoreEquipe2Input.value !== '') {
+                    scoreEquipe2Input.classList.add('is-invalid');
+                    document.getElementById(`error-${scoreEquipe2Input.id}`).textContent = 'Scores cannot be the same.';
+                } else {
+                    scoreEquipe2Input.classList.remove('is-invalid');
+                    document.getElementById(`error-${scoreEquipe2Input.id}`).textContent = '';
+                }
+                checkFormValidity();
             });
 
             // Handle form submission with loading state
             form.addEventListener('submit', (e) => {
                 let hasErrors = false;
+
                 inputs.forEach(input => {
                     if (input.required && input.value.trim() === '') {
                         input.classList.add('is-invalid');
@@ -466,6 +611,19 @@
                         hasErrors = true;
                     }
                 });
+
+                if (equipe1Input.value === equipe2Input.value && equipe1Input.value !== '') {
+                    equipe2Input.classList.add('is-invalid');
+                    document.getElementById(`error-${equipe2Input.id}`).textContent = 'Equipe 2 cannot be the same as Equipe 1.';
+                    hasErrors = true;
+                }
+
+                if (scoreEquipe1Input.value === scoreEquipe2Input.value && scoreEquipe1Input.value !== '' && scoreEquipe2Input.value !== '') {
+                    scoreEquipe2Input.classList.add('is-invalid');
+                    documentmissedCall: true
+                    document.getElementById(`error-${scoreEquipe2Input.id}`).textContent = 'Scores cannot be the same.';
+                    hasErrors = true;
+                }
 
                 if (hasErrors) {
                     e.preventDefault();
@@ -478,7 +636,7 @@
 
             // Accessibility: Enable Enter key to submit form
             form.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+                if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA' && !submitBtn.disabled) {
                     form.dispatchEvent(new Event('submit'));
                 }
             });

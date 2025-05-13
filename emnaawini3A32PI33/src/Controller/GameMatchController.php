@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\GameMatch;
+use App\Entity\Tournoi;
+use App\Entity\Terrain;
 use App\Entity\StatistiquesEquipe;
 use App\Form\GameMatchType;
 use App\Repository\EquipeRepository;
@@ -108,6 +110,72 @@ final class GameMatchController extends AbstractController
         return $this->render('game_match/new.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    #[Route('/upload-csv', name: 'app_game_match_upload_csv', methods: ['GET', 'POST'])]
+    public function uploadCsv(Request $request, EntityManagerInterface $entityManager, EquipeRepository $equipeRepository): Response
+    {
+        if ($request->isMethod('POST')) {
+            $file = $request->files->get('csv_file');
+
+            if ($file && $file->isValid()) {
+                $csvData = file_get_contents($file->getPathname());
+                $rows = array_map('str_getcsv', explode("\n", $csvData));
+                $header = array_shift($rows);
+
+                foreach ($rows as $row) {
+                    if (count($row) < 8) { // Ensure all required columns are present
+                        continue; // Skip invalid rows
+                    }
+
+                    $data = array_combine($header, $row);
+
+                    $gameMatch = new GameMatch();
+                    $gameMatch->setDateMatch(new \DateTime($data['date_match']));
+                    $gameMatch->setScoreEquipe1((int) $data['score_equipe1']);
+                    $gameMatch->setScoreEquipe2((int) $data['score_equipe2']);
+                    $gameMatch->setStatutMatch($data['statut_match']);
+
+                    // Set related teams
+                    $equipe1 = $equipeRepository->find($data['id_equipe1']);
+                    $equipe2 = $equipeRepository->find($data['id_equipe2']);
+
+                    if ($equipe1 && $equipe2) {
+                        $gameMatch->setEquipe1($equipe1);
+                        $gameMatch->setEquipe2($equipe2);
+                    } else {
+                        continue; // Skip if teams are invalid
+                    }
+
+                    // Set related tournament
+                    $tournoi = $entityManager->getRepository(Tournoi::class)->find($data['id_tournoi']);
+                    if ($tournoi) {
+                        $gameMatch->setTournoi($tournoi);
+                    } else {
+                        continue; // Skip if the tournament is invalid
+                    }
+
+                    // Set related terrain
+                    $terrain = $entityManager->getRepository(Terrain::class)->find($data['id_terrain']);
+                    if ($terrain) {
+                        $gameMatch->setTerrain($terrain);
+                    } else {
+                        continue; // Skip if the terrain is invalid
+                    }
+
+                    $entityManager->persist($gameMatch);
+                }
+
+                $entityManager->flush();
+
+                $this->addFlash('success', 'CSV file uploaded successfully!');
+                return $this->redirectToRoute('app_game_match_index');
+            }
+
+            $this->addFlash('error', 'Invalid file upload.');
+        }
+
+        return $this->render('game_match/upload_csv.html.twig');
     }
 
     #[Route('/user', name: 'app_game_match_user_index', methods: ['GET'])]
