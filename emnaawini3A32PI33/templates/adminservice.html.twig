@@ -1,0 +1,145 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Services Réservés - Admin{% endblock %}
+
+{% block stylesheets %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #1A2526;
+            color: #FFFFFF;
+            font-family: 'Arial', sans-serif;
+        }
+        .background-image {
+            background-image: url('{{ asset('images/sports-background.jpg') }}');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.2;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        .container {
+            background-color: rgba(42, 59, 66, 0.8);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header img {
+            max-width: 100px;
+            margin-right: 10px;
+        }
+        .header h1 {
+            font-size: 28px;
+            font-weight: bold;
+            color: #FFFFFF;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .search-form {
+            margin-bottom: 20px;
+        }
+        .search-form .btn {
+            background-color: #FF7043;
+            border-color: #FF7043;
+            color: #FFFFFF;
+            font-weight: bold;
+        }
+        .table {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #FFFFFF;
+        }
+        .table th {
+            background-color: #2A3B42;
+            color: #FFFFFF;
+            font-weight: bold;
+        }
+        .table td {
+            color: #FFFFFF;
+        }
+        .footer {
+            text-align: center;
+            color: #B0BEC5;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="background-image"></div>
+    <div class="container">
+        <div class="header">
+            <img src="{{ asset('images/logo.png') }}" alt="HIVE Logo">
+            <h1>Services Réservés (Admin)</h1>
+        </div>
+
+        {% for flash_message in app.flashes('success') %}
+            <div class="alert alert-success" role="alert">
+                {{ flash_message }}
+            </div>
+        {% endfor %}
+        {% for flash_message in app.flashes('info') %}
+            <div class="alert alert-info" role="alert">
+                {{ flash_message }}
+            </div>
+        {% endfor %}
+        {% for flash_message in app.flashes('error') %}
+            <div class="alert alert-danger" role="alert">
+                {{ flash_message }}
+            </div>
+        {% endfor %}
+
+        <form class="search-form" method="post" action="{{ path('admin_services') }}">
+            <div class="input-group">
+                <input type="text" name="search" class="form-control" placeholder="Rechercher par nom" value="{{ search }}">
+                <button type="submit" class="btn btn-primary">Rechercher</button>
+                <a href="{{ path('admin_services') }}" class="btn btn-primary ms-2">Rafraîchir</a>
+            </div>
+        </form>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nom</th>
+                    <th>Prix (€)</th>
+                    <th>Niveau</th>
+                    <th>Durée (min)</th>
+                    <th>Réservations</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if services is empty %}
+                    <tr>
+                        <td colspan="6" class="text-center">Aucun service trouvé.</td>
+                    </tr>
+                {% else %}
+                    {% for service in services %}
+                        <tr>
+                            <td>{{ service.id }}</td>
+                            <td>{{ service.nom }}</td>
+                            <td>{{ service.prix|number_format(2) }}</td>
+                            <td>{{ service.niveau }}</td>
+                            <td>{{ service.dureeMinutes }}</td>
+                            <td>{{ service.nombreReservations }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+
+        <div class="footer">
+            © 2025 HIVE - Gestion Sportive
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}
